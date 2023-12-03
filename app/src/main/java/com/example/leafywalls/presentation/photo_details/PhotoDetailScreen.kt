@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.leafywalls.presentation.photo_details.components.LoadingDetail
+import com.example.leafywalls.presentation.photo_details.components.PhotoDetailInfo
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailTopBar
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -44,7 +45,10 @@ fun PhotoDetailScreen(
 
     Scaffold (
         topBar = {
-            PhotoDetailTopBar(onBackClick = {}, onInfoClick = {isSheetOpen = true})
+            PhotoDetailTopBar(
+                onBackClick = {},
+                onInfoClick = {isSheetOpen = true}
+            )
         }
     ) {
 
@@ -64,7 +68,8 @@ fun PhotoDetailScreen(
                 val widthPx = with(density) {screenWidth.roundToPx()}
                 val heightPx = with(density) {screenHeight.roundToPx()}
 
-                val photoUrl = photo.urls + "&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
+                val photoUrl = photo.url + "&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
+
 
                 SubcomposeAsyncImage(
                     modifier=Modifier.fillMaxSize(),
@@ -78,7 +83,18 @@ fun PhotoDetailScreen(
                 )
                 Log.e("The url is : ", photoUrl)
 
+
+                if(isSheetOpen) {
+                    ModalBottomSheet(
+                        sheetState = sheetState,
+                        onDismissRequest = { isSheetOpen = false }
+                    ) {
+                        PhotoDetailInfo(photoDetail = photo)
+                    }
+                }
+
             }
+
 
             if (state.error.isNotBlank()) {
                 Text(
@@ -95,19 +111,6 @@ fun PhotoDetailScreen(
             if (state.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
-
-            if(isSheetOpen) {
-                ModalBottomSheet(
-                    sheetState = sheetState,
-                    onDismissRequest = { isSheetOpen = false }
-                ) {
-                    Text(text = "Hey")
-                }
-            }
-
-//        Button(onClick = { isSheetOpen = !isSheetOpen }) {
-//            Text(text = "press")
-//        }
         }
     }
 
