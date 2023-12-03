@@ -1,7 +1,6 @@
 package com.example.leafywalls.presentation.photo_list.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,10 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.leafywalls.ui.theme.LeafyWallsTheme
 
 @Composable
 fun PhotoListItemRetry(
@@ -53,4 +50,15 @@ fun PhotoListItemRetry(
         }
 
     }
+
 }
+/*
+    sahil is from dhaka
+    sahil is a whore
+    sahil does kala jaddu
+    no girl sees him anymore.
+    No one wants him
+    They send him away,
+    cause everyone knows,
+    that he is gay
+     */

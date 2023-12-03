@@ -44,6 +44,7 @@ fun PhotoDetailScreen(
             val heightPx = with(density) {screenHeight.roundToPx()}
 
             val photoUrl = photo.urls + "&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
+
             SubcomposeAsyncImage(
                 modifier=Modifier.fillMaxSize(),
                 model = ImageRequest.Builder(LocalContext.current)
