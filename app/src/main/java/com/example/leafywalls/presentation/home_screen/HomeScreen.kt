@@ -7,7 +7,6 @@ import androidx.navigation.NavController
 import com.example.leafywalls.presentation.home_screen.componants.LeafyWallsTopBar
 import com.example.leafywalls.presentation.photo_list.ExploreList
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController

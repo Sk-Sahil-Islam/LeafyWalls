@@ -32,6 +32,6 @@ fun LeafyWallsTopBar(
                 Icon(imageVector = Icons.Outlined.Search, contentDescription = "search")
             }
         },
-        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
     )
 }
