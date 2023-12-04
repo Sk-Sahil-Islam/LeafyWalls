@@ -87,7 +87,8 @@ fun PhotoDetailScreen(
                 if(isSheetOpen) {
                     ModalBottomSheet(
                         sheetState = sheetState,
-                        onDismissRequest = { isSheetOpen = false }
+                        onDismissRequest = { isSheetOpen = false },
+                        containerColor = MaterialTheme.colorScheme.background
                     ) {
                         PhotoDetailInfo(photoDetail = photo)
                     }

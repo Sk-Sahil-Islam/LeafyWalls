@@ -22,7 +22,7 @@ import com.example.leafywalls.ui.theme.Smooch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LeafyWallsTopBar(
+fun HomeScreenTopBar(
     onMenuClick: () -> Unit,
     onSearchClick: () -> Unit
 ) {
@@ -32,7 +32,7 @@ fun LeafyWallsTopBar(
         },
         navigationIcon = {
             IconButton(onClick = { onMenuClick() }) {
-                Icon(imageVector = Icons.Outlined.Menu, contentDescription = "menu")
+                Icon(imageVector = Icons.Outlined.Menu, contentDescription = "menu", tint = MaterialTheme.colorScheme.primary)
             }
         },
         actions = {
@@ -41,7 +41,7 @@ fun LeafyWallsTopBar(
                 modifier = Modifier.padding(end = 8.dp)
             ) {
                 Icon(
-                    modifier = Modifier.size(30.dp),
+                    modifier = Modifier.size(28.dp),
                     imageVector = Icons.Outlined.Search,
                     contentDescription = "search"
                 )
