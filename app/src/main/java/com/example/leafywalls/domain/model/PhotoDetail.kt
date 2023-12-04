@@ -6,7 +6,6 @@ import com.example.leafywalls.data.remote.dto.User
 
 data class PhotoDetail(
     val title: String,
-    val description: String?,
     val createdAt: String,
     val downloads: Int,
     val id: String,

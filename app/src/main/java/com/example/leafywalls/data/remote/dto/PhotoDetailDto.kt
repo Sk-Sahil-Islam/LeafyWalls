@@ -39,7 +39,6 @@ fun PhotoDetailDto.toPhotoDetail(): PhotoDetail {
     return PhotoDetail(
         id = id,
         title = alt_description ?: "Unknown",
-        description = description,
         createdAt = created_at,
         downloads = downloads,
         likes = likes,

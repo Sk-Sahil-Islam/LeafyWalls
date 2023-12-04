@@ -12,6 +12,15 @@ val Smooch = FontFamily(
     Font(R.font.smooch_regular, FontWeight.Normal)
 )
 
+val AmaticSC = FontFamily(
+    Font(R.font.amatic_sc_regular, FontWeight.Normal),
+    Font(R.font.amatic_sc_bold, FontWeight.Bold)
+)
+
+val Sarala = FontFamily(
+    Font(R.font.sarala_regular, FontWeight.Normal)
+)
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(

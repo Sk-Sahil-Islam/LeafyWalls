@@ -45,7 +45,7 @@ fun HomeScreen(
                 selectedTabIndex = selectedIndex,
                 edgePadding = 0.dp,
                 containerColor = MaterialTheme.colorScheme.background,
-                divider = { HorizontalDivider(color = DividerDefaults.color.copy(alpha = 0.35f)) }
+                divider = { HorizontalDivider(color = DividerDefaults.color.copy(alpha = 0.25f)) }
 
             ) {
                 titles.forEachIndexed{ index, title ->
@@ -63,8 +63,7 @@ fun HomeScreen(
                         navController = navController
                     )
                 }
-                else -> {
-                    Text(text = "hello")}
+                else -> {}
 
             }
 
