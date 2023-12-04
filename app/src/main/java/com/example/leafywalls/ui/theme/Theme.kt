@@ -1,32 +1,32 @@
 package com.example.leafywalls.ui.theme
 
 import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = PrimaryDark,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
-    background = BackgroundDark
+    secondary = SecondaryDark,
+    tertiary = TertiaryDark,
+    background = BackgroundDark,
+    onSurface = OnSurfaceDark,
+    onBackground = OnSurfaceDark
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryLight,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
-    background = BackgroundLight
+    secondary = SecondaryLight,
+    tertiary = TertiaryLight,
+    background = BackgroundLight,
+    onSurface = OnSurfaceLight,
+    onBackground = OnSurfaceLight
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

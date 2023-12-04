@@ -28,11 +28,20 @@ fun HomeScreenTopBar(
 ) {
     TopAppBar(
         title = {
-            Text(text = stringResource(id = R.string.app_name), fontFamily = Smooch, fontSize = 26.sp)
+            Text(
+                text = stringResource(id = R.string.app_name),
+                fontFamily = Smooch,
+                fontSize = 26.sp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         },
         navigationIcon = {
             IconButton(onClick = { onMenuClick() }) {
-                Icon(imageVector = Icons.Outlined.Menu, contentDescription = "menu", tint = MaterialTheme.colorScheme.primary)
+                Icon(
+                    imageVector = Icons.Outlined.Menu,
+                    contentDescription = "menu",
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
         },
         actions = {
@@ -43,7 +52,8 @@ fun HomeScreenTopBar(
                 Icon(
                     modifier = Modifier.size(28.dp),
                     imageVector = Icons.Outlined.Search,
-                    contentDescription = "search"
+                    contentDescription = "search",
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
         },

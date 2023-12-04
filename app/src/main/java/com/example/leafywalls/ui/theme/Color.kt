@@ -2,15 +2,24 @@ package com.example.leafywalls.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+//dark
+val TertiaryDark = Color(0xFFC4EFB8)
 
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+//light
+val TertiaryLight = Color(0xFF647D52)
 
 val BackgroundDark = Color(0xFF151B0F)
 val BackgroundLight = Color(0xFFFCFFF5)
 
-val PrimaryDark = Color(0xFFAEF359)
+val PrimaryDark = Color(0xFFB9FF63)
 val PrimaryLight = Color(0xFF5F8A2B)
+
+//val SecondaryLight = Color(0xFF82846D)
+val SecondaryDark = Color(0xFFD1DCC2)
+val SecondaryLight = Color(0xFF63715B)
+
+val OnSurfaceDark = Color(0xFFE7F1E5)
+val OnSurfaceLight = Color(0xFF191F14)
+
+val LocationIconColor = Color(0xFFFC6955)
+val DateIconColor = Color(0xFF41CCCC)

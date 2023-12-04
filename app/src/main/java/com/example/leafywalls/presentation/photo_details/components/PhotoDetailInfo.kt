@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -23,6 +24,8 @@ import com.example.leafywalls.R
 import com.example.leafywalls.common.toDate
 import com.example.leafywalls.domain.model.PhotoDetail
 import com.example.leafywalls.ui.theme.AmaticSC
+import com.example.leafywalls.ui.theme.DateIconColor
+import com.example.leafywalls.ui.theme.LocationIconColor
 import com.example.leafywalls.ui.theme.Sarala
 
 
@@ -43,7 +46,8 @@ fun PhotoDetailInfo(
                 text = title.replaceFirstChar { it.uppercase() },
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                fontFamily = AmaticSC
+                fontFamily = AmaticSC,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
 
@@ -52,11 +56,16 @@ fun PhotoDetailInfo(
                     .fillMaxWidth(),
                 verticalAlignment = CenterVertically
             ) {
-                Icon(imageVector = Icons.Outlined.LocationOn, contentDescription = "location")
+                Icon(
+                    imageVector = Icons.Outlined.LocationOn,
+                    contentDescription = "location",
+                    tint = LocationIconColor
+                )
                 Spacer(modifier = Modifier.size(16.dp))
                 Text(
                     text = location,
-                    fontFamily = Sarala
+                    fontFamily = Sarala,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -67,11 +76,16 @@ fun PhotoDetailInfo(
                     .fillMaxWidth(),
                 verticalAlignment = CenterVertically
             ) {
-                Icon(painter = painterResource(id = R.drawable.outline_calendar_today_24 ), contentDescription = "location")
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_calendar_today_24),
+                    contentDescription = "date",
+                    tint = DateIconColor
+                )
                 Spacer(modifier = Modifier.size(16.dp))
                 Text(
                     text = createdAt.toDate(),
-                    fontFamily = Sarala
+                    fontFamily = Sarala,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 

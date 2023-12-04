@@ -81,7 +81,6 @@ fun PhotoDetailScreen(
                     contentDescription = null,
                     loading = { LoadingDetail() }
                 )
-                Log.e("The url is : ", photoUrl)
 
 
                 if(isSheetOpen) {
