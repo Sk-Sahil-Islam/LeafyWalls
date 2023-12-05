@@ -47,6 +47,8 @@ fun PhotoDetailDto.toPhotoDetail(): PhotoDetail {
         links = links,
         url = urls.raw,
         user = user,
-        views = views
+        views = views,
+        color = color,
+        tags = tags?.take(12)?.map { it.title } ?: emptyList()
     )
 }
