@@ -17,14 +17,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.leafywalls.R
+import com.example.leafywalls.common.isDarkOrLight
+import com.example.leafywalls.common.toColor
 import com.example.leafywalls.common.toDate
 import com.example.leafywalls.domain.model.PhotoDetail
 import com.example.leafywalls.ui.theme.AmaticSC
@@ -46,9 +48,8 @@ fun PhotoDetailInfo(
 
         photoDetail.apply {
 
-
             Text(
-                modifier = Modifier.offset(y=(-18).dp),
+                modifier = Modifier.offset(y = (-18).dp),
                 text = title.replaceFirstChar { it.uppercase() },
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
@@ -97,12 +98,18 @@ fun PhotoDetailInfo(
 
             Spacer(modifier = Modifier.size(18.dp))
 
+
+            ColorRow(hexCode = color, color = color.toColor())
+
+
+            Spacer(modifier = Modifier.size(18.dp))
+
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                tags.forEach {  tag->
+                tags.forEach { tag ->
                     TagComposable(tag = tag)
                 }
             }

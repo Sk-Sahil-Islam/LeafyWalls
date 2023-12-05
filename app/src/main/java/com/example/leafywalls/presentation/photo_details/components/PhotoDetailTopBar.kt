@@ -16,13 +16,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.leafywalls.common.isDarkOrLight
+import com.example.leafywalls.ui.theme.OnSurfaceDark
+import com.example.leafywalls.ui.theme.OnSurfaceLight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PhotoDetailTopBar(
     onBackClick: () -> Unit,
-    onInfoClick: () -> Unit
+    onInfoClick: () -> Unit,
+    isDarkOrLight: String
 ) {
+
     TopAppBar(
         title = {},
         navigationIcon = {
@@ -30,7 +35,11 @@ fun PhotoDetailTopBar(
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                     contentDescription = "back",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = when (isDarkOrLight) {
+                        "Dark" -> OnSurfaceDark
+                        "Light" -> OnSurfaceLight
+                        else -> MaterialTheme.colorScheme.onSurface
+                    }
                 )
             }
         },
@@ -40,7 +49,11 @@ fun PhotoDetailTopBar(
                     modifier = Modifier.size(27.dp),
                     imageVector = Icons.Outlined.Info,
                     contentDescription = "Info",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = when (isDarkOrLight) {
+                        "Dark" -> OnSurfaceDark
+                        "Light" -> OnSurfaceLight
+                        else -> MaterialTheme.colorScheme.onSurface
+                    }
                 )
             }
         },

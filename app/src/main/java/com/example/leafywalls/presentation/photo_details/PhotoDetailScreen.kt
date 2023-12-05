@@ -19,6 +19,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.example.leafywalls.common.isDarkOrLight
+import com.example.leafywalls.common.toColor
 import com.example.leafywalls.presentation.photo_details.components.LoadingDetail
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailInfo
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailTopBar
@@ -43,73 +46,80 @@ fun PhotoDetailScreen(
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
 
-    Scaffold (
-        topBar = {
-            PhotoDetailTopBar(
-                onBackClick = {},
-                onInfoClick = {isSheetOpen = true}
-            )
-        }
-    ) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
+    state.photo?.let {
+        val colorHex = it.color
+        val isDarkOrLight = isDarkOrLight(colorHex.toColor())
+
+        Scaffold (
+            topBar = {
+                PhotoDetailTopBar(
+                    onBackClick = {},
+                    onInfoClick = {isSheetOpen = true},
+                    isDarkOrLight = isDarkOrLight
+                )
+            }
         ) {
 
-            state.photo?.let { photo->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
 
-                val configuration = LocalConfiguration.current
-                val screenWidth = configuration.screenWidthDp.dp
-                val screenHeight = configuration.screenHeightDp.dp-4.dp
+                state.photo.apply {
 
-                val density = LocalDensity.current
-                val widthPx = with(density) {screenWidth.roundToPx()}
-                val heightPx = with(density) {screenHeight.roundToPx()}
+                    val configuration = LocalConfiguration.current
+                    val screenWidth = configuration.screenWidthDp.dp
+                    val screenHeight = configuration.screenHeightDp.dp-4.dp
 
-                val photoUrl = photo.url + "&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
+                    val density = LocalDensity.current
+                    val widthPx = with(density) {screenWidth.roundToPx()}
+                    val heightPx = with(density) {screenHeight.roundToPx()}
 
-
-                SubcomposeAsyncImage(
-                    modifier=Modifier.fillMaxSize(),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(photoUrl)
-                        .crossfade(true)
-                        .build(),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = null,
-                    loading = { LoadingDetail() }
-                )
+                    val photoUrl = "$url&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
 
 
-                if(isSheetOpen) {
-                    ModalBottomSheet(
-                        sheetState = sheetState,
-                        onDismissRequest = { isSheetOpen = false },
-                        containerColor = MaterialTheme.colorScheme.background
-                    ) {
-                        PhotoDetailInfo(photoDetail = photo)
+                    SubcomposeAsyncImage(
+                        modifier=Modifier.fillMaxSize(),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(photoUrl)
+                            .crossfade(true)
+                            .build(),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null,
+                        loading = { LoadingDetail() }
+                    )
+
+
+                    if(isSheetOpen) {
+                        ModalBottomSheet(
+                            sheetState = sheetState,
+                            onDismissRequest = { isSheetOpen = false },
+                            containerColor = MaterialTheme.colorScheme.background
+                        ) {
+                            PhotoDetailInfo(photoDetail = this@apply)
+                        }
                     }
+
                 }
 
-            }
+
+                if (state.error.isNotBlank()) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.Center),
+                        text = state.error,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center
+                    )
+                }
 
 
-            if (state.error.isNotBlank()) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Center),
-                    text = state.error,
-                    color = MaterialTheme.colorScheme.error,
-                    textAlign = TextAlign.Center
-                )
-            }
-
-
-            if (state.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                if (state.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
             }
         }
     }
