@@ -48,15 +48,14 @@ fun PhotoDetailScreen(
 
 
     state.photo?.let {
-        val colorHex = it.color
-        val isDarkOrLight = isDarkOrLight(colorHex.toColor())
+        //val colorHex = it.color
+        //val isDarkOrLight = isDarkOrLight(colorHex.toColor())
 
         Scaffold (
             topBar = {
                 PhotoDetailTopBar(
                     onBackClick = {},
-                    onInfoClick = {isSheetOpen = true},
-                    isDarkOrLight = isDarkOrLight
+                    onInfoClick = {isSheetOpen = true}
                 )
             }
         ) {
