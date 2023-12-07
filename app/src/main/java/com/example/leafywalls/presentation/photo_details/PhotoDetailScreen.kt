@@ -22,11 +22,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.example.leafywalls.R
+import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.photo_details.components.LoadingDetail
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailInfo
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailTopBar
@@ -35,23 +40,29 @@ import com.example.leafywalls.presentation.photo_details.components.PhotoDetailT
 @ExperimentalMaterial3Api
 @Composable
 fun PhotoDetailScreen(
-    viewModel: PhotoDetailViewModel = hiltViewModel()
+    viewModel: PhotoDetailViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val state = viewModel.state.value
 
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
 
+    val lifeCycleOwner = LocalLifecycleOwner.current
+
 
     state.photo?.let {
-        //val colorHex = it.color
-        //val isDarkOrLight = isDarkOrLight(colorHex.toColor())
 
-        Scaffold (
+        Scaffold(
             topBar = {
                 PhotoDetailTopBar(
-                    onBackClick = {},
-                    onInfoClick = {isSheetOpen = true}
+                    onBackClick = {
+                        val currentState = lifeCycleOwner.lifecycle.currentState
+                        if(currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                            navController.popBackStack()
+                        }
+                    },
+                    onInfoClick = { isSheetOpen = true }
                 )
             }
         ) {
@@ -66,17 +77,17 @@ fun PhotoDetailScreen(
 
                     val configuration = LocalConfiguration.current
                     val screenWidth = configuration.screenWidthDp.dp
-                    val screenHeight = configuration.screenHeightDp.dp-4.dp
+                    val screenHeight = configuration.screenHeightDp.dp - 4.dp
 
                     val density = LocalDensity.current
-                    val widthPx = with(density) {screenWidth.roundToPx()}
-                    val heightPx = with(density) {screenHeight.roundToPx()}
+                    val widthPx = with(density) { screenWidth.roundToPx() }
+                    val heightPx = with(density) { screenHeight.roundToPx() }
 
                     val photoUrl = "$url&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
 
 
                     SubcomposeAsyncImage(
-                        modifier=Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize(),
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(photoUrl)
                             .crossfade(true)
@@ -87,7 +98,7 @@ fun PhotoDetailScreen(
                     )
 
 
-                    if(isSheetOpen) {
+                    if (isSheetOpen) {
                         ModalBottomSheet(
                             sheetState = sheetState,
                             onDismissRequest = { isSheetOpen = false },

@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
 //                        }
 
                         composable(route = Screen.PhotoDetailScreen.route + "/{photoId}") {
-                            PhotoDetailScreen()
+                            PhotoDetailScreen(navController = navController)
                         }
                     }
                 }

@@ -21,15 +21,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.leafywalls.data.remote.dto.toPhoto
 import com.example.leafywalls.presentation.Screen
+import com.example.leafywalls.presentation.home_screen.componants.ErrorImage
 import com.example.leafywalls.presentation.photo_list.components.ItemLoadingIndicator
 import com.example.leafywalls.presentation.photo_list.components.PhotoListItem
 import com.example.leafywalls.presentation.photo_list.components.PhotoListItemRetry
@@ -54,6 +57,8 @@ fun ExploreList(
             contentAlignment = Alignment.Center
         ) {
 
+            val lifeCycleOwner = LocalLifecycleOwner.current
+
             state.apply {
 
                 LazyVerticalGrid(
@@ -76,7 +81,11 @@ fun ExploreList(
                                     photo = photoDto.toPhoto(),
                                     onClick = {
                                         if (loadState.append !is LoadState.Error) {
-                                            navController.navigate(Screen.PhotoDetailScreen.route + "/${it.photoId}")
+                                            val currentState = lifeCycleOwner.lifecycle.currentState
+                                            if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                                                navController
+                                                    .navigate(Screen.PhotoDetailScreen.route + "/${it.photoId}")
+                                            }
                                         }
                                     }
                                 )
@@ -85,7 +94,7 @@ fun ExploreList(
                         }
                     }
 
-                    if (state.loadState.append is LoadState.Loading) {
+                    if (loadState.append is LoadState.Loading) {
                         item(span = { GridItemSpan(maxCurrentLineSpan) }) {
                             ItemLoadingIndicator()
                         }
@@ -129,14 +138,8 @@ fun ExploreList(
                         ) {
                             this.retry()
                         }
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.Center),
-                            text = (loadState.refresh as LoadState.Error).error.message!!,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.Center
-                        )
+
+                        ErrorImage()
                     }
 
                     LoadState.Loading -> {
@@ -145,8 +148,6 @@ fun ExploreList(
 
                     else -> {}
                 }
-
-
             }
         }
     }

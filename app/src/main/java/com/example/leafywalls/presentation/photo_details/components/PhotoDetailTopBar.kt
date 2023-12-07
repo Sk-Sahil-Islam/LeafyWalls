@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,11 +30,12 @@ fun PhotoDetailTopBar(
     onInfoClick: () -> Unit
 ) {
 
+
     TopAppBar(
         modifier = Modifier.padding(horizontal = 10.dp),
         title = {},
         navigationIcon = {
-            InfoIcon(
+            TopBarIcon(
                 icon = Icons.AutoMirrored.Rounded.ArrowBack,
                 modifier = Modifier.size(30.dp)
             ) {
@@ -41,7 +43,7 @@ fun PhotoDetailTopBar(
             }
         },
         actions = {
-            InfoIcon(
+            TopBarIcon(
                 icon = Icons.Outlined.Info,
             ) {
                 onInfoClick()
@@ -52,21 +54,24 @@ fun PhotoDetailTopBar(
 }
 
 @Composable
-fun InfoIcon(
+fun TopBarIcon(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     onClick: () -> Unit
 ) {
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.5f))
+            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.60f))
 
     ) {
         Icon(
             modifier = modifier
-                .clickable { onClick() }
+                .clickable {
+                    onClick()
+                }
                 .padding(4.dp),
             imageVector = icon,
             contentDescription = null,

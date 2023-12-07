@@ -51,6 +51,7 @@ fun HomeScreen(
 
         val pagerState = rememberPagerState { titles.size }
         val scope = rememberCoroutineScope()
+
 //        LaunchedEffect(key1 = selectedIndex) {
 //            pagerState.animateScrollToPage(selectedIndex)
 //        }
