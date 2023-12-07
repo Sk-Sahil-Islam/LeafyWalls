@@ -102,7 +102,7 @@ fun PhotoDetailInfo(
             ColorRow(hexCode = color, color = color.toColor())
 
 
-            Spacer(modifier = Modifier.size(18.dp))
+            Spacer(modifier = Modifier.size(22.dp))
 
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),

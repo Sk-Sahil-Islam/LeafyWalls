@@ -11,7 +11,6 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -36,7 +35,7 @@ fun PhotoDetailTopBar(
         navigationIcon = {
             InfoIcon(
                 icon = Icons.AutoMirrored.Rounded.ArrowBack,
-                modifier = Modifier.size(29.dp)
+                modifier = Modifier.size(30.dp)
             ) {
                 onBackClick()
             }
@@ -44,7 +43,6 @@ fun PhotoDetailTopBar(
         actions = {
             InfoIcon(
                 icon = Icons.Outlined.Info,
-                //modifier = Modifier.padding(end = 10.dp)
             ) {
                 onInfoClick()
             }
