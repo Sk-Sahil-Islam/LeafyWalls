@@ -41,14 +41,14 @@ fun PhotoDetailTopBar(
         ) {
             DetailIcon(
                 icon = Icons.AutoMirrored.Rounded.ArrowBack,
-                modifier = Modifier.size(38.dp)
+                modifier = Modifier.size(36.dp)
             ) {
                 onBackClick()
             }
 
             DetailIcon(
                 icon = Icons.Outlined.Info,
-                modifier = Modifier.size(38.dp)
+                modifier = Modifier.size(36.dp)
             ) {
                 onInfoClick()
             }
