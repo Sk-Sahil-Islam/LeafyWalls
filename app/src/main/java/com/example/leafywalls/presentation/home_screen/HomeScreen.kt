@@ -26,9 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.leafywalls.presentation.home_screen.componants.HomeScreenTopBar
 import com.example.leafywalls.presentation.photo_list.ExploreList
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.example.leafywalls.presentation.popular_photo_list.PopularList
+import com.example.leafywalls.ui.theme.Sarala
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -45,21 +44,21 @@ fun HomeScreen(
         }
     ) {
 
-        val titles = listOf("Explore", "Collections", "Popular", "Topics")
+        val titles = listOf("Explore", "Categories", "Popular", "Favorites")
 
         var selectedIndex by remember { mutableIntStateOf(0) }
 
         val pagerState = rememberPagerState { titles.size }
         val scope = rememberCoroutineScope()
 
-//        LaunchedEffect(key1 = selectedIndex) {
-//            pagerState.animateScrollToPage(selectedIndex)
-//        }
-//        LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
-//            if(!pagerState.isScrollInProgress) {
-//                selectedIndex = pagerState.currentPage
-//            }
-//        }
+        LaunchedEffect(key1 = selectedIndex) {
+            pagerState.animateScrollToPage(selectedIndex)
+        }
+        LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
+            if(!pagerState.isScrollInProgress) {
+                selectedIndex = pagerState.currentPage
+            }
+        }
 
         Column(modifier = Modifier.padding(it)) {
             PrimaryScrollableTabRow(
@@ -71,14 +70,20 @@ fun HomeScreen(
             ) {
                 titles.forEachIndexed{ index, title ->
                     Tab(
-                        onClick = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(index)
-                            }
-                        },
+//                        onClick = {
+//                            scope.launch {
+//                                pagerState.animateScrollToPage(index)
+//                            }
+//                        },
                         selected = selectedIndex == index,
-                        //onClick = { selectedIndex = index },
-                        text = { Text(text = title) }
+                        onClick = { selectedIndex = index },
+                        text = {
+                            Text(
+                                text = title,
+                                fontFamily = Sarala,
+                                color = if(index==selectedIndex) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                     )
                 }
             }
@@ -95,6 +100,9 @@ fun HomeScreen(
                         ExploreList(
                             navController = navController
                         )
+                    }
+                    2 -> {
+                        PopularList(navController = navController)
                     }
                     else -> {}
 

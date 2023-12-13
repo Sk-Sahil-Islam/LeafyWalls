@@ -18,7 +18,7 @@ data class PhotoDetail(
     val relatedCollections: RelatedCollections?,
     val url: String,
     val user: User?,
-    val views: Int
+    val views: Long
 )
 
 

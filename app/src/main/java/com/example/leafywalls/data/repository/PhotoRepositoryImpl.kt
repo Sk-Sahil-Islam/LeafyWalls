@@ -20,4 +20,8 @@ class PhotoRepositoryImpl @Inject constructor(
     override suspend fun getPhotoDetail(photoId: String): PhotoDetailDto {
         return api.getPhotoDetails(photoId = photoId, clientId = context.getString(R.string.API_KEY))
     }
+
+    override suspend fun getPopularPhotos(page: Int): List<PhotoDto> {
+        return api.getPopularPhotos(page = page, clientId = context.getString(R.string.API_KEY))
+    }
 }

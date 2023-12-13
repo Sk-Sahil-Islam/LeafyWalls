@@ -31,7 +31,7 @@ data class PhotoDetailDto(
     val updated_at: String?,
     val urls: Urls,
     val user: User?,
-    val views: Int,
+    val views: Long,
     val width: Int
 )
 

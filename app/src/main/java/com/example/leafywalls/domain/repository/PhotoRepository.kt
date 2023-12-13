@@ -8,4 +8,6 @@ interface PhotoRepository {
     suspend fun getPhotos(page: Int): List<PhotoDto>
 
     suspend fun getPhotoDetail(photoId: String): PhotoDetailDto
+
+    suspend fun getPopularPhotos(page: Int): List<PhotoDto>
 }

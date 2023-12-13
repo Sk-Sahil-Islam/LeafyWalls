@@ -12,6 +12,7 @@ data class CoverPhoto(
     val id: String,
     val liked_by_user: Boolean,
     val likes: Int,
+    val plus: Boolean,
     val links: Links,
     val promoted_at: Any,
     val slug: String,

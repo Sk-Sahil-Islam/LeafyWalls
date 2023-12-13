@@ -1,7 +1,5 @@
 package com.example.leafywalls.data.remote
 
-import android.content.res.Resources
-import com.example.leafywalls.R
 import com.example.leafywalls.data.remote.dto.PhotoDetailDto
 import com.example.leafywalls.data.remote.dto.PhotoDto
 import retrofit2.http.GET
@@ -21,4 +19,13 @@ interface UnsplashApi {
         @Path("photoId") photoId: String,
         @Query("client_id") clientId: String
     ): PhotoDetailDto
+
+    @GET("/photos")
+    suspend fun getPopularPhotos(
+        @Query("page") page: Int,
+        @Query("order_by") orderBy: String = "popular",
+        @Query("client_id") clientId: String
+    ): List<PhotoDto>
+
+
 }
