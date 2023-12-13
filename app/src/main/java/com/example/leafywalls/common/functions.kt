@@ -26,3 +26,11 @@ fun isDarkOrLight(color: Color):String {
 fun String.toColor(): Color {
     return  Color(android.graphics.Color.parseColor(this))
 }
+
+fun formatNumber(number: Long): String {
+    return when {
+        number >= 1000000 -> String.format("%.1fm", number / 1000000.0)
+        number >= 1000 -> String.format("%.1fk", number / 1000.0)
+        else -> number.toString()
+    }
+}

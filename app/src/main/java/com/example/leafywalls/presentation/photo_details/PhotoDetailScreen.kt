@@ -1,6 +1,14 @@
 package com.example.leafywalls.presentation.photo_details
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,16 +16,17 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -33,6 +42,7 @@ import coil.request.ImageRequest
 import com.example.leafywalls.presentation.photo_details.components.LoadingDetail
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailInfo
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailTopBar
+import com.example.leafywalls.presentation.photo_details.components.Stats
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
@@ -43,6 +53,10 @@ fun PhotoDetailScreen(
 ) {
     val state = viewModel.state.value
 
+    var isDetailsHidden by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
 
@@ -51,82 +65,104 @@ fun PhotoDetailScreen(
 
     state.photo?.let {
 
-        Scaffold(
-            topBar = {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) { isDetailsHidden = !isDetailsHidden },
+            contentAlignment = Alignment.Center
+        ) {
+
+            state.photo.apply {
+
+                val configuration = LocalConfiguration.current
+                val screenWidth = configuration.screenWidthDp.dp
+                val screenHeight = configuration.screenHeightDp.dp - 4.dp
+
+                val density = LocalDensity.current
+                val widthPx = with(density) { screenWidth.roundToPx() }
+                val heightPx = with(density) { screenHeight.roundToPx() }
+
+                val photoUrl = "$url&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
+
+
+                SubcomposeAsyncImage(
+                    modifier = Modifier.fillMaxSize(),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(photoUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+                    loading = { LoadingDetail() }
+                )
+
+
+                if (isSheetOpen) {
+                    ModalBottomSheet(
+                        sheetState = sheetState,
+                        onDismissRequest = { isSheetOpen = false },
+                        containerColor = MaterialTheme.colorScheme.background
+                    ) {
+                        PhotoDetailInfo(photoDetail = this@apply)
+                    }
+                }
+            }
+
+
+            if (state.error.isNotBlank()) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center),
+                    text = state.error,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+
+            if (state.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+
+        }
+
+
+
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            AnimatedVisibility(
+                visible = !isDetailsHidden,
+                enter = slideInVertically(initialOffsetY = { -it }),
+                exit = slideOutVertically(targetOffsetY = { -it })
+            ) {
                 PhotoDetailTopBar(
                     onBackClick = {
                         val currentState = lifeCycleOwner.lifecycle.currentState
-                        if(currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                        if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
                             navController.popBackStack()
                         }
                     },
                     onInfoClick = { isSheetOpen = true }
                 )
             }
-        ) {
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
+            AnimatedVisibility(
+                visible = !isDetailsHidden,
+                enter = slideInHorizontally(initialOffsetX = {it}),
+                exit = slideOutHorizontally(targetOffsetX = {it}),
+                modifier = Modifier.align(Alignment.BottomEnd)
             ) {
 
-                state.photo.apply {
-
-                    val configuration = LocalConfiguration.current
-                    val screenWidth = configuration.screenWidthDp.dp
-                    val screenHeight = configuration.screenHeightDp.dp - 4.dp
-
-                    val density = LocalDensity.current
-                    val widthPx = with(density) { screenWidth.roundToPx() }
-                    val heightPx = with(density) { screenHeight.roundToPx() }
-
-                    val photoUrl = "$url&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
-
-
-                    SubcomposeAsyncImage(
-                        modifier = Modifier.fillMaxSize(),
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(photoUrl)
-                            .crossfade(true)
-                            .build(),
-                        contentScale = ContentScale.Crop,
-                        contentDescription = null,
-                        loading = { LoadingDetail() }
-                    )
-
-
-                    if (isSheetOpen) {
-                        ModalBottomSheet(
-                            sheetState = sheetState,
-                            onDismissRequest = { isSheetOpen = false },
-                            containerColor = MaterialTheme.colorScheme.background
-                        ) {
-                            PhotoDetailInfo(photoDetail = this@apply)
-                        }
-                    }
-
-                }
-
-
-                if (state.error.isNotBlank()) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.Center),
-                        text = state.error,
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center
-                    )
-                }
-
-
-                if (state.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
+                Stats(
+                    views = it.views,
+                    likes = it.likes,
+                    downloads = it.downloads
+                )
             }
         }
+
     }
-
-
 }

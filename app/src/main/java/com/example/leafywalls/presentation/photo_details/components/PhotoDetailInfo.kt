@@ -19,13 +19,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.leafywalls.R
-import com.example.leafywalls.common.isDarkOrLight
 import com.example.leafywalls.common.toColor
 import com.example.leafywalls.common.toDate
 import com.example.leafywalls.domain.model.PhotoDetail
@@ -84,7 +82,7 @@ fun PhotoDetailInfo(
                 verticalAlignment = CenterVertically
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.outline_calendar_today_24),
+                    painter = painterResource(id = R.drawable.calendar_ic),
                     contentDescription = "date",
                     tint = DateIconColor
                 )
