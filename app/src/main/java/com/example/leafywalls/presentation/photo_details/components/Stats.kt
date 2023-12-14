@@ -9,15 +9,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.leafywalls.R
 import com.example.leafywalls.common.formatNumber
 import com.example.leafywalls.ui.theme.Sarala
@@ -83,9 +88,24 @@ fun StatItem(
                 modifier = Modifier.offset(y=(-2).dp),
                 text = stat,
                 fontFamily = Sarala,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 17.sp,
+                style = TextStyle(
+                    shadow = Shadow(
+                        blurRadius = 2f,
+                        color = MaterialTheme.colorScheme.surface
+                    )
+                )
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun preViewStatsItem() {
+    StatItem(icon = Icons.Rounded.FavoriteBorder, stat = "161") {
+
     }
 }
 
@@ -108,7 +128,14 @@ fun StatItem(
                 modifier = Modifier.offset(y=(-2).dp),
                 text = stat,
                 fontFamily = Sarala,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 17.sp,
+                style = TextStyle(
+                    shadow = Shadow(
+                        blurRadius = 2f,
+                        color = MaterialTheme.colorScheme.surface
+                    )
+                )
             )
         }
     }
