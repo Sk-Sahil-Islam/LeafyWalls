@@ -22,3 +22,5 @@ val OnSurfaceLight = Color(0xFF191F14)
 
 val LocationIconColor = Color(0xFFFC6955)
 val DateIconColor = Color(0xFF41CCCC)
+
+val FavoriteColor = Color(0xFFD10000)

@@ -14,7 +14,6 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.leafywalls.domain.model.Photo
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PhotoListItem(
     photo: Photo,

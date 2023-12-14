@@ -153,14 +153,9 @@ fun PhotoDetailScreen(
                 visible = !isDetailsHidden,
                 enter = slideInHorizontally(initialOffsetX = {it}),
                 exit = slideOutHorizontally(targetOffsetX = {it}),
-                modifier = Modifier.align(Alignment.BottomEnd)
+                modifier = Modifier.align(Alignment.CenterEnd)
             ) {
-
-                Stats(
-                    views = it.views,
-                    likes = it.likes,
-                    downloads = it.downloads
-                )
+                Stats()
             }
         }
 
