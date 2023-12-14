@@ -89,7 +89,7 @@ fun StatItem(
                 text = stat,
                 fontFamily = Sarala,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 17.sp,
+                fontSize = 16.3.sp,
                 style = TextStyle(
                     shadow = Shadow(
                         blurRadius = 2f,
@@ -98,14 +98,6 @@ fun StatItem(
                 )
             )
         }
-    }
-}
-
-@Preview
-@Composable
-fun preViewStatsItem() {
-    StatItem(icon = Icons.Rounded.FavoriteBorder, stat = "161") {
-
     }
 }
 
@@ -129,7 +121,7 @@ fun StatItem(
                 text = stat,
                 fontFamily = Sarala,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 17.sp,
+                fontSize = 16.3.sp,
                 style = TextStyle(
                     shadow = Shadow(
                         blurRadius = 2f,
