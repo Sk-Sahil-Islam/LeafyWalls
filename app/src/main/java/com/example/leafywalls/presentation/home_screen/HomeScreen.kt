@@ -23,6 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.leafywalls.presentation.home_screen.componants.HomeScreenTopBar
 import com.example.leafywalls.presentation.photo_list.ExploreList
@@ -32,7 +33,8 @@ import com.example.leafywalls.ui.theme.Sarala
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
 
     Scaffold(
@@ -46,10 +48,9 @@ fun HomeScreen(
 
         val titles = listOf("Explore", "Categories", "Popular", "Favorites")
 
-        var selectedIndex by remember { mutableIntStateOf(0) }
+        var selectedIndex by remember { viewModel.selectedIndex }
 
         val pagerState = rememberPagerState { titles.size }
-        val scope = rememberCoroutineScope()
 
         LaunchedEffect(key1 = selectedIndex) {
             pagerState.animateScrollToPage(selectedIndex)
@@ -57,6 +58,7 @@ fun HomeScreen(
         LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
             if(!pagerState.isScrollInProgress) {
                 selectedIndex = pagerState.currentPage
+                viewModel.updateIndex(selectedIndex)
             }
         }
 
@@ -105,7 +107,6 @@ fun HomeScreen(
                         PopularList(navController = navController)
                     }
                     else -> {}
-
                 }
             }
         }

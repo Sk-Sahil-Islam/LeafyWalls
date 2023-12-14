@@ -41,10 +41,6 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(navController = navController)
                         }
 
-//                        composable(route = Screen.ExploreList.route) {
-//                            ExploreList(navController = navController)
-//                        }
-
                         composable(route = Screen.PhotoDetailScreen.route + "/{photoId}") {
                             PhotoDetailScreen(navController = navController)
                         }

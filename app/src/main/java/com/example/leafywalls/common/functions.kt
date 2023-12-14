@@ -29,6 +29,7 @@ fun String.toColor(): Color {
 
 fun formatNumber(number: Long): String {
     return when {
+        number >= 1_000_000_000 -> String.format("%.1fb", number / 1_000_000_000.0)
         number >= 1000000 -> String.format("%.1fm", number / 1000000.0)
         number >= 1000 -> String.format("%.1fk", number / 1000.0)
         else -> number.toString()
