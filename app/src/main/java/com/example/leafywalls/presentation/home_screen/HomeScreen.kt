@@ -72,11 +72,6 @@ fun HomeScreen(
             ) {
                 titles.forEachIndexed{ index, title ->
                     Tab(
-//                        onClick = {
-//                            scope.launch {
-//                                pagerState.animateScrollToPage(index)
-//                            }
-//                        },
                         selected = selectedIndex == index,
                         onClick = { selectedIndex = index },
                         text = {

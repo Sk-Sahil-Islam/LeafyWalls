@@ -45,7 +45,7 @@ fun PhotoListItem(
                 .build(),
             contentDescription = null,
             loading = {
-                PhotoLoadingPlaceholder()
+                PhotoLoadingPlaceholder(screenHeight, screenWidth)
             }
         )
     }
