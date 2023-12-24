@@ -54,16 +54,9 @@ fun Stats(
             Spacer(modifier = Modifier.size(200.dp))
 
             FavoriteIcon(isFavorite = isFavorite) {
-                Log.e("INSIDE ", isFavorite.toString())
                 isFavorite = !isFavorite
             }
 
-            DetailIcon(
-                painter = painterResource(id = R.drawable.download_ic),
-                modifier = Modifier.size(48.dp)
-            ) {
-
-            }
             DetailIcon(
                 painter = painterResource(id = R.drawable.download_ic),
                 modifier = Modifier.size(48.dp)
@@ -141,7 +134,7 @@ fun FavoriteIcon(
         Icon(
             modifier = Modifier
                 .blur(1.dp)
-                .size(51.dp)
+                .size(48.dp)
                 .scale(scaleB.value),
             imageVector = Icons.Rounded.Favorite,
             contentDescription = null,

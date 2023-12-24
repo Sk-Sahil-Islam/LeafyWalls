@@ -17,17 +17,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
+import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.home_screen.componants.HomeScreenTopBar
 import com.example.leafywalls.presentation.photo_list.ExploreList
 import com.example.leafywalls.presentation.popular_photo_list.PopularList
+import com.example.leafywalls.presentation.search_screen.SearchScreen
+import com.example.leafywalls.presentation.search_screen.components.SearchList
 import com.example.leafywalls.ui.theme.Sarala
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -36,15 +39,22 @@ fun HomeScreen(
     navController: NavController,
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
+    val lifeCycleOwner = LocalLifecycleOwner.current
 
     Scaffold(
         topBar = {
             HomeScreenTopBar(
                 onMenuClick = {},
-                onSearchClick = {}
+                onSearchClick = {
+                    val currentState = lifeCycleOwner.lifecycle.currentState
+                    if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                        navController
+                            .navigate(Screen.SearchScreen.route)
+                    }
+                }
             )
         }
-    ) {
+    ) { paddingValues ->
 
         val titles = listOf("Explore", "Categories", "Popular", "Favorites")
 
@@ -62,7 +72,8 @@ fun HomeScreen(
             }
         }
 
-        Column(modifier = Modifier.padding(it)) {
+        Column(modifier = Modifier.padding(paddingValues)) {
+
             PrimaryScrollableTabRow(
                 selectedTabIndex = pagerState.currentPage,
                 edgePadding = 0.dp,
@@ -98,6 +109,9 @@ fun HomeScreen(
                             navController = navController
                         )
                     }
+//                    1-> {
+//                        SearchList(navController = navController, searchQuery = "nature")
+//                    }
                     2 -> {
                         PopularList(navController = navController)
                     }
@@ -106,6 +120,9 @@ fun HomeScreen(
             }
         }
     }
-
+//    var text = remember { mutableStateOf("") }
+//    SearchBar(modifier = Modifier.clearFocusOnKeyboardDismiss(), value = text.value, onValueChange = { text.value = it }) {
+//
+//    }
 
 }

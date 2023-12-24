@@ -24,3 +24,12 @@ val LocationIconColor = Color(0xFFFC6955)
 val DateIconColor = Color(0xFF41CCCC)
 
 val FavoriteColor = Color(0xFFD10000)
+
+val PrimaryContainerLight = Color(0xFFDFF7BF)
+val PrimaryContainerDark = Color(0xFF2F4B20)
+
+val SecondaryContainerLight = Color(0xFFEBF7BF)
+val SecondaryContainerDark = Color(0xFF3E4B20)
+
+val OnPrimaryContainerDark = Color(0xFFDBFCB3)
+val OnPrimaryContainerLight = Color(0xFF1C270E)

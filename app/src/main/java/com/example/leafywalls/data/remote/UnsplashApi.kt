@@ -2,6 +2,7 @@ package com.example.leafywalls.data.remote
 
 import com.example.leafywalls.data.remote.dto.PhotoDetailDto
 import com.example.leafywalls.data.remote.dto.PhotoDto
+import com.example.leafywalls.data.remote.dto.SearchDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -27,5 +28,14 @@ interface UnsplashApi {
         @Query("client_id") clientId: String
     ): List<PhotoDto>
 
-
+    @GET("/search/photos")
+    suspend fun getSearchedPhotos(
+        @Query("page") page: Int,
+        @Query("query") query: String,
+        @Query("order_by") orderBy: String,
+        @Query("content_filter") safeSearch: String,
+//        @Query("color") color: String,
+//        @Query("orientation") orientation: String,
+        @Query("client_id") clientId: String
+    ): SearchDto
 }

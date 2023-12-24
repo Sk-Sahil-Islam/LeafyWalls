@@ -131,8 +131,6 @@ fun PhotoDetailScreen(
         }
 
 
-
-
         Box(modifier = Modifier.fillMaxSize()) {
             AnimatedVisibility(
                 visible = !isDetailsHidden,
