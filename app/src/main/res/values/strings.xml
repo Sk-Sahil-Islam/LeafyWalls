@@ -2,4 +2,5 @@
     <string name="app_name">LeafyWalls</string>
     <string name="API_KEY">dMoh6h0efBSGs49Z5leYqMxWLqIKY3xZa5EVvaxOoV8</string>
     <string name="placeholder_search">Search</string>
+    <string name="no_result">Sorry, no results found. Try a different query or check your spelling.</string>
 </resources>

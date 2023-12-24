@@ -109,9 +109,7 @@ fun HomeScreen(
                             navController = navController
                         )
                     }
-//                    1-> {
-//                        SearchList(navController = navController, searchQuery = "nature")
-//                    }
+
                     2 -> {
                         PopularList(navController = navController)
                     }

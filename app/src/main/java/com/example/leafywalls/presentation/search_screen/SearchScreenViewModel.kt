@@ -36,15 +36,16 @@ class SearchScreenViewModel @Inject constructor(
     private var _color = mutableStateOf("")
     private var _orientation = mutableStateOf("")
 
-    private val _historyState = MutableStateFlow(SearchState())
+
 
     private var histories = getHistoryUseCase()
 
     private val _photos = MutableStateFlow<Flow<PagingData<PhotoDto>>>(emptyFlow())
     val photos: StateFlow<Flow<PagingData<PhotoDto>>> = _photos.asStateFlow()
 
-    val historyState =
-        combine(_historyState, histories) { historyState, histories ->
+    private val _state = MutableStateFlow(SearchState())
+    val state =
+        combine(_state, histories) { historyState, histories ->
             historyState.copy(
                 histories = histories
             )
@@ -53,7 +54,9 @@ class SearchScreenViewModel @Inject constructor(
     fun onEvent(searchEvent: SearchEvent) {
         when (searchEvent) {
             SearchEvent.ClearHistory -> {
-                repository.clearHistory()
+                viewModelScope.launch {
+                    repository.clearHistory()
+                }
             }
 
             is SearchEvent.DeleteHistory -> {
@@ -64,7 +67,7 @@ class SearchScreenViewModel @Inject constructor(
             }
 
             is SearchEvent.OnSearch -> {
-                val history = History(text = historyState.value.query.value)
+                val history = History(text = state.value.query.value)
 
                 if (history.text.isNotBlank()) {
                     _photos.value = GetSearchedPhotosUseCase(
@@ -77,8 +80,6 @@ class SearchScreenViewModel @Inject constructor(
         }
     }
 
-//    private val _state = MutableStateFlow<Flow<PagingData<PhotoDto>>>(emptyFlow())
-//    val state: StateFlow<Flow<PagingData<PhotoDto>>> = _state.asStateFlow()
 
     private val _sortingOptions = listOf(
         SelectionOption("latest", false),

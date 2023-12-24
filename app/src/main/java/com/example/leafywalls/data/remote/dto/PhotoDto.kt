@@ -17,7 +17,7 @@ data class PhotoDto(
     val links: Links,
     val promoted_at: Any,
     val slug: String,
-    val sponsorship: Sponsorship,
+    val sponsorship: Sponsorship?,
     val topic_submissions: TopicSubmissions,
     val updated_at: String,
     val urls: Urls,
@@ -28,6 +28,7 @@ data class PhotoDto(
 fun PhotoDto.toPhoto(): Photo {
     return Photo(
         photoId = id,
-        url = urls.raw + "&fm=jpg&q=80"
+        url = urls.raw + "&fm=jpg&q=80",
+        isSponsored = sponsorship != null
     )
 }

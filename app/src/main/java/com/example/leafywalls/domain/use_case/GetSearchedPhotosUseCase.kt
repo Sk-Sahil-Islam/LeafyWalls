@@ -26,7 +26,7 @@ class GetSearchedPhotosUseCase @Inject constructor(
 //        color: String,
 //        orientation: String
     ): Flow<PagingData<PhotoDto>> = Pager(
-        PagingConfig(10)
+        PagingConfig(5)
     ) {
         SearchedPhotoListPagingSource(
             repository,

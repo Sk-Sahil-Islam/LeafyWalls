@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.leafywalls.R
+import com.example.leafywalls.presentation.photo_details.setWallpaper
 import com.example.leafywalls.ui.theme.FavoriteColor
 import com.example.leafywalls.ui.theme.OnSurfaceDark
 import com.example.leafywalls.ui.theme.OnSurfaceLight
@@ -40,7 +41,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Stats(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSet: () -> Unit
 ) {
     var isFavorite by remember { mutableStateOf(false) }
     Box(
@@ -59,10 +61,9 @@ fun Stats(
 
             DetailIcon(
                 painter = painterResource(id = R.drawable.download_ic),
-                modifier = Modifier.size(48.dp)
-            ) {
-
-            }
+                modifier = Modifier.size(48.dp),
+                onClick = onSet
+            )
         }
     }
 }

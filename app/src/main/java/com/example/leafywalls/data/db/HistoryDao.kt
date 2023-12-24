@@ -20,6 +20,6 @@ interface HistoryDao {
     suspend fun deleteHistory(history: History)
 
     @Query("DELETE FROM history")
-    fun clearHistory()
+    suspend fun clearHistory()
 
 }

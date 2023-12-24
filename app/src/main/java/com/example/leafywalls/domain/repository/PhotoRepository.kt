@@ -29,5 +29,5 @@ interface PhotoRepository {
 
     suspend fun deleteHistory(history: History)
 
-    fun clearHistory()
+    suspend fun clearHistory()
 }

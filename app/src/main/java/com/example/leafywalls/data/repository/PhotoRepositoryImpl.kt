@@ -54,6 +54,6 @@ class PhotoRepositoryImpl @Inject constructor(
 
     override suspend fun deleteHistory(history: History) = historyDao.deleteHistory(history)
 
-    override fun clearHistory() = historyDao.clearHistory()
+    override suspend fun clearHistory() = historyDao.clearHistory()
 
 }

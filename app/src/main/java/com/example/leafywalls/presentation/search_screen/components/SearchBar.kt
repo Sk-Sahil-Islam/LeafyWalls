@@ -6,6 +6,8 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,13 +46,16 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.leafywalls.R
 import com.example.leafywalls.data.db.History
 import com.example.leafywalls.presentation.search_screen.SearchEvent
 import com.example.leafywalls.presentation.search_screen.SearchScreenViewModel
@@ -69,6 +73,7 @@ fun SearchBar(
     singleLined: Boolean = true,
     onValueChange: (String) -> Unit,
     onSearch: () -> Unit,
+    onClickRow: (String) -> Unit,
     paddingValue: (Dp) -> Unit
 ) {
     val isFocused = remember { mutableStateOf(false) }
@@ -190,7 +195,10 @@ fun SearchBar(
             SearchBarHistory(
                 modifier = Modifier.zIndex(1f),
                 height = heightAnim.value,
-                horizontalPadding = (paddingHorizontal.value * 24).dp
+                horizontalPadding = (paddingHorizontal.value * 24).dp,
+                onClick = {
+                    onClickRow(it)
+                }
             )
         }
     }
@@ -201,17 +209,18 @@ fun SearchBarHistory(
     modifier: Modifier = Modifier,
     height: Float,
     horizontalPadding: Dp = 0.dp,
-    viewModel: SearchScreenViewModel = hiltViewModel()
+    viewModel: SearchScreenViewModel = hiltViewModel(),
+    onClick: (String) -> Unit
 ) {
 
-    val state = viewModel.historyState.collectAsState()
+    val state = viewModel.state.collectAsState()
 
     val minHeight = when (state.value.histories.size){
         0 -> {0}
         in listOf(1,2,3) -> {
-            (state.value.histories.size * 65)
+            (state.value.histories.size * 65) + 60
         }
-        else ->  {272}
+        else ->  {332}
     }
 
     val deletedItem = remember {
@@ -233,11 +242,32 @@ fun SearchBarHistory(
         ) {
             if(state.value.histories.isNotEmpty()) {
                 Spacer(modifier = Modifier.size(3.dp))
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Recent",
+                        fontFamily = Sarala,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    IconButton(onClick = { viewModel.onEvent(SearchEvent.ClearHistory) }) {
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.round_clear_all_24),
+                            contentDescription = "clear all"
+                        )
+                    }
+                }
             }
 
             LazyColumn(
                 Modifier
-                    .padding(horizontal = 5.dp)
+                    .padding(horizontal = 3.dp)
                     .heightIn(max = 248.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(3.dp)
@@ -245,7 +275,7 @@ fun SearchBarHistory(
                 itemsIndexed(items = state.value.histories, itemContent = { _, item->
                     AnimatedVisibility(
                         visible = !deletedItem.contains(item),
-                        exit = slideOutHorizontally(),
+                        exit = slideOutHorizontally(targetOffsetX = { -it }),
 
                     ) {
                         val scope = CoroutineScope(Dispatchers.Default)
@@ -257,6 +287,11 @@ fun SearchBarHistory(
                                     delay(500)
                                     viewModel.onEvent(SearchEvent.DeleteHistory(item))
                                 }
+                            },
+                            onClick = {
+//                                state.value.query.value =  it
+//                                Log.e("HISTORY ROW", it)
+                                onClick(it)
                             }
                         )
                     }
@@ -280,8 +315,11 @@ fun SearchBarHistory(
 fun HistoryRow(
     modifier: Modifier = Modifier,
     history: String,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onClick: (String) -> Unit
 ) {
+
+    val interactionSource = remember { MutableInteractionSource() }
 
     Row(
         modifier = modifier
@@ -289,10 +327,17 @@ fun HistoryRow(
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.onPrimaryContainer.copy(0.05f))
             .fillMaxWidth()
-            .height(60.dp),
+            .height(60.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = {
+                    onClick(history)
+                }
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(modifier = Modifier.width(5.dp))
+        Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = history,
             fontFamily = Sarala,

@@ -29,7 +29,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.leafywalls.R
 import com.example.leafywalls.common.clearFocusOnKeyboardDismiss
-import com.example.leafywalls.data.db.History
 import com.example.leafywalls.presentation.filters.FilterScreen
 import com.example.leafywalls.presentation.search_screen.components.SearchBar
 import com.example.leafywalls.presentation.search_screen.components.SearchList
@@ -46,7 +45,7 @@ fun SearchScreen(
     var searchBarHeight by remember { mutableStateOf(0.dp) }
     var currentPageIndex by rememberSaveable { mutableStateOf(0) }
 
-    val historyState by viewModel.historyState.collectAsState()
+    val historyState by viewModel.state.collectAsState()
     var text by remember { historyState.query }
     Scaffold(
         topBar = {
@@ -55,11 +54,10 @@ fun SearchScreen(
                     modifier = Modifier
                         .zIndex(1f)
                         .clearFocusOnKeyboardDismiss(),
-                    value = text,
+                    value = historyState.query.value,
                     onValueChange = {
                         text = it
                         historyState.query.value = it
-                        //viewModel.updateSearchQuery(it)
                     },
                     onSearch = {
                         if (currentPageIndex==0 && text.isNotBlank()) {
@@ -69,6 +67,10 @@ fun SearchScreen(
                     },
                     paddingValue = { paddingValues ->
                         searchBarHeight = paddingValues
+                    },
+                    onClickRow = {
+                        text = it
+                        historyState.query.value = it
                     }
                 )
             }

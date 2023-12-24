@@ -6,7 +6,6 @@ import javax.inject.Inject
 class GetHistoryUseCase @Inject constructor(
     private val repository: PhotoRepository
 ) {
-
     operator fun invoke() = repository.getHistory()
 
 }

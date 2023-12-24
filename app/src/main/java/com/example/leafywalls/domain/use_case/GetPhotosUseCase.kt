@@ -20,7 +20,7 @@ class GetPhotosUseCase @Inject constructor(
 
     operator fun invoke(): Flow<PagingData<PhotoDto>> =
         Pager(
-            PagingConfig(10)
+            PagingConfig(5)
         ) {
             PhotoListPagingSource(repository)
         }.flow.cachedIn(scope)
