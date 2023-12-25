@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.random.Random
 
 fun String.toDate(): String {
     val input = this
@@ -118,4 +119,11 @@ fun colorParse(colorString: String): Color {
         "blue" -> Color(0xFF0000FF)
         else -> {Color.Transparent}
     }
+}
+
+fun generateRandomColor(): Color {
+
+    val random = Random.Default
+    Log.e("COLOR FILTER", random.nextInt(256).toString())
+    return Color(random.nextInt(256)/255f, random.nextInt(256)/255f, random.nextInt(256)/255f)
 }

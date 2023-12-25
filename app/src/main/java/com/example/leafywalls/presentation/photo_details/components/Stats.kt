@@ -5,10 +5,8 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,16 +30,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.leafywalls.R
-import com.example.leafywalls.presentation.photo_details.setWallpaper
 import com.example.leafywalls.ui.theme.FavoriteColor
 import com.example.leafywalls.ui.theme.OnSurfaceDark
-import com.example.leafywalls.ui.theme.OnSurfaceLight
 import kotlinx.coroutines.launch
 
 @Composable
 fun Stats(
     modifier: Modifier = Modifier,
-    onSet: () -> Unit
+    onSetClick: () -> Unit
 ) {
     var isFavorite by remember { mutableStateOf(false) }
     Box(
@@ -62,7 +57,7 @@ fun Stats(
             DetailIcon(
                 painter = painterResource(id = R.drawable.download_ic),
                 modifier = Modifier.size(48.dp),
-                onClick = onSet
+                onClick = onSetClick
             )
         }
     }

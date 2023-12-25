@@ -2,20 +2,17 @@ package com.example.leafywalls.presentation.photo_details
 
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
-import android.content.Context
-import android.graphics.BitmapFactory
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -48,13 +45,7 @@ import com.example.leafywalls.presentation.photo_details.components.LoadingDetai
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailInfo
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailTopBar
 import com.example.leafywalls.presentation.photo_details.components.Stats
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import java.lang.Exception
-import java.net.URL
+import com.example.leafywalls.presentation.photo_details.components.WallpaperSetting
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
@@ -99,17 +90,6 @@ fun PhotoDetailScreen(
 
             state.photo.apply {
 
-//                val configuration = LocalConfiguration.current
-//                val screenWidth = configuration.screenWidthDp.dp
-//                val screenHeight = configuration.screenHeightDp.dp - 4.dp
-//
-//                val density = LocalDensity.current
-//                val widthPx = with(density) { screenWidth.roundToPx() }
-//                val heightPx = with(density) { screenHeight.roundToPx() }
-//
-//                val photoUrl = "$url&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
-
-
                 SubcomposeAsyncImage(
                     modifier = Modifier.fillMaxSize(),
                     model = ImageRequest.Builder(LocalContext.current)
@@ -150,14 +130,19 @@ fun PhotoDetailScreen(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
 
+
+            if (state.settingWallpaper) {
+                WallpaperSetting(
+                    modifier = Modifier.align(Alignment.TopCenter).offset(y= (100).dp)
+                )
+            }
+
         }
 
 
         Box(modifier = Modifier.fillMaxSize()) {
 
-            val scope = rememberCoroutineScope()
             val context = LocalContext.current
-            val wallpaperManager = WallpaperManager.getInstance(context)
 
             AnimatedVisibility(
                 visible = !isDetailsHidden,
@@ -181,11 +166,9 @@ fun PhotoDetailScreen(
                 modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Stats(
-                    onSet = {
-                        setWallpaper(
+                    onSetClick = {
+                        viewModel.setWallpaper(
                             url = photoUrl,
-                            wallpaperManager = wallpaperManager,
-                            scope = scope,
                             context = context
                         )
                     }
@@ -196,40 +179,7 @@ fun PhotoDetailScreen(
     }
 }
 
-fun setWallpaper(
-    url: String,
-    wallpaperManager: WallpaperManager,
-    scope: CoroutineScope,
-    context: Context
-) {
 
-    try {
-        scope.launch {
-            val task = async(Dispatchers.IO) {
-
-                BitmapFactory.decodeStream(
-                    URL(url).openConnection().getInputStream()
-                )
-            }
-
-            val bitmap = task.await()
-
-//            wallpaperManager.setBitmap(bitmap)
-            wallpaperManager.setBitmap(
-                bitmap,
-                null,
-                false,
-                WallpaperManager.FLAG_LOCK
-            )
-
-            Toast.makeText(context, "Wallpaper successfully set", Toast.LENGTH_SHORT).show()
-        }
-    }
-    catch (e: Exception) {
-        e.printStackTrace()
-    }
-
-}
 
 
 
