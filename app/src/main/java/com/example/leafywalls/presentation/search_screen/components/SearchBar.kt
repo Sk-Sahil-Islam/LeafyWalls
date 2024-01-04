@@ -46,6 +46,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -71,10 +72,10 @@ fun SearchBar(
     value: String,
     enabled: Boolean = true,
     singleLined: Boolean = true,
+    paddingValue: (Dp) -> Unit,
     onValueChange: (String) -> Unit,
     onSearch: () -> Unit,
-    onClickRow: (String) -> Unit,
-    paddingValue: (Dp) -> Unit
+    onClickRow: (String) -> Unit
 ) {
 
 
@@ -84,6 +85,7 @@ fun SearchBar(
     val clipAnimBottom = remember { Animatable(initialValue = 100f) }
     val paddingHorizontal = remember { Animatable(initialValue = 1f) }
     val density = LocalDensity.current
+    val focusManager = LocalFocusManager.current
 
     val heightAnim = remember { Animatable(initialValue = 0f) }
 
@@ -199,6 +201,7 @@ fun SearchBar(
                 height = heightAnim.value,
                 horizontalPadding = (paddingHorizontal.value * 24).dp,
                 onClick = {
+                    focusManager.clearFocus()
                     onClickRow(it)
                 }
             )
@@ -220,7 +223,7 @@ fun SearchBarHistory(
     val minHeight = when (state.value.histories.size){
         0 -> {0}
         in listOf(1,2,3) -> {
-            (state.value.histories.size * 65) + 60
+            (state.value.histories.size * 65) + 62
         }
         else ->  {332}
     }
@@ -272,7 +275,7 @@ fun SearchBarHistory(
                     .padding(horizontal = 3.dp)
                     .heightIn(max = 248.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(3.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 itemsIndexed(items = state.value.histories, itemContent = { _, item->
                     AnimatedVisibility(
@@ -348,7 +351,6 @@ fun HistoryRow(
             modifier = Modifier.size(43.dp),
             onClick = onDelete
         ) {
-
             Icon(
                 imageVector = Icons.Rounded.Close,
                 contentDescription = "delete",

@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -72,12 +71,11 @@ fun SetIcon(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        IconButton(onClick = onClick, modifier = Modifier.size(50.dp)) {
-            Icon(
-                modifier = Modifier.size(50.dp),
-                painter = painterResource(id = R.drawable.set_ic),
-                contentDescription = "set"
-            )
+        DetailIcon(
+            painter = painterResource(id = R.drawable.download_ic),
+            modifier = Modifier.size(48.dp)
+        ) {
+            onClick()
         }
     }
 
@@ -187,68 +185,3 @@ fun FavoriteIcon(
     }
 
 }
-
-
-//@Composable
-//fun StatItem(
-//    icon: ImageVector,
-//    stat: String,
-//    isClickable: Boolean = true,
-//    onClick: () -> Unit
-//) {
-//    Box(contentAlignment = Alignment.Center) {
-//        Column(
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center
-//        ) {
-//            DetailIcon(icon = icon, modifier = Modifier.size(38.dp), isClickable = isClickable) {
-//                onClick()
-//            }
-//            Text(
-//                modifier = Modifier.offset(y=(-2).dp),
-//                text = stat,
-//                fontFamily = Sarala,
-//                fontWeight = FontWeight.SemiBold,
-//                fontSize = 16.3.sp,
-//                style = TextStyle(
-//                    shadow = Shadow(
-//                        blurRadius = 2f,
-//                        color = MaterialTheme.colorScheme.surface
-//                    )
-//                )
-//            )
-//        }
-//    }
-//}
-//
-//@Composable
-//fun StatItem(
-//    painter: Painter,
-//    stat: String,
-//    isClickable: Boolean = true,
-//    onClick: () -> Unit
-//) {
-//    Box(contentAlignment = Alignment.Center) {
-//        Column(
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center
-//        ) {
-//            DetailIcon(painter = painter, modifier = Modifier.size(38.dp), isClickable = isClickable) {
-//                onClick()
-//            }
-//            Text(
-//                modifier = Modifier.offset(y=(-2).dp),
-//                text = stat,
-//                fontFamily = Sarala,
-//                fontWeight = FontWeight.SemiBold,
-//                fontSize = 16.3.sp,
-//                style = TextStyle(
-//                    shadow = Shadow(
-//                        blurRadius = 2f,
-//                        color = MaterialTheme.colorScheme.surface
-//                    )
-//                )
-//            )
-//        }
-//    }
-//}

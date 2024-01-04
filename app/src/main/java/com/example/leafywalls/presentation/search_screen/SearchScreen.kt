@@ -33,7 +33,6 @@ import com.example.leafywalls.presentation.filters.FilterScreen
 import com.example.leafywalls.presentation.search_screen.components.SearchBar
 import com.example.leafywalls.presentation.search_screen.components.SearchList
 
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SearchScreen(

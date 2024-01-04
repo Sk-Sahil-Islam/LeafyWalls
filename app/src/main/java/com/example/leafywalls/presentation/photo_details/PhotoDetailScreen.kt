@@ -2,9 +2,11 @@ package com.example.leafywalls.presentation.photo_details
 
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.EaseInOutCubic
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -66,7 +68,8 @@ fun PhotoDetailScreen(
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
     var isSetDialog by remember { mutableStateOf(false) }
-    var isPhotoLoading by remember { mutableStateOf(false) }
+    var isPhotoLoading by remember { mutableStateOf(true) }
+    var isPhotoError by remember { mutableStateOf(false) }
 
     val lifeCycleOwner = LocalLifecycleOwner.current
 
@@ -89,7 +92,11 @@ fun PhotoDetailScreen(
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
-                ) { isDetailsHidden = !isDetailsHidden },
+                ) {
+                    if(!isPhotoLoading) {
+                        isDetailsHidden = !isDetailsHidden
+                    }
+                },
             contentAlignment = Alignment.Center
         ) {
 
@@ -106,8 +113,14 @@ fun PhotoDetailScreen(
                     loading = {
                         LoadingDetail()
                         isPhotoLoading = true
+                        isPhotoError = false
                     },
                     onSuccess = {
+                        isPhotoLoading = false
+                        isPhotoError = false
+                    },
+                    onError = {
+                        isPhotoError = true
                         isPhotoLoading = false
                     }
                 )
@@ -148,78 +161,75 @@ fun PhotoDetailScreen(
                         .offset(y = (100).dp)
                 )
             }
-
         }
 
+        if (!isPhotoLoading) {
 
-        Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxSize()) {
 
-            val context = LocalContext.current
+                val context = LocalContext.current
 
-            Log.e("IS PHOTO LOADING", isPhotoLoading.toString())
+                AnimatedVisibility(
+                    visible = !isDetailsHidden && !isSetDialog,
+                    enter = slideInVertically(initialOffsetY = { -it }, animationSpec = tween(500, easing = EaseInOut)),
+                    exit = slideOutVertically(targetOffsetY = { -it }, animationSpec = tween(500, easing = EaseInOutCubic))
+                ) {
+                    PhotoDetailTopBar(
+                        onBackClick = {
+                            val currentState = lifeCycleOwner.lifecycle.currentState
+                            if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                                navController.popBackStack()
+                            }
+                        },
+                        onInfoClick = { isSheetOpen = true }
+                    )
+                }
+                AnimatedVisibility(
+                    visible = !isDetailsHidden && !isSetDialog,
+                    enter = slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(500, easing = EaseInOut)),
+                    exit = slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(500, easing = EaseInOutCubic)),
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                ) {
+                    Stats(
+                        onSetClick = { isSetDialog = true }
+                    )
+                }
 
-            AnimatedVisibility(
-                visible = !isDetailsHidden && !isSetDialog && !isPhotoLoading,
-                enter = slideInVertically(initialOffsetY = { -it }),
-                exit = slideOutVertically(targetOffsetY = { -it })
-            ) {
-                PhotoDetailTopBar(
-                    onBackClick = {
-                        val currentState = lifeCycleOwner.lifecycle.currentState
-                        if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-                            navController.popBackStack()
-                        }
-                    },
-                    onInfoClick = { isSheetOpen = true }
-                )
-            }
-            AnimatedVisibility(
-                visible = !isDetailsHidden && !isSetDialog && !isPhotoLoading,
-                enter = slideInHorizontally(initialOffsetX = { it }),
-                exit = slideOutHorizontally(targetOffsetX = { it }),
-                modifier = Modifier.align(Alignment.CenterEnd)
-            ) {
-                Stats(
-                    onSetClick = {
-                        isSetDialog = true
-                    }
-                )
-            }
+                AnimatedVisibility(
+                    visible = isSetDialog && !state.settingWallpaper,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    SetDialog(
+                        onSetHome = {
+                            isSetDialog = false
+                            viewModel.setWallpaper(
+                                url = photoUrl,
+                                context = context,
+                                which = WallpaperManager.FLAG_SYSTEM
+                            )
+                        },
+                        onSetLock = {
+                            isSetDialog = false
+                            viewModel.setWallpaper(
+                                url = photoUrl,
+                                context = context,
+                                which = WallpaperManager.FLAG_LOCK
+                            )
+                        },
+                        onSetHomeAndLock = {
+                            isSetDialog = false
+                            viewModel.setWallpaper(
+                                url = photoUrl,
+                                context = context,
+                                which = 0
+                            )
+                        },
+                        onDownload = { },
+                        onDismiss = { isSetDialog = false }
 
-            AnimatedVisibility(
-                visible = isSetDialog && !state.settingWallpaper,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                SetDialog(
-                    onSetHome = {
-                        isSetDialog = false
-                        viewModel.setWallpaper(
-                            url = photoUrl,
-                            context = context,
-                            which = WallpaperManager.FLAG_SYSTEM
-                        )
-                    },
-                    onSetLock = {
-                        isSetDialog = false
-                        viewModel.setWallpaper(
-                            url = photoUrl,
-                            context = context,
-                            which = WallpaperManager.FLAG_LOCK
-                        )
-                    },
-                    onSetHomeAndLock = {
-                        isSetDialog = false
-                        viewModel.setWallpaper(
-                            url = photoUrl,
-                            context = context,
-                            which = 0
-                        )
-                    },
-                    onDownload = { },
-                    onDismiss = { isSetDialog = false }
-
-                )
+                    )
+                }
             }
         }
 
@@ -228,7 +238,6 @@ fun PhotoDetailScreen(
                 isSetDialog = false
             }
         }
-
     }
 }
 

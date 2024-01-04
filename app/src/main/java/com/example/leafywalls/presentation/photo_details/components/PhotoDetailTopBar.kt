@@ -1,6 +1,5 @@
 package com.example.leafywalls.presentation.photo_details.components
 
-import androidx.compose.foundation.Indication
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -24,7 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.leafywalls.R
 
 @Composable
 fun PhotoDetailTopBar(
@@ -47,7 +47,7 @@ fun PhotoDetailTopBar(
             }
 
             DetailIcon(
-                icon = Icons.Outlined.Info,
+                painter = painterResource(id = R.drawable.sharp_more_horiz_24),
                 modifier = Modifier.size(36.dp)
             ) {
                 onInfoClick()
@@ -66,20 +66,22 @@ fun DetailIcon(
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
+        modifier = modifier
+            .size(48.dp)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.background.copy(alpha = 0.60f))
-
+            .clickable(
+                indication = if (!isClickable) null else LocalIndication.current,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                onClick()
+            }
     ) {
         Icon(
-            modifier = modifier
-                .clickable(
-                    indication = if (!isClickable) null else LocalIndication.current,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) {
-                    onClick()
-                }
-                .padding(4.dp),
+            modifier = Modifier
+                .padding(5.dp)
+                .clip(CircleShape)
+                .size(48.dp),
             imageVector = icon,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface
@@ -97,20 +99,22 @@ fun DetailIcon(
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
+        modifier = modifier
+            .size(48.dp)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.background.copy(alpha = 0.60f))
-
+            .clickable(
+                indication = if (!isClickable) null else LocalIndication.current,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                onClick()
+            }
     ) {
         Icon(
-            modifier = modifier
-                .clickable(
-                    indication = if (!isClickable) null else LocalIndication.current,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) {
-                    onClick()
-                }
-                .padding(4.dp),
+            modifier = Modifier
+                .padding(5.dp)
+                .clip(CircleShape)
+                .size(48.dp),
             painter = painter,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface
