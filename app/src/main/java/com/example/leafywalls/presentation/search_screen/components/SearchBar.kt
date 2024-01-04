@@ -76,6 +76,8 @@ fun SearchBar(
     onClickRow: (String) -> Unit,
     paddingValue: (Dp) -> Unit
 ) {
+
+
     val isFocused = remember { mutableStateOf(false) }
 
     val clipAnim = remember { Animatable(initialValue = 100f) }
@@ -289,8 +291,6 @@ fun SearchBarHistory(
                                 }
                             },
                             onClick = {
-//                                state.value.query.value =  it
-//                                Log.e("HISTORY ROW", it)
                                 onClick(it)
                             }
                         )

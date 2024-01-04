@@ -20,8 +20,11 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
+import com.example.leafywalls.R
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.random.Random
@@ -105,25 +108,25 @@ fun formatNumber(number: Long): String {
     }
 }
 
-fun colorParse(colorString: String): Color {
+@Composable
+fun parseColorImage(colorString: String): Painter {
     return when(colorString) {
-        "black" -> Color.Black
-        "white" -> Color.White
-        "yellow" -> Color(0xFFFFFF00)
-        "orange" -> Color(0xFFFFA500)
-        "red" -> Color(0xFFFF0000)
-        "purple" -> Color(0xFF800080)
-        "magenta" -> Color(0xFFFF00FF)
-        "green" -> Color(0xFF00FF00)
-        "teal" -> Color(0xFF008080)
-        "blue" -> Color(0xFF0000FF)
-        else -> {Color.Transparent}
+        "black" -> painterResource(id = R.drawable.black)
+        "white" -> painterResource(id = R.drawable.white)
+        "yellow" -> painterResource(id = R.drawable.yellow)
+        "orange" -> painterResource(id = R.drawable.orange)
+        "red" -> painterResource(id = R.drawable.red)
+        "purple" -> painterResource(id = R.drawable.purple)
+        "magenta" -> painterResource(id = R.drawable.magenta)
+        "green" -> painterResource(id = R.drawable.green)
+        "teal" -> painterResource(id = R.drawable.teal)
+        "blue" -> painterResource(id = R.drawable.blue)
+        else -> painterResource(id = R.drawable.black_white)
     }
 }
 
 fun generateRandomColor(): Color {
 
     val random = Random.Default
-    Log.e("COLOR FILTER", random.nextInt(256).toString())
     return Color(random.nextInt(256)/255f, random.nextInt(256)/255f, random.nextInt(256)/255f)
 }

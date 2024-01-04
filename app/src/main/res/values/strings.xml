@@ -5,4 +5,8 @@
     <string name="no_result">Sorry, no results found. Try a different query or check your spelling.</string>
     <string name="setting_wallpaper">Setting wallpaper…</string>
     <string name="please_wait">Please wait</string>
+    <string name="set_home">Set to home screen</string>
+    <string name="set_lock">Set to lock screen</string>
+    <string name="set_home_lock">Set to home &amp; lock screens</string>
+    <string name="download">Download</string>
 </resources>

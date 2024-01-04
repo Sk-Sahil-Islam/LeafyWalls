@@ -28,7 +28,6 @@ fun PhotoLoadingPlaceholder(
 ) {
 
     val color = generateRandomColor()
-    Log.e("COLOR FILTER", color.toString())
 
     Box(
         contentAlignment = Alignment.Center,

@@ -60,12 +60,13 @@ class PhotoDetailViewModel @Inject constructor(
     }
 
 
+
     fun setWallpaper(
         url: String,
-        context: Context
+        context: Context,
+        which: Int
     ) {
-        SetWallpaperUseCase().invoke(url = url, context).onEach { result ->
-            Log.e("loading for", "set wallpaper call")
+        SetWallpaperUseCase().invoke(url = url, context, which = which).onEach { result ->
 
             when(result) {
                 is Resource.Error -> {

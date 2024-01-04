@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,6 +41,7 @@ fun Stats(
     onSetClick: () -> Unit
 ) {
     var isFavorite by remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier
             .padding(16.dp)
@@ -48,19 +50,37 @@ fun Stats(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Spacer(modifier = Modifier.size(200.dp))
+            Spacer(modifier = Modifier.size(250.dp))
 
             FavoriteIcon(isFavorite = isFavorite) {
                 isFavorite = !isFavorite
             }
 
-            DetailIcon(
-                painter = painterResource(id = R.drawable.download_ic),
-                modifier = Modifier.size(48.dp),
+            SetIcon(
                 onClick = onSetClick
             )
         }
     }
+}
+
+@Composable
+fun SetIcon(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        IconButton(onClick = onClick, modifier = Modifier.size(50.dp)) {
+            Icon(
+                modifier = Modifier.size(50.dp),
+                painter = painterResource(id = R.drawable.set_ic),
+                contentDescription = "set"
+            )
+        }
+    }
+
 }
 
 

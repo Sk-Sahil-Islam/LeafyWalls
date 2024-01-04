@@ -2,6 +2,7 @@ package com.example.leafywalls.domain.use_case
 
 import android.app.WallpaperManager
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import android.widget.Toast
@@ -21,7 +22,7 @@ import java.net.URL
 import javax.inject.Inject
 
 class SetWallpaperUseCase {
-    operator fun invoke(url: String, context: Context): Flow<Resource<String>> = channelFlow {
+    fun invoke(url: String, context: Context, which: Int): Flow<Resource<String>> = channelFlow {
         val wallpaperManager = WallpaperManager.getInstance(context)
 
         try {
@@ -34,17 +35,13 @@ class SetWallpaperUseCase {
             }
 
             val bitmap = task.await()
-            Log.e("loading for", "loading")
             trySend(Resource.Success("Wallpaper successfully set"))
 
-            wallpaperManager.setBitmap(
-                bitmap,
-                null,
-                false,
-                WallpaperManager.FLAG_LOCK
+            setWallpaper(
+                bitmap = bitmap,
+                which = which,
+                wallpaperManager
             )
-
-            // Toast.makeText(context, "Wallpaper successfully set", Toast.LENGTH_SHORT).show()
 
         } catch (e: HttpException) {
             trySend(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
@@ -54,4 +51,31 @@ class SetWallpaperUseCase {
             close()
         }
     }
+}
+
+private fun setWallpaper(
+    bitmap: Bitmap,
+    which: Int,
+    wallpaperManager: WallpaperManager
+) {
+    when(which) {
+        WallpaperManager.FLAG_LOCK -> {
+            wallpaperManager.setBitmap(
+                bitmap,
+                null,
+                false,
+                WallpaperManager.FLAG_LOCK
+            )
+        }
+        WallpaperManager.FLAG_SYSTEM -> {
+            wallpaperManager.setBitmap(
+                bitmap,
+                null,
+                false,
+                WallpaperManager.FLAG_SYSTEM
+            )
+        }
+        else -> { wallpaperManager.setBitmap(bitmap) }
+    }
+
 }

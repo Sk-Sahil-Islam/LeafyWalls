@@ -3,6 +3,10 @@ package com.example.leafywalls.presentation.photo_details
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
@@ -44,6 +48,7 @@ import coil.request.ImageRequest
 import com.example.leafywalls.presentation.photo_details.components.LoadingDetail
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailInfo
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailTopBar
+import com.example.leafywalls.presentation.photo_details.components.SetDialog
 import com.example.leafywalls.presentation.photo_details.components.Stats
 import com.example.leafywalls.presentation.photo_details.components.WallpaperSetting
 
@@ -62,11 +67,12 @@ fun PhotoDetailScreen(
 
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
+    var isSetDialog by remember { mutableStateOf(false) }
 
     val lifeCycleOwner = LocalLifecycleOwner.current
 
 
-    state.photo?.let {
+    state.photo?.let { photoDetail ->
 
         val configuration = LocalConfiguration.current
         val screenWidth = configuration.screenWidthDp.dp
@@ -76,7 +82,7 @@ fun PhotoDetailScreen(
         val widthPx = with(density) { screenWidth.roundToPx() }
         val heightPx = with(density) { screenHeight.roundToPx() }
 
-        val photoUrl = "${it.url}&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
+        val photoUrl = "${photoDetail.url}&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
 
         Box(
             modifier = Modifier
@@ -133,7 +139,9 @@ fun PhotoDetailScreen(
 
             if (state.settingWallpaper) {
                 WallpaperSetting(
-                    modifier = Modifier.align(Alignment.TopCenter).offset(y= (100).dp)
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .offset(y = (100).dp)
                 )
             }
 
@@ -161,17 +169,50 @@ fun PhotoDetailScreen(
             }
             AnimatedVisibility(
                 visible = !isDetailsHidden,
-                enter = slideInHorizontally(initialOffsetX = {it}),
-                exit = slideOutHorizontally(targetOffsetX = {it}),
+                enter = slideInHorizontally(initialOffsetX = { it }),
+                exit = slideOutHorizontally(targetOffsetX = { it }),
                 modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Stats(
                     onSetClick = {
+                        isSetDialog = true
+                    }
+                )
+            }
+
+            AnimatedVisibility(
+                visible = isSetDialog && !state.settingWallpaper,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                SetDialog(
+                    onSetHome = {
                         viewModel.setWallpaper(
                             url = photoUrl,
-                            context = context
+                            context = context,
+                            which = WallpaperManager.FLAG_SYSTEM
                         )
-                    }
+                        isSetDialog = false
+                    },
+                    onSetLock = {
+                        viewModel.setWallpaper(
+                            url = photoUrl,
+                            context = context,
+                            which = WallpaperManager.FLAG_LOCK
+                        )
+                        isSetDialog = false
+                    },
+                    onSetHomeAndLock = {
+                        viewModel.setWallpaper(
+                            url = photoUrl,
+                            context = context,
+                            which = 0
+                        )
+                        isSetDialog = false
+                    },
+                    onDownload = { },
+                    onDismiss = { isSetDialog = false }
+
                 )
             }
         }
