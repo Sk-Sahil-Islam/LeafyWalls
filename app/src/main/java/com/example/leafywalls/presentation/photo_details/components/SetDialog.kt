@@ -1,6 +1,7 @@
 package com.example.leafywalls.presentation.photo_details.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -70,7 +72,7 @@ fun SetDialog(
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(3.dp)
+                verticalArrangement = Arrangement.spacedBy(7.dp)
             ) {
                 Row {
                     Spacer(modifier = Modifier.weight(1f))
@@ -125,7 +127,16 @@ fun SetDialogOptionRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .clickable { onClick() }
+                .clip(RoundedCornerShape(16.dp))
+                .border(
+                    width = 1.3.dp,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(color = MaterialTheme.colorScheme.primary.copy(0.25f))
+                ) { onClick() }
                 .background(MaterialTheme.colorScheme.onBackground.copy(0.05f))
                 .padding(vertical = 16.dp, horizontal = 10.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -153,7 +164,15 @@ fun SetDialogOptionRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .clickable { onClick() }
+                .border(
+                    width = 1.3.dp,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(color = MaterialTheme.colorScheme.primary.copy(0.25f))
+                ) { onClick() }
                 .background(MaterialTheme.colorScheme.onBackground.copy(0.05f))
                 .padding(vertical = 16.dp, horizontal = 10.dp),
             verticalAlignment = Alignment.CenterVertically

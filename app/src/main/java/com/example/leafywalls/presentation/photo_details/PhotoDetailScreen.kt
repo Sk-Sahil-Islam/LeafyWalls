@@ -2,11 +2,11 @@ package com.example.leafywalls.presentation.photo_details
 
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
@@ -27,12 +27,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -68,6 +66,7 @@ fun PhotoDetailScreen(
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
     var isSetDialog by remember { mutableStateOf(false) }
+    var isPhotoLoading by remember { mutableStateOf(false) }
 
     val lifeCycleOwner = LocalLifecycleOwner.current
 
@@ -104,9 +103,14 @@ fun PhotoDetailScreen(
                         .build(),
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
-                    loading = { LoadingDetail() }
+                    loading = {
+                        LoadingDetail()
+                        isPhotoLoading = true
+                    },
+                    onSuccess = {
+                        isPhotoLoading = false
+                    }
                 )
-
 
                 if (isSheetOpen) {
                     ModalBottomSheet(
@@ -152,8 +156,10 @@ fun PhotoDetailScreen(
 
             val context = LocalContext.current
 
+            Log.e("IS PHOTO LOADING", isPhotoLoading.toString())
+
             AnimatedVisibility(
-                visible = !isDetailsHidden,
+                visible = !isDetailsHidden && !isSetDialog && !isPhotoLoading,
                 enter = slideInVertically(initialOffsetY = { -it }),
                 exit = slideOutVertically(targetOffsetY = { -it })
             ) {
@@ -168,7 +174,7 @@ fun PhotoDetailScreen(
                 )
             }
             AnimatedVisibility(
-                visible = !isDetailsHidden,
+                visible = !isDetailsHidden && !isSetDialog && !isPhotoLoading,
                 enter = slideInHorizontally(initialOffsetX = { it }),
                 exit = slideOutHorizontally(targetOffsetX = { it }),
                 modifier = Modifier.align(Alignment.CenterEnd)
@@ -187,33 +193,39 @@ fun PhotoDetailScreen(
             ) {
                 SetDialog(
                     onSetHome = {
+                        isSetDialog = false
                         viewModel.setWallpaper(
                             url = photoUrl,
                             context = context,
                             which = WallpaperManager.FLAG_SYSTEM
                         )
-                        isSetDialog = false
                     },
                     onSetLock = {
+                        isSetDialog = false
                         viewModel.setWallpaper(
                             url = photoUrl,
                             context = context,
                             which = WallpaperManager.FLAG_LOCK
                         )
-                        isSetDialog = false
                     },
                     onSetHomeAndLock = {
+                        isSetDialog = false
                         viewModel.setWallpaper(
                             url = photoUrl,
                             context = context,
                             which = 0
                         )
-                        isSetDialog = false
                     },
                     onDownload = { },
                     onDismiss = { isSetDialog = false }
 
                 )
+            }
+        }
+
+        if (isSetDialog) {
+            BackHandler {
+                isSetDialog = false
             }
         }
 

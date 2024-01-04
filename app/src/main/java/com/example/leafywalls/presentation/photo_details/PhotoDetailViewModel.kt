@@ -13,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.LOG_TAG
 import com.example.leafywalls.common.Constants
 import com.example.leafywalls.common.Resource
+import com.example.leafywalls.domain.repository.PhotoRepository
 import com.example.leafywalls.domain.use_case.GetPhotoUseCase
 import com.example.leafywalls.domain.use_case.SetWallpaperUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +29,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PhotoDetailViewModel @Inject constructor(
-    private val getPhotoUseCase: GetPhotoUseCase,
+    private val repository: PhotoRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -42,7 +43,7 @@ class PhotoDetailViewModel @Inject constructor(
     }
 
     private fun getPhoto(photoId: String) {
-        getPhotoUseCase(photoId = photoId).onEach { result->
+        GetPhotoUseCase(repository).invoke(photoId = photoId).onEach { result->
             when(result) {
                 is Resource.Error -> {
                     _state.value = PhotoDetailState(
@@ -50,6 +51,7 @@ class PhotoDetailViewModel @Inject constructor(
                     )
                 }
                 is Resource.Loading -> {
+                    Log.e("IS LOADING photo", "true")
                     _state.value = PhotoDetailState(isLoading = true)
                 }
                 is Resource.Success -> {
@@ -70,6 +72,9 @@ class PhotoDetailViewModel @Inject constructor(
 
             when(result) {
                 is Resource.Error -> {
+                    _state.value = _state.value.copy(
+                        settingWallpaper = false
+                    )
                     Toast.makeText(context, result.data, Toast.LENGTH_SHORT).show()
                 }
 
@@ -77,7 +82,6 @@ class PhotoDetailViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         settingWallpaper = true
                     )
-                    Log.e("loading for setting wallpaper", "Loading")
                 }
                 is Resource.Success -> {
                     _state.value = _state.value.copy(
