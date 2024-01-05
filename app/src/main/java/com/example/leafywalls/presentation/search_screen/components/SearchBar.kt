@@ -23,6 +23,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.rounded.Close
@@ -50,6 +52,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -95,7 +98,6 @@ fun SearchBar(
                 clipAnim.animateTo(
                     targetValue = 0f, animationSpec = tween(durationMillis = 500)
                 )
-
             }
             launch {
                 clipAnimBottom.snapTo(0f)
@@ -189,11 +191,13 @@ fun SearchBar(
                 },
                 colors = TextFieldDefaults.colors(
                     unfocusedIndicatorColor = Color.Unspecified,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary.copy(0.8f),
                     unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                     focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                 ),
-                singleLine = singleLined
+                singleLine = singleLined,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = {onSearch()})
             )
 
             SearchBarHistory(

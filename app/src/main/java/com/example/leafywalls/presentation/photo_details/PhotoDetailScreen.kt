@@ -45,6 +45,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.example.leafywalls.presentation.photo_details.components.CustomDialog
 import com.example.leafywalls.presentation.photo_details.components.LoadingDetail
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailInfo
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailTopBar
@@ -195,10 +196,10 @@ fun PhotoDetailScreen(
                     )
                 }
 
-                AnimatedVisibility(
-                    visible = isSetDialog && !state.settingWallpaper,
-                    enter = fadeIn(),
-                    exit = fadeOut()
+
+                CustomDialog(
+                    showDialog = isSetDialog,
+                    onDismissRequest = { isSetDialog = false }
                 ) {
                     SetDialog(
                         onSetHome = {
@@ -230,6 +231,43 @@ fun PhotoDetailScreen(
 
                     )
                 }
+
+
+//                AnimatedVisibility(
+//                    visible = isSetDialog && !state.settingWallpaper,
+//                    enter = fadeIn(),
+//                    exit = fadeOut()
+//                ) {
+//                    SetDialog(
+//                        onSetHome = {
+//                            isSetDialog = false
+//                            viewModel.setWallpaper(
+//                                url = photoUrl,
+//                                context = context,
+//                                which = WallpaperManager.FLAG_SYSTEM
+//                            )
+//                        },
+//                        onSetLock = {
+//                            isSetDialog = false
+//                            viewModel.setWallpaper(
+//                                url = photoUrl,
+//                                context = context,
+//                                which = WallpaperManager.FLAG_LOCK
+//                            )
+//                        },
+//                        onSetHomeAndLock = {
+//                            isSetDialog = false
+//                            viewModel.setWallpaper(
+//                                url = photoUrl,
+//                                context = context,
+//                                which = 0
+//                            )
+//                        },
+//                        onDownload = { },
+//                        onDismiss = { isSetDialog = false }
+//
+//                    )
+//                }
             }
         }
 

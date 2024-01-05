@@ -25,7 +25,7 @@ val DateIconColor = Color(0xFF41CCCC)
 
 val FavoriteColor = Color(0xFFD10000)
 
-val PrimaryContainerLight = Color(0xFFDFF7BF)
+val PrimaryContainerLight = Color(0xFFF1FFDF)
 val PrimaryContainerDark = Color(0xFF213317)
 
 val SecondaryContainerLight = Color(0xFFEBF7BF)

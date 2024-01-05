@@ -23,8 +23,8 @@ class GetSearchedPhotosUseCase @Inject constructor(
         query: String,
         orderBy: String,
         safeSearch: String,
-//        color: String,
-//        orientation: String
+        color: String?,
+        orientation: String?
     ): Flow<PagingData<PhotoDto>> = Pager(
         PagingConfig(5)
     ) {
@@ -33,8 +33,8 @@ class GetSearchedPhotosUseCase @Inject constructor(
             query,
             orderBy,
             safeSearch,
-//            color,
-//            orientation
+            color,
+            orientation
         )
     }.flow.cachedIn(scope)
 }
@@ -44,8 +44,8 @@ class SearchedPhotoListPagingSource(
     private val query: String,
     private val orderBy: String,
     private val safeSearch: String,
-//    private val color: String,
-//    private val orientation: String
+    private val color: String?,
+    private val orientation: String?
 ) : PagingSource<Int, PhotoDto>() {
     override fun getRefreshKey(state: PagingState<Int, PhotoDto>): Int =
         ((state.anchorPosition ?: 0) - state.config.initialLoadSize / 2).coerceAtLeast(0)
@@ -58,8 +58,8 @@ class SearchedPhotoListPagingSource(
                 query = query,
                 orderBy = orderBy,
                 safeSearch = safeSearch,
-//                color = color,
-//                orientation = orientation
+                color = color,
+                orientation = orientation
             )
             val endOfPaginationReached = response.results.isEmpty()
             if (response.results.isNotEmpty()) {

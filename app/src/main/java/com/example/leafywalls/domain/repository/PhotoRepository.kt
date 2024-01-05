@@ -19,8 +19,8 @@ interface PhotoRepository {
         query: String,
         orderBy: String,
         safeSearch: String,
-//        color: String,
-//        orientation: String
+        color: String?,
+        orientation: String?
     ): SearchDto
 
     fun getHistory(): Flow<List<History>>

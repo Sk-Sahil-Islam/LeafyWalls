@@ -34,8 +34,8 @@ interface UnsplashApi {
         @Query("query") query: String,
         @Query("order_by") orderBy: String,
         @Query("content_filter") safeSearch: String,
-//        @Query("color") color: String,
-//        @Query("orientation") orientation: String,
+        @Query("color") color: String? = null,
+        @Query("orientation") orientation: String ?= null,
         @Query("client_id") clientId: String
     ): SearchDto
 }

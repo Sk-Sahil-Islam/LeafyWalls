@@ -34,16 +34,16 @@ class PhotoRepositoryImpl @Inject constructor(
         query: String,
         orderBy: String,
         safeSearch: String,
-//        color: String,
-//        orientation: String
+        color: String?,
+        orientation: String?
     ): SearchDto {
         return api.getSearchedPhotos(
             page = page,
             query = query,
             orderBy = orderBy,
             safeSearch = safeSearch,
-//            color = color,
-//            orientation = orientation,
+            color = color,
+            orientation = orientation,
             clientId = context.getString(R.string.API_KEY)
         )
     }

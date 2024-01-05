@@ -72,7 +72,13 @@ class SearchScreenViewModel @Inject constructor(
                 if (history.text.isNotBlank()) {
                     _photos.value = GetSearchedPhotosUseCase(
                         repository = repository
-                    ).invoke(history.text, _orderBy.value, _safeSearch.value)
+                    ).invoke(
+                        history.text,
+                        _orderBy.value,
+                        _safeSearch.value,
+                        color = _color.value.ifEmpty { null },
+                        orientation = _orientation.value.ifEmpty { null }
+                    )
 
                     insertHistoryUseCase(history)
                 }
@@ -139,18 +145,20 @@ class SearchScreenViewModel @Inject constructor(
 
     fun orientationOptionSelected(selectedOption: SelectionOption) {
         _orientationOptions.forEach {
-            it.selected = (it.option == selectedOption.option) && !it.selected
+            it.selected = it.option == selectedOption.option && !it.selected
         }
-        _orientation.value = selectedOption.option
-        Log.e("Color filter", _orientation.value)
+        val selectedColorOption = _orientationOptions.find { it.selected }
+        _orientation.value = selectedColorOption?.option ?: ""
     }
 
 
     fun colorOptionSelected(selectedOption: SelectionOption) {
         _colorOptions.forEach {
-            it.selected = (it.option == selectedOption.option) && !it.selected
+            it.selected = it.option == selectedOption.option && !it.selected
         }
-        _color.value = selectedOption.option
+        val selectedColorOption = _colorOptions.find { it.selected }
+        _color.value = selectedColorOption?.option ?: ""
+
         Log.e("Color filter", _color.value)
     }
 
