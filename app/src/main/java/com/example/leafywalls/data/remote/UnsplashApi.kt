@@ -28,6 +28,11 @@ interface UnsplashApi {
         @Query("client_id") clientId: String
     ): List<PhotoDto>
 
+    @GET("/photos/random")
+    suspend fun getRandomPhoto(
+        @Query("client_id") clientId: String
+    ): PhotoDto
+
     @GET("/search/photos")
     suspend fun getSearchedPhotos(
         @Query("page") page: Int,

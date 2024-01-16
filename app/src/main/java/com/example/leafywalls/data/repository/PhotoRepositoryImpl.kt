@@ -29,6 +29,10 @@ class PhotoRepositoryImpl @Inject constructor(
         return api.getPopularPhotos(page = page, clientId = context.getString(R.string.API_KEY))
     }
 
+    override suspend fun getRandomPhoto(): PhotoDto {
+        return api.getRandomPhoto(clientId = context.getString(R.string.API_KEY))
+    }
+
     override suspend fun getSearchedPhotos(
         page: Int,
         query: String,

@@ -3,6 +3,8 @@ package com.example.leafywalls
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,6 +20,7 @@ import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.home_screen.HomeScreen
 import com.example.leafywalls.presentation.search_screen.SearchScreen
 import com.example.leafywalls.presentation.photo_details.PhotoDetailScreen
+import com.example.leafywalls.presentation.random_photo.RandomScreen
 import com.example.leafywalls.ui.theme.LeafyWallsTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -47,12 +50,47 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(navController = navController)
                         }
 
-                        composable(route = Screen.PhotoDetailScreen.route + "/{photoId}") {
+                        composable(route = Screen.RandomScreen.route) {
+                            RandomScreen(navController = navController)
+                        }
+
+                        composable(
+                            route = Screen.PhotoDetailScreen.route + "/{photoId}",
+                            enterTransition = {
+                                slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(700)
+                                )
+                            },
+                            exitTransition = {
+                                slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(700)
+                                )
+                            },
+                        ) {
                             PhotoDetailScreen(navController = navController)
                         }
-                        composable(route = Screen.SearchScreen.route) {
+
+
+                        composable(
+                            route = Screen.SearchScreen.route,
+                            enterTransition = {
+                                slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Down,
+                                    animationSpec = tween(500)
+                                )
+                            },
+                            exitTransition = {
+                                slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Up,
+                                    animationSpec = tween(500)
+                                )
+                            },
+                        ) {
                             SearchScreen(navController = navController)
                         }
+
                     }
                 }
             }

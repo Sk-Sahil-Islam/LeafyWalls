@@ -44,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -152,13 +153,22 @@ fun SearchBar(
                             it.size.height.toDp()
                         }
                         paddingValue(textFieldHeight)
-                    }
+                    }.shadow(
+                        elevation = 5.dp,
+                        shape = RoundedCornerShape(
+                            topStart = clipAnim.value,
+                            topEnd = clipAnim.value,
+                            bottomStart = clipAnimBottom.value,
+                            bottomEnd = clipAnimBottom.value
+                        ),
+                    )
                     .clip(RoundedCornerShape(topStart = clipAnim.value, topEnd = clipAnim.value))
                     .clip(
                         RoundedCornerShape(
                             bottomStart = clipAnimBottom.value, bottomEnd = clipAnimBottom.value
                         )
-                    ),
+                    )
+                    ,
                 onValueChange = onValueChange,
                 value = value,
                 textStyle = TextStyle.Default.copy(
@@ -293,7 +303,7 @@ fun SearchBarHistory(
                             onDelete = {
                                 scope.launch {
                                     deletedItem.add(item)
-                                    delay(500)
+                                    delay(600)
                                     viewModel.onEvent(SearchEvent.DeleteHistory(item))
                                 }
                             },

@@ -1,8 +1,6 @@
 package com.example.leafywalls.presentation.photo_details
 
-import android.app.WallpaperManager
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.State
@@ -10,21 +8,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.LOG_TAG
 import com.example.leafywalls.common.Constants
 import com.example.leafywalls.common.Resource
 import com.example.leafywalls.domain.repository.PhotoRepository
 import com.example.leafywalls.domain.use_case.GetPhotoUseCase
 import com.example.leafywalls.domain.use_case.SetWallpaperUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import java.lang.Exception
-import java.net.URL
 import javax.inject.Inject
 
 @HiltViewModel

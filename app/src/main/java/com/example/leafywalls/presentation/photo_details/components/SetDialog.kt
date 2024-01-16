@@ -174,8 +174,8 @@ fun SetDialog(
                     .background(
                         brush = Brush.linearGradient(
                             colors = listOf(
-                                Color(0xFFB9FF63),
-                                Color(0xFFFBFF8E),
+                                Color(0xFFB9FF63).copy(alpha = .9f),
+                                Color(0xFFFBFF8E).copy(alpha = .9f),
                             )
                         )
                     )

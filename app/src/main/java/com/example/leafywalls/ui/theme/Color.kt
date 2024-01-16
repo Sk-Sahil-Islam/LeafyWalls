@@ -8,7 +8,7 @@ val TertiaryDark = Color(0xFFC4EFB8)
 //light
 val TertiaryLight = Color(0xFF647D52)
 
-val BackgroundDark = Color(0xFF151B0F)
+val BackgroundDark = Color(0xFF151B10)
 val BackgroundLight = Color(0xFFFCFFF5)
 
 val PrimaryDark = Color(0xFFB9FF63)
@@ -26,7 +26,7 @@ val DateIconColor = Color(0xFF41CCCC)
 val FavoriteColor = Color(0xFFD10000)
 
 val PrimaryContainerLight = Color(0xFFF1FFDF)
-val PrimaryContainerDark = Color(0xFF213317)
+val PrimaryContainerDark = Color(0xFF192712)
 
 val SecondaryContainerLight = Color(0xFFEBF7BF)
 val SecondaryContainerDark = Color(0xFF3E4B20)

@@ -14,6 +14,8 @@ interface PhotoRepository {
 
     suspend fun getPopularPhotos(page: Int): List<PhotoDto>
 
+    suspend fun getRandomPhoto(): PhotoDto
+
     suspend fun getSearchedPhotos(
         page: Int,
         query: String,

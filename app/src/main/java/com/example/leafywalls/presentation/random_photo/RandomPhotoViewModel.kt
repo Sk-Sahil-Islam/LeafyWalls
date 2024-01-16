@@ -1,4 +1,4 @@
-package com.example.leafywalls.presentation.home_screen
+package com.example.leafywalls.presentation.random_photo
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -8,14 +8,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(
-    private val repository: PhotoRepository
+class RandomPhotoViewModel @Inject constructor(
+    private val getRandomPhotoUseCase: GetRandomPhotoUseCase
 ): ViewModel() {
 
-    private val _selectedIndex = mutableStateOf(0)
-    val selectedIndex = _selectedIndex
-
-    fun updateIndex(index: Int) {
-        _selectedIndex.value = index
-    }
+    val state = getRandomPhotoUseCase()
 }

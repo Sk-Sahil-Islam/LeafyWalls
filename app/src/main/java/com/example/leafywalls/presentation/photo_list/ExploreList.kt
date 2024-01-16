@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.pager.PagerDefaults
+import androidx.compose.foundation.pager.PagerSnapDistance
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -52,6 +55,12 @@ fun ExploreList(
                 .weight(1f),
             contentAlignment = Alignment.Center
         ) {
+            val pagerState = rememberPagerState(pageCount = { 10 })
+
+//            val fling = PagerDefaults.flingBehavior(
+//                state = pagerState,
+//                pagerSnapDistance = PagerSnapDistance.atMost(10)
+//            )
 
             val lifeCycleOwner = LocalLifecycleOwner.current
 
@@ -62,7 +71,7 @@ fun ExploreList(
                     verticalArrangement = Arrangement.spacedBy(7.dp),
                     horizontalArrangement = Arrangement.spacedBy(7.dp),
                     modifier = Modifier
-                        .padding(horizontal = 8.dp)
+                        .padding(horizontal = 8.dp),
                 ) {
                     item(span = { GridItemSpan(maxCurrentLineSpan) }) {
                         Spacer(modifier = Modifier.size(0.dp))

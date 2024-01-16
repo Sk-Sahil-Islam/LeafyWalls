@@ -37,10 +37,12 @@ class PhotoListPagingSource(
         val page = params.key ?: 1
         return try {
             val response = repository.getPhotos(page=page)
-            val endOfPaginationReached = response.isEmpty()
-            if(response.isNotEmpty()){
+            val filteredResponse = response.filter { it.sponsorship == null }
+
+            val endOfPaginationReached = filteredResponse.isEmpty()
+            if(filteredResponse.isNotEmpty()){
                 LoadResult.Page(
-                    data = response,
+                    data = filteredResponse,
                     prevKey = null,
                     nextKey = if(endOfPaginationReached) null else page+1
                 )
