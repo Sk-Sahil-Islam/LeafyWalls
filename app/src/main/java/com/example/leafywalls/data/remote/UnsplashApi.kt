@@ -30,7 +30,8 @@ interface UnsplashApi {
 
     @GET("/photos/random")
     suspend fun getRandomPhoto(
-        @Query("client_id") clientId: String
+        @Query("client_id") clientId: String,
+        @Query("orientation") orientation: String = "portrait"
     ): PhotoDto
 
     @GET("/search/photos")

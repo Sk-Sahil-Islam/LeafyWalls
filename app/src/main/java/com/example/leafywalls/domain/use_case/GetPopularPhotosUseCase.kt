@@ -36,7 +36,7 @@ class PopularPhotoListPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, PhotoDto> {
         val page = params.key ?: 1
         return try {
-            val response = repository.getPhotos(page=page)
+            val response = repository.getPopularPhotos(page=page)
             val filteredResponse = response.filter { it.sponsorship == null }
 
             val endOfPaginationReached = filteredResponse.isEmpty()

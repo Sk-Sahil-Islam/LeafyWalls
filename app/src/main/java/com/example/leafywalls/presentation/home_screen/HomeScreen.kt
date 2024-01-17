@@ -11,19 +11,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.DrawerValue
@@ -34,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemColors
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Scaffold
@@ -55,21 +46,20 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.leafywalls.R
 import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.home_screen.componants.HomeScreenTopBar
 import com.example.leafywalls.presentation.home_screen.componants.NavigationItems
 import com.example.leafywalls.presentation.photo_list.ExploreList
 import com.example.leafywalls.presentation.popular_photo_list.PopularList
-import com.example.leafywalls.presentation.search_screen.SearchScreen
-import com.example.leafywalls.presentation.search_screen.components.SearchList
 import com.example.leafywalls.ui.theme.Sarala
 import kotlinx.coroutines.launch
 
@@ -97,8 +87,8 @@ fun HomeScreen(
         NavigationItems(
             route = Screen.PremiumScreen.route,
             title = "Premium",
-            unselectedIcon = Icons.Outlined.Build,
-            selectedIcon = Icons.Default.Build
+            unselectedIcon = painterResource(id = R.drawable.premium_outlined),
+            selectedIcon = painterResource(id = R.drawable.premium_filled)
         ),
         NavigationItems(
             route = Screen.SettingsScreen.route,
@@ -106,12 +96,12 @@ fun HomeScreen(
             unselectedIcon = Icons.Outlined.Settings,
             selectedIcon = Icons.Default.Settings
         ),
-        NavigationItems(
-            route = Screen.PhotoDetailScreen.route,
-            title = "✨ Surprise me ✨",
-            unselectedIcon = Icons.Outlined.ShoppingCart,
-            selectedIcon = Icons.Default.ShoppingCart
-        )
+//        NavigationItems(
+//            route = Screen.PhotoDetailScreen.route,
+//            title = "✨ Surprise me ✨",
+//            unselectedIcon = Icons.Outlined.ShoppingCart,
+//            selectedIcon = Icons.Default.ShoppingCart
+//        )
     )
 
     ModalNavigationDrawer(
@@ -173,11 +163,10 @@ fun HomeScreen(
                         )
                     )
                 }
-                Spacer(modifier = Modifier.weight(1f))
                 NavigationDrawerItem(
                     label = {
                         Text(
-                            text = "Help",
+                            text = "✨ Surprise me ✨",
                             fontFamily = Sarala,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
@@ -197,9 +186,51 @@ fun HomeScreen(
                     },
                     icon = {
                         Icon(
-                            imageVector = if (selectedItemIndex == items.size) {
-                                Icons.Default.ThumbUp
-                            } else Icons.Outlined.ThumbUp,
+                            painter = if (selectedItemIndex == items.size) {
+                                painterResource(id = R.drawable.giftcard_outlined)
+                            } else painterResource(id = R.drawable.giftcard_outlined),
+                            contentDescription = null
+                        )
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                    colors = NavigationDrawerItemDefaults.colors(
+                        selectedContainerColor = Color.Transparent,
+                        unselectedContainerColor = Color.Transparent,
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        unselectedTextColor = MaterialTheme.colorScheme.onBackground,
+                        unselectedIconColor = MaterialTheme.colorScheme.onBackground
+                    )
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                NavigationDrawerItem(
+                    label = {
+                        Text(
+                            text = "Help",
+                            fontFamily = Sarala,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    },
+                    selected = selectedItemIndex == items.size+1,
+                    onClick = {
+                        selectedItemIndex = items.size+1
+                        scope.launch {
+                            drawerState.close()
+                        }
+//                        val currentState = lifeCycleOwner.lifecycle.currentState
+//                        if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+//                            navController
+//                                .navigate(Screen.RandomScreen.route)
+//                        }
+                    },
+                    icon = {
+                        Icon(
+                            painter = if (selectedItemIndex == items.size+1) {
+                                painterResource(id = R.drawable.help_filled)
+                            } else painterResource(id = R.drawable.help_outlined),
                             contentDescription = "help"
                         )
                     },
