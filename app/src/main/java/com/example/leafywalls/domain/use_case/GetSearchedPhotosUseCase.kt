@@ -61,10 +61,11 @@ class SearchedPhotoListPagingSource(
                 color = color,
                 orientation = orientation
             )
-            val endOfPaginationReached = response.results.isEmpty()
-            if (response.results.isNotEmpty()) {
+            val filteredResponse = response.results.filter { it.sponsorship == null }
+            val endOfPaginationReached = filteredResponse.isEmpty()
+            if (filteredResponse.isNotEmpty()) {
                 LoadResult.Page(
-                    data = response.results,
+                    data = filteredResponse,
                     prevKey = null,
                     nextKey = if (endOfPaginationReached) null else page + 1
                 )

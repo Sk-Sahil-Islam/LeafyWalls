@@ -13,10 +13,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -184,14 +182,14 @@ fun HomeScreen(
                                 .navigate(Screen.RandomScreen.route)
                         }
                     },
-                    icon = {
-                        Icon(
-                            painter = if (selectedItemIndex == items.size) {
-                                painterResource(id = R.drawable.giftcard_outlined)
-                            } else painterResource(id = R.drawable.giftcard_outlined),
-                            contentDescription = null
-                        )
-                    },
+//                    icon = {
+//                        Icon(
+//                            painter = if (selectedItemIndex == items.size) {
+//                                painterResource(id = R.drawable.giftcard_outlined)
+//                            } else painterResource(id = R.drawable.giftcard_outlined),
+//                            contentDescription = null
+//                        )
+//                    },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
                     colors = NavigationDrawerItemDefaults.colors(
                         selectedContainerColor = Color.Transparent,
