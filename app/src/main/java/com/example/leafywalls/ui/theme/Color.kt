@@ -1,5 +1,6 @@
 package com.example.leafywalls.ui.theme
 
+import androidx.compose.material3.SearchBarColors
 import androidx.compose.ui.graphics.Color
 
 //dark
@@ -33,3 +34,7 @@ val SecondaryContainerDark = Color(0xFF3E4B20)
 
 val OnPrimaryContainerDark = Color(0xFFE2F5CE)
 val OnPrimaryContainerLight = Color(0xFF223011)
+
+
+val SearchBarDark = Color(0xFF2A381A)
+val SearchBarLight = Color(0xFFE5FDC7)

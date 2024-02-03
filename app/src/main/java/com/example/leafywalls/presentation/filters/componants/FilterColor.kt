@@ -45,8 +45,7 @@ import com.example.leafywalls.ui.theme.Sarala
 @Composable
 fun FilterColor(
     modifier: Modifier = Modifier,
-    viewModel: SearchScreenViewModel = hiltViewModel(),
-    onClick: () -> Unit
+    viewModel: SearchScreenViewModel = hiltViewModel()
 ) {
     val options = viewModel.colorOptions
 

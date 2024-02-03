@@ -1,34 +1,24 @@
 package com.example.leafywalls.presentation.search_screen.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,59 +27,43 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.leafywalls.R
-import com.example.leafywalls.data.db.History
-import com.example.leafywalls.presentation.search_screen.SearchEvent
-import com.example.leafywalls.presentation.search_screen.SearchScreenViewModel
 import com.example.leafywalls.ui.theme.Sarala
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import com.example.leafywalls.ui.theme.SearchBarDark
+import com.example.leafywalls.ui.theme.SearchBarLight
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
     value: String,
     enabled: Boolean = true,
     singleLined: Boolean = true,
-    paddingValue: (Dp) -> Unit,
+    isFocused: MutableState<Boolean>,
+    onFocusChange: (Boolean) -> Unit,
     onValueChange: (String) -> Unit,
-    onSearch: () -> Unit,
-    onClickRow: (String) -> Unit
+    onSearch: () -> Unit
 ) {
-
-
-    val isFocused = remember { mutableStateOf(false) }
 
     val clipAnim = remember { Animatable(initialValue = 100f) }
     val clipAnimBottom = remember { Animatable(initialValue = 100f) }
     val paddingHorizontal = remember { Animatable(initialValue = 1f) }
-    val density = LocalDensity.current
-    val focusManager = LocalFocusManager.current
 
     val heightAnim = remember { Animatable(initialValue = 0f) }
 
@@ -139,237 +113,283 @@ fun SearchBar(
 
     Box(modifier = modifier) {
 
+        val interactionSource = remember { MutableInteractionSource() }
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
 
-            TextField(
-                modifier = Modifier
-                    .padding(horizontal = (24 * paddingHorizontal.value).dp)
-                    .fillMaxWidth()
-                    .onFocusChanged {
-                        isFocused.value = it.hasFocus
-                    }
-                    .onGloballyPositioned {
-                        val textFieldHeight = with(density) {
-                            it.size.height.toDp()
-                        }
-                        paddingValue(textFieldHeight)
-                    }.shadow(
-                        elevation = 5.dp,
-                        shape = RoundedCornerShape(
-                            topStart = clipAnim.value,
-                            topEnd = clipAnim.value,
-                            bottomStart = clipAnimBottom.value,
-                            bottomEnd = clipAnimBottom.value
-                        ),
-                    )
-                    .clip(RoundedCornerShape(topStart = clipAnim.value, topEnd = clipAnim.value))
-                    .clip(
-                        RoundedCornerShape(
-                            bottomStart = clipAnimBottom.value, bottomEnd = clipAnimBottom.value
-                        )
-                    )
-                    ,
-                onValueChange = onValueChange,
+//            TextField(
+//                modifier = Modifier
+//                    .padding(horizontal = (24 * paddingHorizontal.value).dp)
+//                    .fillMaxWidth()
+//                    .onFocusChanged {
+//                        isFocused.value = it.hasFocus
+//                        onFocusChange(it.hasFocus)
+//                    }
+//                    .clip(RoundedCornerShape(clipAnim.value)),
+//                onValueChange = onValueChange,
+//                value = value,
+//                textStyle = TextStyle.Default.copy(
+//                    fontFamily = Sarala,
+//                    fontSize = 18.sp,
+//                    color = MaterialTheme.colorScheme.onBackground
+//                ),
+//                enabled = enabled, visualTransformation = VisualTransformation.None, placeholder = {
+//                    Text(
+//                        text = "Search...", style = TextStyle.Default.copy(
+//                            fontFamily = Sarala,
+//                            fontSize = 18.sp,
+//                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+//                        )
+//                    )
+//                },
+//                trailingIcon = {
+//                    IconButton(
+//                        onClick = {
+//                            onSearch()
+//                        }
+//                    ) {
+//                        Icon(
+//                            modifier = Modifier.size(28.dp),
+//                            imageVector = Icons.Outlined.Search,
+//                            contentDescription = "search",
+//                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+//                        )
+//                    }
+//                },
+//                colors = TextFieldDefaults.colors(
+//                    unfocusedIndicatorColor = Color.Unspecified,
+//                    focusedIndicatorColor = MaterialTheme.colorScheme.primary.copy(0.8f),
+//                    unfocusedContainerColor = if(isSystemInDarkTheme()) SearchBarDark else SearchBarLight,
+//                    focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+//                ),
+//                singleLine = singleLined,
+//                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+//                keyboardActions = KeyboardActions(onSearch = { onSearch() })
+//            )
+
+            BasicTextField(
                 value = value,
-                textStyle = TextStyle.Default.copy(
+
+                onValueChange = onValueChange,
+                textStyle = TextStyle(
                     fontFamily = Sarala,
                     fontSize = 18.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 ),
-                enabled = enabled, visualTransformation = VisualTransformation.None, placeholder = {
-                    Text(
-                        text = "Search...", style = TextStyle.Default.copy(
-                            fontFamily = Sarala,
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-                        )
-                    )
-                },
-                trailingIcon = {
-                    IconButton(
-                        onClick = {
-                            onSearch()
-                        }
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(28.dp),
-                            imageVector = Icons.Outlined.Search,
-                            contentDescription = "search",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = (24 * paddingHorizontal.value).dp)
+                    .onFocusChanged {
+                        isFocused.value = it.hasFocus
+                        onFocusChange(it.hasFocus)
                     }
-                },
-                colors = TextFieldDefaults.colors(
-                    unfocusedIndicatorColor = Color.Unspecified,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.primary.copy(0.8f),
-                    unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                    focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                ),
+                    .clip(RoundedCornerShape(clipAnim.value))
+
+//                    .background(
+//                        color = MaterialTheme.colorScheme.background,
+//                        shape = RoundedCornerShape(clipAnim.value)
+//                    )
+                    .height(55.dp),
+                interactionSource = interactionSource,
+                enabled = enabled,
                 singleLine = singleLined,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = {onSearch()})
-            )
-
-            SearchBarHistory(
-                modifier = Modifier.zIndex(1f),
-                height = heightAnim.value,
-                horizontalPadding = (paddingHorizontal.value * 24).dp,
-                onClick = {
-                    focusManager.clearFocus()
-                    onClickRow(it)
-                }
-            )
-        }
-    }
-}
-
-@Composable
-fun SearchBarHistory(
-    modifier: Modifier = Modifier,
-    height: Float,
-    horizontalPadding: Dp = 0.dp,
-    viewModel: SearchScreenViewModel = hiltViewModel(),
-    onClick: (String) -> Unit
-) {
-
-    val state = viewModel.state.collectAsState()
-
-    val minHeight = when (state.value.histories.size){
-        0 -> {0}
-        in listOf(1,2,3) -> {
-            (state.value.histories.size * 65) + 62
-        }
-        else ->  {332}
-    }
-
-    val deletedItem = remember {
-        mutableStateListOf<History>()
-    }
-
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = horizontalPadding)
-            .clip(AbsoluteRoundedCornerShape(bottomLeft = 16.dp, bottomRight = 16.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height((minHeight * height).dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if(state.value.histories.isNotEmpty()) {
-                Spacer(modifier = Modifier.size(3.dp))
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Recent",
-                        fontFamily = Sarala,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    IconButton(onClick = { viewModel.onEvent(SearchEvent.ClearHistory) }) {
-
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_clear_all_24),
-                            contentDescription = "clear all"
-                        )
-                    }
-                }
-            }
-
-            LazyColumn(
-                Modifier
-                    .padding(horizontal = 3.dp)
-                    .heightIn(max = 248.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                keyboardActions = KeyboardActions(onSearch = { onSearch() })
             ) {
-                itemsIndexed(items = state.value.histories, itemContent = { _, item->
-                    AnimatedVisibility(
-                        visible = !deletedItem.contains(item),
-                        exit = slideOutHorizontally(targetOffsetX = { -it }),
-
-                    ) {
-                        val scope = CoroutineScope(Dispatchers.Default)
-                        HistoryRow(
-                            history = item.text,
-                            onDelete = {
-                                scope.launch {
-                                    deletedItem.add(item)
-                                    delay(600)
-                                    viewModel.onEvent(SearchEvent.DeleteHistory(item))
-                                }
-                            },
-                            onClick = {
-                                onClick(it)
-                            }
+                TextFieldDefaults.DecorationBox(
+                    value = value,
+                    innerTextField = it,
+                    enabled = enabled,
+                    singleLine = singleLined,
+                    visualTransformation = VisualTransformation.None,
+                    interactionSource = interactionSource,
+                    placeholder = {
+                        Text(
+                            text = "Search",
+                            style = TextStyle.Default.copy(
+                                fontFamily = Sarala,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                            )
                         )
-                    }
-                })
-            }
-            if (state.value.histories.size >= 4) {
-                Icon(
-                    imageVector = Icons.Rounded.KeyboardArrowDown,
-                    contentDescription = "scroll down",
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                onSearch()
+                            }
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(28.dp),
+                                imageVector = Icons.Outlined.Search,
+                                contentDescription = "search",
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                    },
+                    colors = TextFieldDefaults.colors(
+                        unfocusedIndicatorColor = Color.Unspecified,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.primary.copy(0.8f),
+                        unfocusedContainerColor = if (isSystemInDarkTheme()) SearchBarDark else SearchBarLight,
+                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                    ),
+                    contentPadding = TextFieldDefaults.contentPaddingWithoutLabel(
+                        top = 0.dp,
+                        bottom = 0.dp,
+                    )
                 )
             }
-            if(state.value.histories.isNotEmpty()) {
-                Spacer(modifier = Modifier.size(2.dp))
-            }
         }
     }
 }
 
-@Composable
-fun HistoryRow(
-    modifier: Modifier = Modifier,
-    history: String,
-    onDelete: () -> Unit,
-    onClick: (String) -> Unit
-) {
-
-    val interactionSource = remember { MutableInteractionSource() }
-
-    Row(
-        modifier = modifier
-            .padding(horizontal = 5.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.onPrimaryContainer.copy(0.05f))
-            .fillMaxWidth()
-            .height(60.dp)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = {
-                    onClick(history)
-                }
-            ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Spacer(modifier = Modifier.width(10.dp))
-        Text(
-            text = history,
-            fontFamily = Sarala,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        IconButton(
-            modifier = Modifier.size(43.dp),
-            onClick = onDelete
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Close,
-                contentDescription = "delete",
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
-    }
-}
+//@Composable
+//fun SearchBarHistory(
+//    modifier: Modifier = Modifier,
+//    height: Float,
+//    horizontalPadding: Dp = 0.dp,
+//    viewModel: SearchScreenViewModel = hiltViewModel(),
+//    onClick: (String) -> Unit
+//) {
+//
+//    val state = viewModel.state.collectAsState()
+//
+//    val minHeight = when (state.value.histories.size){
+//        0 -> {0}
+//        in listOf(1,2,3) -> {
+//            (state.value.histories.size * 65) + 62
+//        }
+//        else ->  {332}
+//    }
+//
+//    val deletedItem = remember {
+//        mutableStateListOf<History>()
+//    }
+//
+//    Box(
+//        modifier = modifier
+//            .fillMaxWidth()
+//            .padding(horizontal = horizontalPadding)
+//            .clip(AbsoluteRoundedCornerShape(bottomLeft = 16.dp, bottomRight = 16.dp))
+//            .background(MaterialTheme.colorScheme.primaryContainer)
+//    ) {
+//        Column(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height((minHeight * height).dp),
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            if(state.value.histories.isNotEmpty()) {
+//                Spacer(modifier = Modifier.size(3.dp))
+//                Row(
+//                    Modifier
+//                        .fillMaxWidth()
+//                        .height(60.dp)
+//                        .padding(16.dp),
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Text(
+//                        text = "Recent",
+//                        fontFamily = Sarala,
+//                        fontWeight = FontWeight.SemiBold
+//                    )
+//                    IconButton(onClick = { viewModel.onEvent(SearchEvent.ClearHistory) }) {
+//
+//                        Icon(
+//                            painter = painterResource(id = R.drawable.round_clear_all_24),
+//                            contentDescription = "clear all"
+//                        )
+//                    }
+//                }
+//            }
+//
+//            LazyColumn(
+//                Modifier
+//                    .padding(horizontal = 3.dp)
+//                    .heightIn(max = 248.dp),
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//                verticalArrangement = Arrangement.spacedBy(4.dp)
+//            ) {
+//                itemsIndexed(items = state.value.histories, itemContent = { _, item->
+//                    AnimatedVisibility(
+//                        visible = !deletedItem.contains(item),
+//                        exit = slideOutHorizontally(targetOffsetX = { -it }),
+//
+//                    ) {
+//                        val scope = CoroutineScope(Dispatchers.Default)
+//                        HistoryRow(
+//                            history = item.text,
+//                            onDelete = {
+//                                scope.launch {
+//                                    deletedItem.add(item)
+//                                    delay(600)
+//                                    viewModel.onEvent(SearchEvent.DeleteHistory(item))
+//                                }
+//                            },
+//                            onClick = {
+//                                onClick(it)
+//                            }
+//                        )
+//                    }
+//                })
+//            }
+//            if (state.value.histories.size >= 4) {
+//                Icon(
+//                    imageVector = Icons.Rounded.KeyboardArrowDown,
+//                    contentDescription = "scroll down",
+//                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+//                )
+//            }
+//            if(state.value.histories.isNotEmpty()) {
+//                Spacer(modifier = Modifier.size(2.dp))
+//            }
+//        }
+//    }
+//}
+//
+//@Composable
+//fun HistoryRow(
+//    modifier: Modifier = Modifier,
+//    history: String,
+//    onDelete: () -> Unit,
+//    onClick: (String) -> Unit
+//) {
+//
+//    val interactionSource = remember { MutableInteractionSource() }
+//
+//    Row(
+//        modifier = modifier
+//            .padding(horizontal = 5.dp)
+//            .clip(RoundedCornerShape(16.dp))
+//            .background(MaterialTheme.colorScheme.onPrimaryContainer.copy(0.05f))
+//            .fillMaxWidth()
+//            .height(60.dp)
+//            .clickable(
+//                interactionSource = interactionSource,
+//                indication = null,
+//                onClick = {
+//                    onClick(history)
+//                }
+//            ),
+//        verticalAlignment = Alignment.CenterVertically
+//    ) {
+//        Spacer(modifier = Modifier.width(10.dp))
+//        Text(
+//            text = history,
+//            fontFamily = Sarala,
+//            color = MaterialTheme.colorScheme.onPrimaryContainer
+//        )
+//        Spacer(modifier = Modifier.weight(1f))
+//        IconButton(
+//            modifier = Modifier.size(43.dp),
+//            onClick = onDelete
+//        ) {
+//            Icon(
+//                imageVector = Icons.Rounded.Close,
+//                contentDescription = "delete",
+//                tint = MaterialTheme.colorScheme.onPrimaryContainer
+//            )
+//        }
+//    }
+//}

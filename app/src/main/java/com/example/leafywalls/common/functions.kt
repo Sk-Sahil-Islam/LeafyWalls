@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import com.example.leafywalls.R
+import com.example.leafywalls.presentation.search_screen.SearchState1
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.random.Random
@@ -129,4 +130,13 @@ fun generateRandomColor(): Color {
 
     val random = Random.Default
     return Color(random.nextInt(256)/255f, random.nextInt(256)/255f, random.nextInt(256)/255f)
+}
+
+fun areSearchStatesEqual(state1: SearchState1, state2: SearchState1): Boolean {
+    return state1.query == state2.query &&
+            state1.isLoading == state2.isLoading &&
+            state1.sortOption == state2.sortOption &&
+            state1.orientation == state2.orientation &&
+            state1.color == state2.color &&
+            state1.safeSearch == state2.safeSearch
 }

@@ -31,7 +31,6 @@ import com.example.leafywalls.ui.theme.Sarala
 @Composable
 fun FilterSafeSearch(
     modifier: Modifier = Modifier,
-    onClick: (String) -> Unit,
     viewModel: SearchScreenViewModel = hiltViewModel()
 ) {
     Column(

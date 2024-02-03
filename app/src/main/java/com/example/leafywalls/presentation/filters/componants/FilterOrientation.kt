@@ -19,7 +19,6 @@ import com.example.leafywalls.ui.theme.Sarala
 @Composable
 fun FilterOrientation(
     modifier: Modifier = Modifier,
-    onClick: (String) -> Unit,
     viewModel: SearchScreenViewModel = hiltViewModel()
 ) {
     Column(

@@ -36,8 +36,8 @@ class PhotoRepositoryImpl @Inject constructor(
     override suspend fun getSearchedPhotos(
         page: Int,
         query: String,
-        orderBy: String,
-        safeSearch: String,
+        orderBy: String?,
+        safeSearch: String?,
         color: String?,
         orientation: String?
     ): SearchDto {

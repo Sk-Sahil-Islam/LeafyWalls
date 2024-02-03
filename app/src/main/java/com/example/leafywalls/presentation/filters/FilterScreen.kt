@@ -24,13 +24,13 @@ fun FilterScreen(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
 
-        FilterSort(onClick = {})
+        FilterSort()
 
-        FilterOrientation(onClick = {})
+        FilterOrientation()
 
-        FilterColor(onClick = {})
+        FilterColor()
 
-        FilterSafeSearch(onClick = {})
+        FilterSafeSearch()
     }
 }
 

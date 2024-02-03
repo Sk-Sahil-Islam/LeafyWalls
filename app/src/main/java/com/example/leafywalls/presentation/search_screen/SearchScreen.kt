@@ -8,12 +8,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,6 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -33,7 +40,8 @@ import com.example.leafywalls.presentation.filters.FilterScreen
 import com.example.leafywalls.presentation.search_screen.components.SearchBar
 import com.example.leafywalls.presentation.search_screen.components.SearchList
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+//@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
@@ -41,58 +49,85 @@ fun SearchScreen(
     navController: NavController
 ) {
 
-    var searchBarHeight by remember { mutableStateOf(0.dp) }
+    val searchBarHeight by remember { mutableStateOf(0.dp) }
     var currentPageIndex by rememberSaveable { mutableStateOf(0) }
+
+    val isFocused = remember { mutableStateOf(false) }
 
     val historyState by viewModel.state.collectAsState()
     var text by remember { historyState.query }
+
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Red)
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            if(currentPageIndex==0) {
-                SearchBar(
-                    modifier = Modifier
-                        .zIndex(1f)
-                        .clearFocusOnKeyboardDismiss(),
-                    value = historyState.query.value,
-                    onValueChange = {
-                        text = it
-                        historyState.query.value = it
-                    },
-                    onSearch = {
-                        if (currentPageIndex==0 && text.isNotBlank()) {
-                            viewModel.onEvent(SearchEvent.OnSearch(text))
-                            currentPageIndex = 1
-                        }
-                    },
-                    paddingValue = { paddingValues ->
-                        searchBarHeight = paddingValues
-                    },
-                    onClickRow = {
-                        text = it
-                        historyState.query.value = it
-                    }
-                )
-            }
+            CenterAlignedTopAppBar(
+                title = {
+                    SearchBar(
+                        modifier = Modifier
+                            .clearFocusOnKeyboardDismiss(),
+                        value = historyState.query.value,
+                        onValueChange = {
+                            text = it
+                            historyState.query.value = it
+                        },
+                        isFocused = isFocused,
+                        onSearch = {
+                            if (currentPageIndex == 0 && text.isNotBlank()) {
+                                viewModel.onEvent(SearchEvent.OnSearch(text))
+                                currentPageIndex = 1
+                            }
+                        },
+                        onFocusChange = {}
+//                        paddingValue = { paddingValues ->
+//                            searchBarHeight = paddingValues
+//                        }
+                    )
+                },
+                scrollBehavior = scrollBehavior
+            )
+//            SearchBar(
+//                modifier = Modifier
+//                    .zIndex(1f)
+//                    .clearFocusOnKeyboardDismiss(),
+//                value = historyState.query.value,
+//                onValueChange = {
+//                    text = it
+//                    historyState.query.value = it
+//                },
+//                onSearch = {
+//                    if (currentPageIndex == 0 && text.isNotBlank()) {
+//                        viewModel.onEvent(SearchEvent.OnSearch(text))
+//                        currentPageIndex = 1
+//                    }
+//                },
+//                paddingValue = { paddingValues ->
+//                    searchBarHeight = paddingValues
+//                }
+//            )
+
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    if (currentPageIndex==0 && text.isNotBlank()) {
+                    if (currentPageIndex == 0 && text.isNotBlank()) {
                         viewModel.onEvent(SearchEvent.OnSearch(text))
                         currentPageIndex = 1
-                    }
-                    else{
+                    } else {
                         currentPageIndex = 0
                     }
                 }
             ) {
-                if(currentPageIndex==0) {
+                if (currentPageIndex == 0) {
                     Icon(
                         imageVector = Icons.Rounded.Search,
                         contentDescription = "Search"
                     )
-                }
-                else {
+                } else {
                     Icon(
                         painter = painterResource(id = R.drawable.round_tune_24),
                         contentDescription = "filter"
@@ -105,6 +140,8 @@ fun SearchScreen(
         Box(
             modifier = modifier
                 .fillMaxSize()
+                .padding(it)
+                .background(Color.Red)
                 .background(MaterialTheme.colorScheme.background)
 
         ) {
@@ -116,6 +153,7 @@ fun SearchScreen(
                         Spacer(modifier = Modifier.height(searchBarHeight))
                         FilterScreen()
                     }
+
                     1 -> {
                         SearchList(
                             navController = navController

@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,6 +23,7 @@ import com.example.leafywalls.presentation.home_screen.HomeScreen
 import com.example.leafywalls.presentation.search_screen.SearchScreen
 import com.example.leafywalls.presentation.photo_details.PhotoDetailScreen
 import com.example.leafywalls.presentation.random_photo.RandomScreen
+import com.example.leafywalls.presentation.search_screen.SearchScreen1
 import com.example.leafywalls.ui.theme.LeafyWallsTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -76,20 +79,15 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = Screen.SearchScreen.route,
                             enterTransition = {
-                                slideIntoContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Down,
-                                    animationSpec = tween(500)
-                                )
+                                fadeIn(animationSpec = tween(500))
                             },
                             exitTransition = {
-                                slideOutOfContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Up,
-                                    animationSpec = tween(500)
-                                )
+                                fadeOut(animationSpec = tween(500))
                             },
                         ) {
-                            SearchScreen(navController = navController)
+                            SearchScreen1(navController = navController)
                         }
+
 
                     }
                 }

@@ -21,8 +21,8 @@ class GetSearchedPhotosUseCase @Inject constructor(
 
     fun invoke(
         query: String,
-        orderBy: String,
-        safeSearch: String,
+        orderBy: String?,
+        safeSearch: String?,
         color: String?,
         orientation: String?
     ): Flow<PagingData<PhotoDto>> = Pager(
@@ -42,8 +42,8 @@ class GetSearchedPhotosUseCase @Inject constructor(
 class SearchedPhotoListPagingSource(
     private val repository: PhotoRepository,
     private val query: String,
-    private val orderBy: String,
-    private val safeSearch: String,
+    private val orderBy: String?,
+    private val safeSearch: String?,
     private val color: String?,
     private val orientation: String?
 ) : PagingSource<Int, PhotoDto>() {
