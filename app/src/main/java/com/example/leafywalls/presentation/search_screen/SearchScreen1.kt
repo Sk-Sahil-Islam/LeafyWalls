@@ -1,23 +1,23 @@
 package com.example.leafywalls.presentation.search_screen
 
-import androidx.compose.animation.ExperimentalAnimationApi
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -34,6 +34,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -45,12 +46,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.leafywalls.R
 import com.example.leafywalls.common.areSearchStatesEqual
 import com.example.leafywalls.common.clearFocusOnKeyboardDismiss
 import com.example.leafywalls.presentation.filters.FilterScreen1
-import com.example.leafywalls.presentation.photo_details.components.DetailIcon
-import com.example.leafywalls.presentation.photo_details.components.PhotoDetailInfo
 import com.example.leafywalls.presentation.search_screen.components.SearchBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,13 +60,14 @@ fun SearchScreen1(
     viewModel1: SearchScreenViewModel1 = hiltViewModel(),
     navController: NavController
 ) {
+    val newQuery = remember { mutableStateOf("") }
 
     val lifeCycleOwner = LocalLifecycleOwner.current
+    val searchState by viewModel1.searchState.collectAsState()
 
-    val searchBarHeight by remember { mutableStateOf(0.dp) }
     var currentPageIndex by rememberSaveable { mutableStateOf(0) }
     val focusManager = LocalFocusManager.current
-    var text by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf(searchState.query) }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
@@ -74,10 +75,8 @@ fun SearchScreen1(
 
     var isSheetOpen by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    val searchState by viewModel1.searchState.collectAsState()
-    var prevState = remember { searchState }
-
+    
+    val prevState by viewModel1.prevState.collectAsState()
 
     Scaffold(
         modifier = Modifier
@@ -95,12 +94,12 @@ fun SearchScreen1(
                     },
                     onValueChange = {
                         text = it
-
+                        viewModel1.onEvent(SearchEvent1.UpdateQuery(text))
                     },
                     onSearch = {
                         if (text.isNotBlank()) {
-                            viewModel1.onEvent(SearchEvent1.UpdateQuery(text))
-                            viewModel1.onEvent(SearchEvent1.OnSearch(text))
+                            viewModel1.onEvent(SearchEvent1.OnSearch)
+                            viewModel1.updatePrevState()
                             currentPageIndex = 1
                         }
                         focusManager.clearFocus()
@@ -117,17 +116,18 @@ fun SearchScreen1(
                     },
                     onValueChange = {
                         text = it
-
+                        viewModel1.onEvent(SearchEvent1.UpdateQuery(text))
                     },
                     onSearch = {
-                        if (text.isNotBlank() && !areSearchStatesEqual(
-                                state1 = searchState,
-                                state2 = prevState
-                            )
-                        ) {
-                            viewModel1.onEvent(SearchEvent1.UpdateQuery(text))
-                            viewModel1.onEvent(SearchEvent1.OnSearch(text))
-                            prevState = searchState
+                        Log.e("checking test prevState", prevState.toString())
+                        Log.e("checking test searchState", searchState.toString())
+                        Log.e("checking test", areSearchStatesEqual(searchState, prevState).toString())
+                        Log.e("checking test if statement ", (text.isNotBlank() && (!areSearchStatesEqual(searchState, prevState) || searchState.query != prevState.query)).toString())
+
+                        if (text.isNotBlank() && (!areSearchStatesEqual(searchState, prevState) || searchState.query != prevState.query)) {
+                            viewModel1.onEvent(SearchEvent1.OnSearch)
+                            viewModel1.updatePrevState()
+                            newQuery.value = text
                         }
                         focusManager.clearFocus()
                     },
@@ -136,26 +136,13 @@ fun SearchScreen1(
                         if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
                             navController.popBackStack()
                         }
+                    },
+                    onFilter = {
+                        isSheetOpen = true
                     }
                 )
             }
 
-        },
-        floatingActionButton = {
-            if (currentPageIndex != 0) {
-
-                FloatingActionButton(
-                    onClick = {
-                        isSheetOpen = true
-                    },
-                    containerColor = MaterialTheme.colorScheme.primary
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_tune_24),
-                        contentDescription = "filter"
-                    )
-                }
-            }
         }
     ) {
 
@@ -172,7 +159,6 @@ fun SearchScreen1(
 
                 when (currentPageIndex) {
                     0 -> {
-                        Spacer(modifier = Modifier.height(searchBarHeight))
                         FilterScreen1(
                             onUpdateSort = { sortOption ->
                                 viewModel1.onEvent(SearchEvent1.UpdateSort(sortOption))
@@ -191,12 +177,15 @@ fun SearchScreen1(
 
                     1 -> {
                         SearchList1(
-                            navController = navController
+                            navController = navController,
+                            query = newQuery.value
                         )
                     }
                 }
             }
             if (isSheetOpen) {
+
+
                 ModalBottomSheet(
                     sheetState = sheetState,
                     onDismissRequest = {
@@ -205,15 +194,39 @@ fun SearchScreen1(
                                 state2 = prevState
                             )
                         ) {
-                            viewModel1.onEvent(SearchEvent1.UpdateQuery(text))
-                            viewModel1.onEvent(SearchEvent1.OnSearch(text))
-                            prevState = searchState
+                            viewModel1.onEvent(SearchEvent1.ResetToPreviousState)
                         }
                         focusManager.clearFocus()
                         isSheetOpen = false
                     },
                     containerColor = MaterialTheme.colorScheme.background
                 ) {
+                    Box(
+                        modifier
+                            .background(Color.Red)
+                    ) {
+                        if(!areSearchStatesEqual(searchState, prevState)) {
+                            Row {
+                                Icon(
+                                    modifier = Modifier
+                                        .clickable {
+                                            viewModel1.onEvent(SearchEvent1.ResetToPreviousState)
+                                        },
+                                    imageVector = Icons.Outlined.Refresh,
+                                    contentDescription = "undo"
+                                )
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Icon(
+                                    modifier = Modifier
+                                        .clickable {
+                                                   viewModel1.onEvent(SearchEvent1.OnSearch)
+                                        },
+                                    imageVector = Icons.Rounded.Check,
+                                    contentDescription = "apply"
+                                )
+                            }
+                        }
+                    }
 
                     FilterScreen1(
                         onUpdateSort = { sortOption ->
@@ -276,26 +289,37 @@ fun TopAppBarSearchList(
     onFocusChange: (Boolean) -> Unit,
     onValueChange: (String) -> Unit,
     onSearch: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onFilter: () -> Unit
 ) {
     TopAppBar(
         modifier = Modifier.padding(horizontal = 5.dp),
         navigationIcon = {
-            Icon(
+            Box(
                 modifier = Modifier
                     .size(38.dp)
-                    .clip(CircleShape)
+                    .clip(RoundedCornerShape(8.dp))
                     .clickable { onBack() }
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)),
-                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.background
-            )
+                    .background(MaterialTheme.colorScheme.background),
+                contentAlignment = Alignment.Center
+            ) {
+
+                Icon(
+                    modifier = Modifier
+                        .size(38.dp)
+//                        .clip(CircleShape)
+//                        .clickable { onBack() }
+//                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.8f))
+                    ,
+                    imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                    contentDescription = "back",
+                    tint = MaterialTheme.colorScheme.primary.copy(0.75f)
+                )
+            }
         },
         title = {
             SearchBar(
                 modifier = modifier
-                    .padding(start = 10.dp)
                     .clearFocusOnKeyboardDismiss(),
                 value = value,
                 isFocused = isFocused,
@@ -303,6 +327,25 @@ fun TopAppBarSearchList(
                 onSearch = onSearch,
                 onFocusChange = onFocusChange
             )
+        },
+        actions = {
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable { onFilter() }
+                    .background(MaterialTheme.colorScheme.primary.copy(0.75f)),
+                contentAlignment = Alignment.Center
+            ) {
+
+                Icon(
+                    modifier = Modifier
+                        .size(30.dp),
+                    painter = painterResource(id = R.drawable.round_tune_24),
+                    contentDescription = "filter",
+                    tint = MaterialTheme.colorScheme.background
+                )
+            }
         },
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.background)

@@ -133,8 +133,7 @@ fun generateRandomColor(): Color {
 }
 
 fun areSearchStatesEqual(state1: SearchState1, state2: SearchState1): Boolean {
-    return state1.query == state2.query &&
-            state1.isLoading == state2.isLoading &&
+    return state1.isLoading == state2.isLoading &&
             state1.sortOption == state2.sortOption &&
             state1.orientation == state2.orientation &&
             state1.color == state2.color &&

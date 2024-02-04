@@ -116,56 +116,6 @@ fun SearchBar(
         val interactionSource = remember { MutableInteractionSource() }
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
 
-//            TextField(
-//                modifier = Modifier
-//                    .padding(horizontal = (24 * paddingHorizontal.value).dp)
-//                    .fillMaxWidth()
-//                    .onFocusChanged {
-//                        isFocused.value = it.hasFocus
-//                        onFocusChange(it.hasFocus)
-//                    }
-//                    .clip(RoundedCornerShape(clipAnim.value)),
-//                onValueChange = onValueChange,
-//                value = value,
-//                textStyle = TextStyle.Default.copy(
-//                    fontFamily = Sarala,
-//                    fontSize = 18.sp,
-//                    color = MaterialTheme.colorScheme.onBackground
-//                ),
-//                enabled = enabled, visualTransformation = VisualTransformation.None, placeholder = {
-//                    Text(
-//                        text = "Search...", style = TextStyle.Default.copy(
-//                            fontFamily = Sarala,
-//                            fontSize = 18.sp,
-//                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-//                        )
-//                    )
-//                },
-//                trailingIcon = {
-//                    IconButton(
-//                        onClick = {
-//                            onSearch()
-//                        }
-//                    ) {
-//                        Icon(
-//                            modifier = Modifier.size(28.dp),
-//                            imageVector = Icons.Outlined.Search,
-//                            contentDescription = "search",
-//                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-//                        )
-//                    }
-//                },
-//                colors = TextFieldDefaults.colors(
-//                    unfocusedIndicatorColor = Color.Unspecified,
-//                    focusedIndicatorColor = MaterialTheme.colorScheme.primary.copy(0.8f),
-//                    unfocusedContainerColor = if(isSystemInDarkTheme()) SearchBarDark else SearchBarLight,
-//                    focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-//                ),
-//                singleLine = singleLined,
-//                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-//                keyboardActions = KeyboardActions(onSearch = { onSearch() })
-//            )
-
             BasicTextField(
                 value = value,
 
@@ -184,11 +134,6 @@ fun SearchBar(
                         onFocusChange(it.hasFocus)
                     }
                     .clip(RoundedCornerShape(clipAnim.value))
-
-//                    .background(
-//                        color = MaterialTheme.colorScheme.background,
-//                        shape = RoundedCornerShape(clipAnim.value)
-//                    )
                     .height(55.dp),
                 interactionSource = interactionSource,
                 enabled = enabled,
@@ -217,6 +162,7 @@ fun SearchBar(
                         IconButton(
                             onClick = {
                                 onSearch()
+
                             }
                         ) {
                             Icon(
@@ -242,154 +188,3 @@ fun SearchBar(
         }
     }
 }
-
-//@Composable
-//fun SearchBarHistory(
-//    modifier: Modifier = Modifier,
-//    height: Float,
-//    horizontalPadding: Dp = 0.dp,
-//    viewModel: SearchScreenViewModel = hiltViewModel(),
-//    onClick: (String) -> Unit
-//) {
-//
-//    val state = viewModel.state.collectAsState()
-//
-//    val minHeight = when (state.value.histories.size){
-//        0 -> {0}
-//        in listOf(1,2,3) -> {
-//            (state.value.histories.size * 65) + 62
-//        }
-//        else ->  {332}
-//    }
-//
-//    val deletedItem = remember {
-//        mutableStateListOf<History>()
-//    }
-//
-//    Box(
-//        modifier = modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = horizontalPadding)
-//            .clip(AbsoluteRoundedCornerShape(bottomLeft = 16.dp, bottomRight = 16.dp))
-//            .background(MaterialTheme.colorScheme.primaryContainer)
-//    ) {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height((minHeight * height).dp),
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ) {
-//            if(state.value.histories.isNotEmpty()) {
-//                Spacer(modifier = Modifier.size(3.dp))
-//                Row(
-//                    Modifier
-//                        .fillMaxWidth()
-//                        .height(60.dp)
-//                        .padding(16.dp),
-//                    horizontalArrangement = Arrangement.SpaceBetween,
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) {
-//                    Text(
-//                        text = "Recent",
-//                        fontFamily = Sarala,
-//                        fontWeight = FontWeight.SemiBold
-//                    )
-//                    IconButton(onClick = { viewModel.onEvent(SearchEvent.ClearHistory) }) {
-//
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.round_clear_all_24),
-//                            contentDescription = "clear all"
-//                        )
-//                    }
-//                }
-//            }
-//
-//            LazyColumn(
-//                Modifier
-//                    .padding(horizontal = 3.dp)
-//                    .heightIn(max = 248.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//                verticalArrangement = Arrangement.spacedBy(4.dp)
-//            ) {
-//                itemsIndexed(items = state.value.histories, itemContent = { _, item->
-//                    AnimatedVisibility(
-//                        visible = !deletedItem.contains(item),
-//                        exit = slideOutHorizontally(targetOffsetX = { -it }),
-//
-//                    ) {
-//                        val scope = CoroutineScope(Dispatchers.Default)
-//                        HistoryRow(
-//                            history = item.text,
-//                            onDelete = {
-//                                scope.launch {
-//                                    deletedItem.add(item)
-//                                    delay(600)
-//                                    viewModel.onEvent(SearchEvent.DeleteHistory(item))
-//                                }
-//                            },
-//                            onClick = {
-//                                onClick(it)
-//                            }
-//                        )
-//                    }
-//                })
-//            }
-//            if (state.value.histories.size >= 4) {
-//                Icon(
-//                    imageVector = Icons.Rounded.KeyboardArrowDown,
-//                    contentDescription = "scroll down",
-//                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-//                )
-//            }
-//            if(state.value.histories.isNotEmpty()) {
-//                Spacer(modifier = Modifier.size(2.dp))
-//            }
-//        }
-//    }
-//}
-//
-//@Composable
-//fun HistoryRow(
-//    modifier: Modifier = Modifier,
-//    history: String,
-//    onDelete: () -> Unit,
-//    onClick: (String) -> Unit
-//) {
-//
-//    val interactionSource = remember { MutableInteractionSource() }
-//
-//    Row(
-//        modifier = modifier
-//            .padding(horizontal = 5.dp)
-//            .clip(RoundedCornerShape(16.dp))
-//            .background(MaterialTheme.colorScheme.onPrimaryContainer.copy(0.05f))
-//            .fillMaxWidth()
-//            .height(60.dp)
-//            .clickable(
-//                interactionSource = interactionSource,
-//                indication = null,
-//                onClick = {
-//                    onClick(history)
-//                }
-//            ),
-//        verticalAlignment = Alignment.CenterVertically
-//    ) {
-//        Spacer(modifier = Modifier.width(10.dp))
-//        Text(
-//            text = history,
-//            fontFamily = Sarala,
-//            color = MaterialTheme.colorScheme.onPrimaryContainer
-//        )
-//        Spacer(modifier = Modifier.weight(1f))
-//        IconButton(
-//            modifier = Modifier.size(43.dp),
-//            onClick = onDelete
-//        ) {
-//            Icon(
-//                imageVector = Icons.Rounded.Close,
-//                contentDescription = "delete",
-//                tint = MaterialTheme.colorScheme.onPrimaryContainer
-//            )
-//        }
-//    }
-//}

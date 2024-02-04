@@ -35,11 +35,11 @@ import com.example.leafywalls.presentation.photo_list.components.PhotoListItemRe
 import com.example.leafywalls.ui.theme.Sarala
 import java.net.UnknownHostException
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchList1(
     navController: NavController,
-    viewModel1: SearchScreenViewModel1 = hiltViewModel()
+    viewModel1: SearchScreenViewModel1 = hiltViewModel(),
+    query: String
 ) {
 
     val photos = viewModel1.photos.value.collectAsLazyPagingItems()
@@ -65,7 +65,7 @@ fun SearchList1(
 
                 items(photos.itemCount) { index ->
 
-                    Row(modifier = Modifier.animateItemPlacement()) {
+                    Row {
 
                         photos[index]?.let { photoDto ->
                             PhotoListItem(
