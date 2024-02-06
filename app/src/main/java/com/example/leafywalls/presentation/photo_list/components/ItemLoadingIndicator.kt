@@ -15,11 +15,10 @@ fun ItemLoadingIndicator(
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier
-        .size(24.dp)
         .fillMaxWidth(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(8.dp)
                 .align(Alignment.Center)
         )
     }

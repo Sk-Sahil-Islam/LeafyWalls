@@ -212,9 +212,9 @@ fun HomeScreen(
                             fontWeight = FontWeight.SemiBold
                         )
                     },
-                    selected = selectedItemIndex == items.size+1,
+                    selected = selectedItemIndex == items.size + 1,
                     onClick = {
-                        selectedItemIndex = items.size+1
+                        selectedItemIndex = items.size + 1
                         scope.launch {
                             drawerState.close()
                         }
@@ -226,7 +226,7 @@ fun HomeScreen(
                     },
                     icon = {
                         Icon(
-                            painter = if (selectedItemIndex == items.size+1) {
+                            painter = if (selectedItemIndex == items.size + 1) {
                                 painterResource(id = R.drawable.help_filled)
                             } else painterResource(id = R.drawable.help_outlined),
                             contentDescription = "help"
@@ -331,17 +331,11 @@ fun HomeScreen(
             }
         }
     }
-    BackHandler {
-        if (drawerState.isOpen) {
+    if (drawerState.isOpen) {
+        BackHandler {
             scope.launch {
                 drawerState.close()
             }
         }
     }
-
-//    var text = remember { mutableStateOf("") }
-//    SearchBar(modifier = Modifier.clearFocusOnKeyboardDismiss(), value = text.value, onValueChange = { text.value = it }) {
-//
-//    }
-
 }

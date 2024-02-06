@@ -15,12 +15,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.home_screen.HomeScreen
-import com.example.leafywalls.presentation.search_screen.SearchScreen
 import com.example.leafywalls.presentation.photo_details.PhotoDetailScreen
 import com.example.leafywalls.presentation.random_photo.RandomScreen
 import com.example.leafywalls.presentation.search_screen.SearchScreen1
@@ -32,6 +32,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         setContent {
             LeafyWallsTheme {
                 val localFocusManager = LocalFocusManager.current
@@ -62,14 +63,14 @@ class MainActivity : ComponentActivity() {
                             enterTransition = {
                                 slideIntoContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                                    animationSpec = tween(700)
-                                )
+                                    animationSpec = tween(500)
+                                ) + fadeIn(tween(300, 200))
                             },
                             exitTransition = {
                                 slideOutOfContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                                    animationSpec = tween(700)
-                                )
+                                    animationSpec = tween(500)
+                                ) + fadeOut(tween(250, 100))
                             },
                         ) {
                             PhotoDetailScreen(navController = navController)
@@ -78,17 +79,15 @@ class MainActivity : ComponentActivity() {
 
                         composable(
                             route = Screen.SearchScreen.route,
-                            enterTransition = {
-                                fadeIn(animationSpec = tween(500))
-                            },
                             exitTransition = {
-                                fadeOut(animationSpec = tween(500))
+                                fadeOut(animationSpec = tween(250))
                             },
+                            popEnterTransition = {
+                                fadeIn(animationSpec = tween(250))
+                            }
                         ) {
                             SearchScreen1(navController = navController)
                         }
-
-
                     }
                 }
             }

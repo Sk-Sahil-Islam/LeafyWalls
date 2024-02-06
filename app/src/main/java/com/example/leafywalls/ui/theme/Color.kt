@@ -13,6 +13,7 @@ val BackgroundDark = Color(0xFF151B10)
 val BackgroundLight = Color(0xFFFCFFF5)
 
 val PrimaryDark = Color(0xFFB9FF63)
+//val PrimaryDark1 = Color(0xFFC0F580)
 val PrimaryLight = Color(0xFF5F8A2B)
 
 val SecondaryDark = Color(0xFFD1DCC2)

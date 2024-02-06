@@ -15,7 +15,9 @@ class HomeScreenViewModel @Inject constructor(
     private val _selectedIndex = mutableStateOf(0)
     val selectedIndex = _selectedIndex
 
+
     fun updateIndex(index: Int) {
         _selectedIndex.value = index
     }
+
 }

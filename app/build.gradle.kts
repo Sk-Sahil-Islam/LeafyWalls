@@ -99,4 +99,6 @@ dependencies {
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
 
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
 }

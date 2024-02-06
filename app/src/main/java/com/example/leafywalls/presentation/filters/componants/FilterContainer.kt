@@ -14,13 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import com.example.leafywalls.presentation.search_screen.SelectionOption
 import com.example.leafywalls.ui.theme.Sarala
 
 @Composable
 fun FilterContainer(
     modifier: Modifier = Modifier,
-    selectionOption: SelectionOption,
+    select: Boolean,
+    option: String,
     onClick: () -> Unit
 ) {
     val localFocusManager = LocalFocusManager.current
@@ -39,19 +39,20 @@ fun FilterContainer(
                     onClick()
                 })
             .background(
-                if (selectionOption.selected)
+                if (select)
                     MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
             )
-            .padding(horizontal = 10.dp, vertical = 5.dp)
+            .padding(horizontal = 12.dp, vertical = 5.dp)
     ) {
         Text(
-            text = selectionOption.option,
+            text = option,
             fontFamily = Sarala,
-            color = if (selectionOption.selected)
+            color = if (select)
                 MaterialTheme.colorScheme.onPrimary
             else
-                MaterialTheme.colorScheme.onBackground
+                MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
+
 }

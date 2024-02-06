@@ -1,10 +1,8 @@
 package com.example.leafywalls.presentation.search_screen
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -44,116 +42,112 @@ fun SearchList1(
 
     val photos = viewModel1.photos.value.collectAsLazyPagingItems()
 
+    Box(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxSize(),
+    ) {
 
-    Column(Modifier.fillMaxSize()) {
+        val lifeCycleOwner = LocalLifecycleOwner.current
 
-        Box(
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            verticalArrangement = Arrangement.spacedBy(7.dp),
+            horizontalArrangement = Arrangement.spacedBy(7.dp),
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .fillMaxSize(),
+                .padding(8.dp)
         ) {
 
-            val lifeCycleOwner = LocalLifecycleOwner.current
+            items(photos.itemCount) { index ->
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                verticalArrangement = Arrangement.spacedBy(7.dp),
-                horizontalArrangement = Arrangement.spacedBy(7.dp),
-                modifier = Modifier
-                    .padding(8.dp)
-            ) {
+                Row {
 
-                items(photos.itemCount) { index ->
-
-                    Row {
-
-                        photos[index]?.let { photoDto ->
-                            PhotoListItem(
-                                photo = photoDto.toPhoto(),
-                                onClick = {
-                                    if (photos.loadState.append !is LoadState.Error) {
-                                        val currentState = lifeCycleOwner.lifecycle.currentState
-                                        if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-                                            navController
-                                                .navigate(Screen.PhotoDetailScreen.route + "/${it.photoId}")
-                                        }
+                    photos[index]?.let { photoDto ->
+                        PhotoListItem(
+                            photo = photoDto.toPhoto(),
+                            onClick = {
+                                if (photos.loadState.append !is LoadState.Error) {
+                                    val currentState = lifeCycleOwner.lifecycle.currentState
+                                    if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                                        navController
+                                            .navigate(Screen.PhotoDetailScreen.route + "/${it.photoId}")
                                     }
                                 }
-                            )
-                        }
+                            }
+                        )
                     }
                 }
-
-                if (photos.loadState.append is LoadState.Loading) {
-                    item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-                        ItemLoadingIndicator()
-                    }
-                }
-
             }
 
-            if (photos.itemCount == 0 && photos.loadState.refresh != LoadState.Loading) {
-                Box(
-                    Modifier.fillMaxSize()
-                        .padding(16.dp)
-                ) {
-
-                    Text(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = stringResource(id = R.string.no_result),
-                        fontFamily = Sarala
-                    )
+            if (photos.loadState.append is LoadState.Loading) {
+                item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                    ItemLoadingIndicator()
                 }
-
-            }
-
-
-            when (photos.loadState.append) {
-
-                is LoadState.Error -> {
-                    val e = (photos.loadState.append as LoadState.Error).error
-                    var message = ""
-                    if (e is UnknownHostException) {
-                        message = "No internet.\nCheck your connection"
-                    } else if (e is Exception) {
-                        message = e.message ?: "Unknown error occurred"
-                    }
-
-                    PhotoListItemRetry(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter),
-                        text = message
-                    ) {
-                        photos.retry()
-                    }
-                }
-
-                else -> {}
-            }
-
-
-            when (photos.loadState.refresh) {
-
-                is LoadState.Error -> {
-                    PhotoListItemRetry(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter),
-                        text = "No internet.\n" +
-                                "Check your connection"
-                    ) {
-                        photos.retry()
-                    }
-
-                    ErrorImage()
-                }
-
-                LoadState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-
-                else -> {}
             }
 
         }
+
+        if (
+            photos.itemCount == 0 &&
+            photos.loadState.refresh !is LoadState.Loading &&
+            photos.loadState.refresh !is LoadState.Error
+        ) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(id = R.string.no_result),
+                    fontFamily = Sarala
+                )
+            }
+
+        }
+
+
+        when (photos.loadState.append) {
+
+            is LoadState.Error -> {
+                val e = (photos.loadState.append as LoadState.Error).error
+                var message = ""
+                if (e is UnknownHostException) {
+                    message = "No internet.\nCheck your connection"
+                } else if (e is Exception) {
+                    message = e.message ?: "Unknown error occurred"
+                }
+
+                PhotoListItemRetry(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter),
+                    text = message
+                ) {
+                    photos.retry()
+                }
+            }
+
+            else -> {}
+        }
+
+
+        when (photos.loadState.refresh) {
+
+            is LoadState.Error -> {
+
+                ErrorImage(
+                    modifier = Modifier.align(Alignment.Center),
+                    onClick = { photos.retry() }
+                )
+            }
+
+            LoadState.Loading -> {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+
+            else -> {}
+        }
+
     }
 }

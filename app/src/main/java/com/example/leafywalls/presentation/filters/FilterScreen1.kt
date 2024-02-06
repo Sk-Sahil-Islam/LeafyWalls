@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +20,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Icon
@@ -42,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.leafywalls.common.parseColorImage
-import com.example.leafywalls.presentation.search_screen.SearchEvent1
+import com.example.leafywalls.presentation.filters.componants.FilterContainer
 import com.example.leafywalls.presentation.search_screen.SearchScreenViewModel1
 import com.example.leafywalls.ui.theme.OnSurfaceDark
 import com.example.leafywalls.ui.theme.OnSurfaceLight
@@ -103,7 +101,7 @@ fun FilterSort1(
         ) {
 
             SortingOption.values().forEach { option ->
-                FilterContainer1(
+                FilterContainer(
                     select = state.sortOption == option.value,
                     option = option.value,
                     //onClick = { viewModel1.onEvent(SearchEvent1.UpdateSort(option.value)) }
@@ -139,7 +137,7 @@ fun FilterOrientation1(
         ) {
 
             OrientationOption.values().forEach { option ->
-                FilterContainer1(
+                FilterContainer(
                     select = state.orientation == option.value,
                     option = option.value,
                     //onClick = { viewModel1.onEvent(SearchEvent1.UpdateOrientation(option.value)) }
@@ -214,7 +212,7 @@ fun FilterSafeSearch1(
         ) {
 
             SafeSearchOption.values().forEach { option ->
-                FilterContainer1(
+                FilterContainer(
                     modifier = Modifier.widthIn(min = 100.dp),
                     select = state.safeSearch == option.value,
                     option = option.value,
@@ -226,46 +224,7 @@ fun FilterSafeSearch1(
     }
 }
 
-@Composable
-fun FilterContainer1(
-    modifier: Modifier = Modifier,
-    select: Boolean,
-    option: String,
-    onClick: () -> Unit
-) {
-    val localFocusManager = LocalFocusManager.current
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f),
-                shape = RoundedCornerShape(20.dp)
-            )
-            .clip(RoundedCornerShape(20.dp))
-            .clickable(true,
-                onClick = {
-                    localFocusManager.clearFocus()
-                    onClick()
-                })
-            .background(
-                if (select)
-                    MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-            )
-            .padding(horizontal = 12.dp, vertical = 5.dp)
-    ) {
-        Text(
-            text = option,
-            fontFamily = Sarala,
-            color = if (select)
-                MaterialTheme.colorScheme.onPrimary
-            else
-                MaterialTheme.colorScheme.onBackground
-        )
-    }
 
-}
 
 @Composable
 fun FilterColorCircle1(

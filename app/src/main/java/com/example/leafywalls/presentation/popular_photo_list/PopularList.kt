@@ -28,7 +28,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.leafywalls.data.remote.dto.toPhoto
 import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.home_screen.componants.ErrorImage
-import com.example.leafywalls.presentation.photo_list.PhotoListViewModel
 import com.example.leafywalls.presentation.photo_list.components.ItemLoadingIndicator
 import com.example.leafywalls.presentation.photo_list.components.PhotoListItem
 import com.example.leafywalls.presentation.photo_list.components.PhotoListItemRetry
@@ -126,16 +125,19 @@ fun PopularList(
                 when (loadState.refresh) {
 
                     is LoadState.Error -> {
-                        PhotoListItemRetry(
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter),
-                            text = "No internet.\n" +
-                                    "Check your connection"
-                        ) {
-                            this.retry()
-                        }
+//                        PhotoListItemRetry(
+//                            modifier = Modifier
+//                                .align(Alignment.BottomCenter),
+//                            text = "No internet.\n" +
+//                                    "Check your connection"
+//                        ) {
+//                            this.retry()
+//                        }
 
-                        ErrorImage()
+                        ErrorImage(
+                            modifier = Modifier.align(Alignment.Center),
+                            onClick = {this.retry()}
+                        )
                     }
 
                     LoadState.Loading -> {

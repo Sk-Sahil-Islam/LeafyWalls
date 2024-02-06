@@ -3,7 +3,6 @@ package com.example.leafywalls.presentation.search_screen.components
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -23,12 +22,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,8 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
@@ -62,10 +57,8 @@ fun SearchBar(
 ) {
 
     val clipAnim = remember { Animatable(initialValue = 100f) }
-    val clipAnimBottom = remember { Animatable(initialValue = 100f) }
     val paddingHorizontal = remember { Animatable(initialValue = 1f) }
 
-    val heightAnim = remember { Animatable(initialValue = 0f) }
 
     LaunchedEffect(isFocused.value) {
         if (isFocused.value) {
@@ -75,16 +68,8 @@ fun SearchBar(
                 )
             }
             launch {
-                clipAnimBottom.snapTo(0f)
-            }
-            launch {
                 paddingHorizontal.animateTo(
                     targetValue = 0f, animationSpec = tween(durationMillis = 500)
-                )
-            }
-            launch {
-                heightAnim.animateTo(
-                    targetValue = 1f, animationSpec = tween(durationMillis = 500)
                 )
             }
         } else {
@@ -98,15 +83,6 @@ fun SearchBar(
                     targetValue = 1f, animationSpec = tween(durationMillis = 500)
                 )
 
-            }
-            launch {
-                heightAnim.animateTo(
-                    targetValue = 0f,
-                    animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
-                )
-                clipAnimBottom.animateTo(
-                    targetValue = 100f, animationSpec = tween(durationMillis = 500)
-                )
             }
         }
     }
@@ -154,7 +130,7 @@ fun SearchBar(
                             style = TextStyle.Default.copy(
                                 fontFamily = Sarala,
                                 fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f)
                             )
                         )
                     },

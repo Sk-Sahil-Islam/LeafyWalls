@@ -1,6 +1,5 @@
 package com.example.leafywalls.presentation.search_screen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.Refresh
@@ -46,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.leafywalls.R
 import com.example.leafywalls.common.areSearchStatesEqual
 import com.example.leafywalls.common.clearFocusOnKeyboardDismiss
@@ -75,7 +73,7 @@ fun SearchScreen1(
 
     var isSheetOpen by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    
+
     val prevState by viewModel1.prevState.collectAsState()
 
     Scaffold(
@@ -99,7 +97,6 @@ fun SearchScreen1(
                     onSearch = {
                         if (text.isNotBlank()) {
                             viewModel1.onEvent(SearchEvent1.OnSearch)
-                            viewModel1.updatePrevState()
                             currentPageIndex = 1
                         }
                         focusManager.clearFocus()
@@ -119,14 +116,12 @@ fun SearchScreen1(
                         viewModel1.onEvent(SearchEvent1.UpdateQuery(text))
                     },
                     onSearch = {
-                        Log.e("checking test prevState", prevState.toString())
-                        Log.e("checking test searchState", searchState.toString())
-                        Log.e("checking test", areSearchStatesEqual(searchState, prevState).toString())
-                        Log.e("checking test if statement ", (text.isNotBlank() && (!areSearchStatesEqual(searchState, prevState) || searchState.query != prevState.query)).toString())
-
-                        if (text.isNotBlank() && (!areSearchStatesEqual(searchState, prevState) || searchState.query != prevState.query)) {
+                        if (text.isNotBlank() && (!areSearchStatesEqual(
+                                searchState,
+                                prevState
+                            ) || searchState.query != prevState.query)
+                        ) {
                             viewModel1.onEvent(SearchEvent1.OnSearch)
-                            viewModel1.updatePrevState()
                             newQuery.value = text
                         }
                         focusManager.clearFocus()
@@ -205,7 +200,7 @@ fun SearchScreen1(
                         modifier
                             .background(Color.Red)
                     ) {
-                        if(!areSearchStatesEqual(searchState, prevState)) {
+                        if (!areSearchStatesEqual(searchState, prevState)) {
                             Row {
                                 Icon(
                                     modifier = Modifier
@@ -219,7 +214,8 @@ fun SearchScreen1(
                                 Icon(
                                     modifier = Modifier
                                         .clickable {
-                                                   viewModel1.onEvent(SearchEvent1.OnSearch)
+                                            viewModel1.onEvent(SearchEvent1.OnSearch)
+                                            isSheetOpen = false
                                         },
                                     imageVector = Icons.Rounded.Check,
                                     contentDescription = "apply"
@@ -293,27 +289,22 @@ fun TopAppBarSearchList(
     onFilter: () -> Unit
 ) {
     TopAppBar(
-        modifier = Modifier.padding(horizontal = 5.dp),
+        modifier = Modifier.padding(start = 5.dp, end = 10.dp),
         navigationIcon = {
             Box(
                 modifier = Modifier
-                    .size(38.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .size(45.dp)
+                    .clip(CircleShape)
                     .clickable { onBack() }
                     .background(MaterialTheme.colorScheme.background),
                 contentAlignment = Alignment.Center
             ) {
-
                 Icon(
                     modifier = Modifier
-                        .size(38.dp)
-//                        .clip(CircleShape)
-//                        .clickable { onBack() }
-//                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.8f))
-                    ,
+                        .size(38.dp) ,
                     imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
                     contentDescription = "back",
-                    tint = MaterialTheme.colorScheme.primary.copy(0.75f)
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         },
@@ -331,10 +322,10 @@ fun TopAppBarSearchList(
         actions = {
             Box(
                 modifier = Modifier
-                    .size(38.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .size(45.dp)
+                    .clip(CircleShape)
                     .clickable { onFilter() }
-                    .background(MaterialTheme.colorScheme.primary.copy(0.75f)),
+                    .background(MaterialTheme.colorScheme.background),
                 contentAlignment = Alignment.Center
             ) {
 
@@ -343,7 +334,7 @@ fun TopAppBarSearchList(
                         .size(30.dp),
                     painter = painterResource(id = R.drawable.round_tune_24),
                     contentDescription = "filter",
-                    tint = MaterialTheme.colorScheme.background
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },

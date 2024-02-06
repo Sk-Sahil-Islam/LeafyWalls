@@ -1,8 +1,6 @@
 package com.example.leafywalls.presentation.search_screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.example.leafywalls.data.remote.dto.PhotoDto
 import com.example.leafywalls.domain.repository.PhotoRepository
@@ -13,7 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,14 +31,6 @@ class SearchScreenViewModel1 @Inject constructor(
         updatePrevState()
     }
 
-    init {
-        viewModelScope.launch {
-            photos.collect { pagingData ->
-                Log.d("SearchScreenViewModel1", "New paging data emitted: $pagingData")
-            }
-        }
-    }
-
     fun onEvent(searchEvent: SearchEvent1) {
         when (searchEvent) {
 
@@ -59,6 +48,7 @@ class SearchScreenViewModel1 @Inject constructor(
                         orientation = orientation.ifEmpty { null }
                     )
                 }
+                updatePrevState()
             }
 
             is SearchEvent1.UpdateQuery -> {
@@ -102,7 +92,7 @@ class SearchScreenViewModel1 @Inject constructor(
         }
     }
 
-    fun updatePrevState() {
+    private fun updatePrevState() {
         _prevState.value = _searchState.value
     }
 }
