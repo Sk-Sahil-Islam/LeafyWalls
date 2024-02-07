@@ -1,5 +1,10 @@
 package com.example.leafywalls.presentation.search_screen
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -7,14 +12,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
-import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -137,7 +144,6 @@ fun SearchScreen1(
                     }
                 )
             }
-
         }
     ) {
 
@@ -194,51 +200,69 @@ fun SearchScreen1(
                         focusManager.clearFocus()
                         isSheetOpen = false
                     },
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = MaterialTheme.colorScheme.background,
+                    dragHandle = {},
+                    modifier = Modifier.padding(top = 10.dp)
                 ) {
-                    Box(
-                        modifier
-                            .background(Color.Red)
-                    ) {
-                        if (!areSearchStatesEqual(searchState, prevState)) {
-                            Row {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        this@ModalBottomSheet.AnimatedVisibility(
+                            modifier = Modifier.padding(10.dp)
+                                .align(Alignment.TopEnd),
+                            visible = !areSearchStatesEqual(searchState, prevState),
+                            exit = fadeOut(animationSpec = tween(250)),
+                            enter = fadeIn(animationSpec = tween(250))
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Icon(
                                     modifier = Modifier
+                                        .size(45.dp)
+                                        .clip(CircleShape)
                                         .clickable {
                                             viewModel1.onEvent(SearchEvent1.ResetToPreviousState)
+                                            Log.e("SearchScreen1", searchState.toString())
                                         },
-                                    imageVector = Icons.Outlined.Refresh,
-                                    contentDescription = "undo"
+                                    imageVector = Icons.Rounded.Refresh,
+                                    contentDescription = "undo",
+                                    tint = MaterialTheme.colorScheme.primary.copy(0.9f)
                                 )
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Icon(
-                                    modifier = Modifier
-                                        .clickable {
-                                            viewModel1.onEvent(SearchEvent1.OnSearch)
-                                            isSheetOpen = false
-                                        },
-                                    imageVector = Icons.Rounded.Check,
-                                    contentDescription = "apply"
+
+                                Spacer(modifier = Modifier.width(16.dp))
+
+                                FilterIconButton(
+                                    containerColor = MaterialTheme.colorScheme.primary.copy(0.9f),
+                                    icon = Icons.Rounded.Check,
+                                    onClick = {
+                                        viewModel1.onEvent(SearchEvent1.OnSearch)
+                                        isSheetOpen = false
+                                    }
                                 )
+                                Spacer(modifier = Modifier.width(8.dp))
                             }
                         }
-                    }
 
-                    FilterScreen1(
-                        onUpdateSort = { sortOption ->
-                            viewModel1.onEvent(SearchEvent1.UpdateSort(sortOption))
-                        },
-                        onOrientationUpdate = { orientationOption ->
-                            viewModel1.onEvent(SearchEvent1.UpdateOrientation(orientationOption))
-                        },
-                        onColorUpdate = { colorOption ->
-                            viewModel1.onEvent(SearchEvent1.UpdateColor(colorOption))
-                        },
-                        onSafeSearchUpdate = { safeSearchOption ->
-                            viewModel1.onEvent(SearchEvent1.UpdateSafeSearch(safeSearchOption))
+
+                        FilterScreen1(
+                            onUpdateSort = { sortOption ->
+                                viewModel1.onEvent(SearchEvent1.UpdateSort(sortOption))
+                            },
+                            onOrientationUpdate = { orientationOption ->
+                                viewModel1.onEvent(SearchEvent1.UpdateOrientation(orientationOption))
+                            },
+                            onColorUpdate = { colorOption ->
+                                viewModel1.onEvent(SearchEvent1.UpdateColor(colorOption))
+                            },
+                            onSafeSearchUpdate = { safeSearchOption ->
+                                viewModel1.onEvent(SearchEvent1.UpdateSafeSearch(safeSearchOption))
+                            }
+                        )
+                    }
                         }
-                    )
-                }
+//                        if (!areSearchStatesEqual(searchState, prevState)) {
+//
+//
+//                }
             }
         }
     }
@@ -301,7 +325,7 @@ fun TopAppBarSearchList(
             ) {
                 Icon(
                     modifier = Modifier
-                        .size(38.dp) ,
+                        .size(38.dp),
                     imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
                     contentDescription = "back",
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
@@ -341,4 +365,31 @@ fun TopAppBarSearchList(
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.background)
     )
+}
+
+@Composable
+fun FilterIconButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    icon: ImageVector,
+    containerColor: Color
+) {
+    Box(
+        modifier = modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .clickable { onClick() }
+            .background(containerColor),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Icon(
+            modifier = Modifier
+                .size(30.dp),
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.background
+        )
+    }
+
 }

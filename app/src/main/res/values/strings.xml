@@ -10,4 +10,5 @@
     <string name="set_home_lock">Set to home &amp; lock screens</string>
     <string name="download">Download</string>
     <string name="errorText">An unexpected error occurred</string>
+    <string name="listEndText">No more results</string>
 </resources>

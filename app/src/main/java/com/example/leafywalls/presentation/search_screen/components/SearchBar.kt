@@ -82,7 +82,6 @@ fun SearchBar(
                 paddingHorizontal.animateTo(
                     targetValue = 1f, animationSpec = tween(durationMillis = 500)
                 )
-
             }
         }
     }
@@ -99,7 +98,7 @@ fun SearchBar(
                 textStyle = TextStyle(
                     fontFamily = Sarala,
                     fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 modifier = Modifier

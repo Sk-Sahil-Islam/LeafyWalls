@@ -105,7 +105,7 @@ fun HomeScreen(
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet(
-                modifier = Modifier.width(315.dp),
+                modifier = Modifier.fillMaxWidth(0.75f),
                 drawerShape = RectangleShape,
                 drawerContainerColor = MaterialTheme.colorScheme.background
             ) {

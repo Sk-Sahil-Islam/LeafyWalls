@@ -21,24 +21,30 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.leafywalls.R
 import com.example.leafywalls.data.remote.dto.toPhoto
 import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.home_screen.componants.ErrorImage
 import com.example.leafywalls.presentation.photo_list.components.ItemLoadingIndicator
 import com.example.leafywalls.presentation.photo_list.components.PhotoListItem
 import com.example.leafywalls.presentation.photo_list.components.PhotoListItemRetry
+import com.example.leafywalls.ui.theme.Sarala
 import java.net.UnknownHostException
 
 @Composable
@@ -100,6 +106,19 @@ fun ExploreList(
                 if (loadState.append is LoadState.Loading) {
                     item(span = { GridItemSpan(maxCurrentLineSpan) }) {
                         ItemLoadingIndicator()
+                    }
+                }
+                if (loadState.append == LoadState.NotLoading(endOfPaginationReached = true)) {
+                    item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp),
+                            text = stringResource(id = R.string.listEndText),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = Sarala
+                        )
                     }
                 }
 

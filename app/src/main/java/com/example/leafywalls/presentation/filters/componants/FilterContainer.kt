@@ -51,7 +51,7 @@ fun FilterContainer(
             color = if (select)
                 MaterialTheme.colorScheme.onPrimary
             else
-                MaterialTheme.colorScheme.onPrimaryContainer
+                MaterialTheme.colorScheme.onBackground
         )
     }
 
