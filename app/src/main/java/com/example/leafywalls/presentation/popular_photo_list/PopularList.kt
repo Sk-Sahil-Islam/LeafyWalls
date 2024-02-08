@@ -1,5 +1,10 @@
 package com.example.leafywalls.presentation.popular_photo_list
 
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.EaseInOutCubic
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -15,25 +21,30 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.leafywalls.R
 import com.example.leafywalls.data.remote.dto.toPhoto
 import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.home_screen.componants.ErrorImage
 import com.example.leafywalls.presentation.photo_list.components.ItemLoadingIndicator
 import com.example.leafywalls.presentation.photo_list.components.PhotoListItem
 import com.example.leafywalls.presentation.photo_list.components.PhotoListItemRetry
+import com.example.leafywalls.ui.theme.Sarala
 import java.net.UnknownHostException
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PopularList(
     navController: NavController,
@@ -69,7 +80,7 @@ fun PopularList(
 
                     items(itemCount) { index ->
 
-                        Row(modifier = Modifier.animateItemPlacement()) {
+                        Row(modifier = Modifier) {
 
                             state[index]?.let { photoDto ->
                                 PhotoListItem(
@@ -95,48 +106,59 @@ fun PopularList(
                         }
                     }
 
+                    if (loadState.append == LoadState.NotLoading(endOfPaginationReached = true)) {
+                        item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 16.dp),
+                                text = stringResource(id = R.string.listEndText),
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = Sarala
+                            )
+                        }
+                    }
                 }
 
 
-                when (loadState.append) {
-
-                    is LoadState.Error -> {
+                androidx.compose.animation.AnimatedVisibility(
+                    modifier = Modifier.align(Alignment.BottomStart),
+                    visible = loadState.append is LoadState.Error,
+                    enter = slideInVertically(
+                        initialOffsetY = { it },
+                        animationSpec = tween(500, easing = EaseInOut)
+                    ),
+                    exit = slideOutVertically(
+                        targetOffsetY = { it },
+                        animationSpec = tween(500, easing = EaseInOutCubic)
+                    )
+                ) {
+                    var message = ""
+                    if (loadState.append is LoadState.Error) {
                         val e = (loadState.append as LoadState.Error).error
-                        var message = ""
                         if (e is UnknownHostException) {
                             message = "No internet.\nCheck your connection"
                         } else if (e is Exception) {
                             message = e.message ?: "Unknown error occurred"
                         }
-
-                        PhotoListItemRetry(
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter),
-                            text = message
-                        ) {
-                            this.retry()
-                        }
+                    }
+                    PhotoListItemRetry(
+                        text = message.ifEmpty { "Unknown error occurred" }
+                    ) {
+                        this@apply.retry()
                     }
 
-                    else -> {}
                 }
 
 
                 when (loadState.refresh) {
 
                     is LoadState.Error -> {
-//                        PhotoListItemRetry(
-//                            modifier = Modifier
-//                                .align(Alignment.BottomCenter),
-//                            text = "No internet.\n" +
-//                                    "Check your connection"
-//                        ) {
-//                            this.retry()
-//                        }
 
                         ErrorImage(
                             modifier = Modifier.align(Alignment.Center),
-                            onClick = {this.retry()}
+                            onClick = { this.retry() }
                         )
                     }
 

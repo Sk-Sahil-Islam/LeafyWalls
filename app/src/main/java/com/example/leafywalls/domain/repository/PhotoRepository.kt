@@ -1,6 +1,6 @@
 package com.example.leafywalls.domain.repository
 
-import com.example.leafywalls.data.db.History
+import com.example.leafywalls.data.db.Favorite
 import com.example.leafywalls.data.remote.dto.PhotoDetailDto
 import com.example.leafywalls.data.remote.dto.PhotoDto
 import com.example.leafywalls.data.remote.dto.SearchDto
@@ -25,11 +25,11 @@ interface PhotoRepository {
         orientation: String?
     ): SearchDto
 
-    fun getHistory(): Flow<List<History>>
+    fun getFavourite(): Flow<List<Favorite>>
 
-    suspend fun insertHistory(history: History)
+    suspend fun insertFavourite(favorite: Favorite)
 
-    suspend fun deleteHistory(history: History)
+    suspend fun deleteFavourite(favorite: Favorite)
 
-    suspend fun clearHistory()
+    suspend fun clearFavourite()
 }

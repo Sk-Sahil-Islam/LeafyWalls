@@ -4,9 +4,6 @@ import android.graphics.Rect
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -25,7 +22,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import com.example.leafywalls.R
-import com.example.leafywalls.presentation.search_screen.SearchState1
+import com.example.leafywalls.presentation.search_screen.SearchState
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.random.Random
@@ -132,7 +129,7 @@ fun generateRandomColor(): Color {
     return Color(random.nextInt(256)/255f, random.nextInt(256)/255f, random.nextInt(256)/255f)
 }
 
-fun areSearchStatesEqual(state1: SearchState1, state2: SearchState1): Boolean {
+fun areSearchStatesEqual(state1: SearchState, state2: SearchState): Boolean {
     return state1.isLoading == state2.isLoading &&
             state1.sortOption == state2.sortOption &&
             state1.orientation == state2.orientation &&

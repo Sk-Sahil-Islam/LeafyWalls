@@ -60,7 +60,7 @@ import com.example.leafywalls.presentation.search_screen.components.SearchBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen1(
+fun SearchScreen(
     modifier: Modifier = Modifier,
     viewModel1: SearchScreenViewModel1 = hiltViewModel(),
     navController: NavController

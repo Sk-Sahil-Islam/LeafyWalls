@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.example.leafywalls.common.Constants
-import com.example.leafywalls.data.db.HistoryDao
+import com.example.leafywalls.data.db.FavouriteDao
 import com.example.leafywalls.data.db.LeafyDatabase
 import com.example.leafywalls.data.remote.UnsplashApi
 import com.example.leafywalls.data.repository.PhotoRepositoryImpl
@@ -63,14 +63,14 @@ object AppModule {
     }
 
     @Provides
-    fun provideStepsDao(leafyDatabase: LeafyDatabase): HistoryDao {
-        return leafyDatabase.historyDao
+    fun provideStepsDao(leafyDatabase: LeafyDatabase): FavouriteDao {
+        return leafyDatabase.favouriteDao
     }
 
     @Provides
     @Singleton
-    fun providePhotoRepository(api: UnsplashApi, context: Context, historyDao: HistoryDao): PhotoRepository {
-        return PhotoRepositoryImpl(api, context, historyDao)
+    fun providePhotoRepository(api: UnsplashApi, context: Context, favouriteDao: FavouriteDao): PhotoRepository {
+        return PhotoRepositoryImpl(api, context, favouriteDao)
     }
 
 }

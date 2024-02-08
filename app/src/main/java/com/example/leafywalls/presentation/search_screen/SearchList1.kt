@@ -1,10 +1,17 @@
 package com.example.leafywalls.presentation.search_screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.EaseInOutCubic
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -17,6 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -85,6 +94,20 @@ fun SearchList1(
                 }
             }
 
+            if (photos.loadState.append == LoadState.NotLoading(endOfPaginationReached = true)) {
+                item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        text = stringResource(id = R.string.listEndText),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = Sarala
+                    )
+                }
+            }
+
         }
 
         if (
@@ -108,27 +131,33 @@ fun SearchList1(
         }
 
 
-        when (photos.loadState.append) {
-
-            is LoadState.Error -> {
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.BottomStart),
+            visible = photos.loadState.append is LoadState.Error,
+            enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(500, easing = EaseInOut)
+            ),
+            exit = slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(500, easing = EaseInOutCubic)
+            )
+        ) {
+            var message = ""
+            if (photos.loadState.append is LoadState.Error) {
                 val e = (photos.loadState.append as LoadState.Error).error
-                var message = ""
                 if (e is UnknownHostException) {
                     message = "No internet.\nCheck your connection"
                 } else if (e is Exception) {
                     message = e.message ?: "Unknown error occurred"
                 }
-
-                PhotoListItemRetry(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter),
-                    text = message
-                ) {
-                    photos.retry()
-                }
+            }
+            PhotoListItemRetry(
+                text = message.ifEmpty { "Unknown error occurred" }
+            ) {
+                photos.retry()
             }
 
-            else -> {}
         }
 
 

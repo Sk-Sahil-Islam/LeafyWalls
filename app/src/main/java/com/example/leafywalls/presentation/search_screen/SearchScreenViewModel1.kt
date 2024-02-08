@@ -21,11 +21,11 @@ class SearchScreenViewModel1 @Inject constructor(
     private val _photos = MutableStateFlow<Flow<PagingData<PhotoDto>>>(emptyFlow())
     val photos: StateFlow<Flow<PagingData<PhotoDto>>> = _photos.asStateFlow()
 
-    private val _searchState = MutableStateFlow(SearchState1())
-    val searchState: StateFlow<SearchState1> get() = _searchState
+    private val _searchState = MutableStateFlow(SearchState())
+    val searchState: StateFlow<SearchState> get() = _searchState
 
-    private val _prevState = MutableStateFlow(SearchState1())
-    val prevState: StateFlow<SearchState1> get() = _prevState
+    private val _prevState = MutableStateFlow(SearchState())
+    val prevState: StateFlow<SearchState> get() = _prevState
 
     init {
         updatePrevState()

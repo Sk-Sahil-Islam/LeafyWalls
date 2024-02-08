@@ -29,7 +29,9 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.leafywalls.R
+import com.example.leafywalls.presentation.favorites_screen.FavoriteViewModel
 import com.example.leafywalls.ui.theme.FavoriteColor
 import com.example.leafywalls.ui.theme.OnSurfaceDark
 import kotlinx.coroutines.launch
@@ -37,7 +39,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun Stats(
     modifier: Modifier = Modifier,
-    onSetClick: () -> Unit
+    onSetClick: () -> Unit,
+    onFavoriteClick: () -> Unit
 ) {
     var isFavorite by remember { mutableStateOf(false) }
 
@@ -53,6 +56,7 @@ fun Stats(
 
             FavoriteIcon(isFavorite = isFavorite) {
                 isFavorite = !isFavorite
+                onFavoriteClick()
             }
 
             SetIcon(

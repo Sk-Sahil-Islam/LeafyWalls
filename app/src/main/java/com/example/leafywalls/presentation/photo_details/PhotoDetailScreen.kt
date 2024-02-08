@@ -45,6 +45,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.example.leafywalls.data.db.Favorite
+import com.example.leafywalls.presentation.favorites_screen.FavoriteViewModel
 import com.example.leafywalls.presentation.photo_details.components.CustomDialog
 import com.example.leafywalls.presentation.photo_details.components.LoadingDetail
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailInfo
@@ -58,6 +60,7 @@ import com.example.leafywalls.presentation.photo_details.components.WallpaperSet
 @Composable
 fun PhotoDetailScreen(
     viewModel: PhotoDetailViewModel = hiltViewModel(),
+    favoriteViewModel: FavoriteViewModel = hiltViewModel(),
     navController: NavController
 ) {
     val state = viewModel.state.value
@@ -94,7 +97,7 @@ fun PhotoDetailScreen(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
                 ) {
-                    if(!isPhotoLoading) {
+                    if (!isPhotoLoading) {
                         isDetailsHidden = !isDetailsHidden
                     }
                 },
@@ -192,7 +195,10 @@ fun PhotoDetailScreen(
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
                     Stats(
-                        onSetClick = { isSetDialog = true }
+                        onSetClick = { isSetDialog = true },
+                        onFavoriteClick = {
+                            favoriteViewModel.addFavorite(Favorite(photoId = photoDetail.id, uri = photoDetail.url))
+                        }
                     )
                 }
 

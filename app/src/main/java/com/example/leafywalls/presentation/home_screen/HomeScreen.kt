@@ -54,6 +54,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.leafywalls.R
 import com.example.leafywalls.presentation.Screen
+import com.example.leafywalls.presentation.favorites_screen.FavouriteScreen
 import com.example.leafywalls.presentation.home_screen.componants.HomeScreenTopBar
 import com.example.leafywalls.presentation.home_screen.componants.NavigationItems
 import com.example.leafywalls.presentation.photo_list.ExploreList
@@ -68,13 +69,12 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
     val lifeCycleOwner = LocalLifecycleOwner.current
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItemIndex by rememberSaveable {
         mutableIntStateOf(0)
     }
+
     val items = listOf(
         NavigationItems(
             route = Screen.HomeScreen.route,
@@ -323,6 +323,10 @@ fun HomeScreen(
 
                         2 -> {
                             PopularList(navController = navController)
+                        }
+
+                        3 -> {
+                            FavouriteScreen(navController = navController)
                         }
 
                         else -> {}

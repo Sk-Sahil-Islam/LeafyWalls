@@ -1,6 +1,6 @@
 package com.example.leafywalls.presentation.search_screen
 
-data class SearchState1(
+data class SearchState(
     val query: String = "",
     val isLoading: Boolean = false,
     val sortOption: String = "",

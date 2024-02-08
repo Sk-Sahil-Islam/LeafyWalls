@@ -20,10 +20,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.leafywalls.presentation.Screen
+import com.example.leafywalls.presentation.favorites_screen.FavouriteScreen
 import com.example.leafywalls.presentation.home_screen.HomeScreen
 import com.example.leafywalls.presentation.photo_details.PhotoDetailScreen
 import com.example.leafywalls.presentation.random_photo.RandomScreen
-import com.example.leafywalls.presentation.search_screen.SearchScreen1
+import com.example.leafywalls.presentation.search_screen.SearchScreen
 import com.example.leafywalls.ui.theme.LeafyWallsTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,6 +53,10 @@ class MainActivity : ComponentActivity() {
                         
                         composable(route = Screen.HomeScreen.route) {
                             HomeScreen(navController = navController)
+                        }
+
+                        composable(route = Screen.FavoriteScreen.route) {
+                            FavouriteScreen(navController = navController)
                         }
 
                         composable(route = Screen.RandomScreen.route) {
@@ -86,7 +91,7 @@ class MainActivity : ComponentActivity() {
                                 fadeIn(animationSpec = tween(250))
                             }
                         ) {
-                            SearchScreen1(navController = navController)
+                            SearchScreen(navController = navController)
                         }
                     }
                 }
