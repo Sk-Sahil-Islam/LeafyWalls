@@ -29,7 +29,7 @@ interface PhotoRepository {
 
     suspend fun insertFavourite(favorite: Favorite)
 
-    suspend fun deleteFavourite(favorite: Favorite)
+    suspend fun deleteFavourites(favorite: Favorite)
 
-    suspend fun clearFavourite()
+    suspend fun deleteMultipleFavourite(favorites: List<Favorite>)
 }

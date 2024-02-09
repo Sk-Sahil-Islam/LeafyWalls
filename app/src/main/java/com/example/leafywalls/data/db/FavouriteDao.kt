@@ -14,12 +14,12 @@ interface FavouriteDao {
     fun getFavourite(): Flow<List<Favorite>>
 
     @Upsert
-    suspend fun insertFavourite(history: Favorite)
+    suspend fun insertFavourite(favorite: Favorite)
 
     @Delete
-    suspend fun deleteFavourite(history: Favorite)
+    suspend fun deleteFavourite(favorite: Favorite)
 
-    @Query("DELETE FROM favourite")
-    suspend fun clearFavourite()
+    @Delete
+    suspend fun deleteMultipleFavorite(favorites: List<Favorite>)
 
 }

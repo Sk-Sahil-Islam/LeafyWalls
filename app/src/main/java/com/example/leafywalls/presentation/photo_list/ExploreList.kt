@@ -57,8 +57,7 @@ fun ExploreList(
     Box(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
+            .fillMaxSize()
     ) {
 
         val lifeCycleOwner = LocalLifecycleOwner.current
@@ -105,7 +104,8 @@ fun ExploreList(
                         ItemLoadingIndicator()
                     }
                 }
-                if (loadState.append == LoadState.NotLoading(endOfPaginationReached = true)) {
+                if (loadState.append == LoadState.NotLoading(endOfPaginationReached = true) &&
+                    state.itemCount != 0) {
                     item(span = { GridItemSpan(maxCurrentLineSpan) }) {
                         Text(
                             modifier = Modifier

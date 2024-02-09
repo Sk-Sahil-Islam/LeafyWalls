@@ -18,10 +18,7 @@ import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -29,9 +26,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.leafywalls.R
-import com.example.leafywalls.presentation.favorites_screen.FavoriteViewModel
 import com.example.leafywalls.ui.theme.FavoriteColor
 import com.example.leafywalls.ui.theme.OnSurfaceDark
 import kotlinx.coroutines.launch
@@ -40,9 +35,9 @@ import kotlinx.coroutines.launch
 fun Stats(
     modifier: Modifier = Modifier,
     onSetClick: () -> Unit,
-    onFavoriteClick: () -> Unit
+    onFavoriteClick: () -> Unit,
+    isFavorite: Boolean
 ) {
-    var isFavorite by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier
@@ -55,7 +50,6 @@ fun Stats(
             Spacer(modifier = Modifier.size(250.dp))
 
             FavoriteIcon(isFavorite = isFavorite) {
-                isFavorite = !isFavorite
                 onFavoriteClick()
             }
 
@@ -96,7 +90,7 @@ fun FavoriteIcon(
     val scaleB = remember { Animatable(initialValue = 1f) }
     val scaleC = remember { Animatable(initialValue = 1f) }
 
-    Log.e("IS FAVORITE", isFavorite.toString())
+    Log.e("PhotoDetailScreen", isFavorite.toString())
 
     LaunchedEffect(isFavorite) {
         if (isFavorite) {
@@ -187,5 +181,4 @@ fun FavoriteIcon(
             tint = color
         )
     }
-
 }

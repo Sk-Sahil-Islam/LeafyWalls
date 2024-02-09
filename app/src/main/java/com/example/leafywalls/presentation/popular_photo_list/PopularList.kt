@@ -5,7 +5,6 @@ import androidx.compose.animation.core.EaseInOutCubic
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,8 +58,7 @@ fun PopularList(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
-                .weight(1f),
-            contentAlignment = Alignment.Center
+                .weight(1f)
         ) {
 
             val lifeCycleOwner = LocalLifecycleOwner.current
@@ -106,7 +104,8 @@ fun PopularList(
                         }
                     }
 
-                    if (loadState.append == LoadState.NotLoading(endOfPaginationReached = true)) {
+                    if (loadState.append == LoadState.NotLoading(endOfPaginationReached = true)&&
+                        state.itemCount != 0) {
                         item(span = { GridItemSpan(maxCurrentLineSpan) }) {
                             Text(
                                 modifier = Modifier

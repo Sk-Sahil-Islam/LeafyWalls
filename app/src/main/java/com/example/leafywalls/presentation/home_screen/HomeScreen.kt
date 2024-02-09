@@ -1,5 +1,6 @@
 package com.example.leafywalls.presentation.home_screen
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -54,7 +56,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.leafywalls.R
 import com.example.leafywalls.presentation.Screen
+import com.example.leafywalls.presentation.favorites_screen.FavoriteViewModel
 import com.example.leafywalls.presentation.favorites_screen.FavouriteScreen
+import com.example.leafywalls.presentation.favorites_screen.MultiSelectTopBar
 import com.example.leafywalls.presentation.home_screen.componants.HomeScreenTopBar
 import com.example.leafywalls.presentation.home_screen.componants.NavigationItems
 import com.example.leafywalls.presentation.photo_list.ExploreList
@@ -66,8 +70,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: HomeScreenViewModel = hiltViewModel()
+    viewModel: HomeScreenViewModel = hiltViewModel(),
+    favoriteViewModel: FavoriteViewModel = hiltViewModel()
 ) {
+    val favoriteState by favoriteViewModel.state.collectAsState()
     val lifeCycleOwner = LocalLifecycleOwner.current
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -264,6 +270,7 @@ fun HomeScreen(
                         }
                     }
                 )
+
             }
         ) { paddingValues ->
 
@@ -284,27 +291,49 @@ fun HomeScreen(
             }
 
             Column(modifier = Modifier.padding(paddingValues)) {
+                Log.e("FavoriteScreen", favoriteState.isMultiSelect.toString())
 
-                PrimaryScrollableTabRow(
-                    selectedTabIndex = pagerState.currentPage,
-                    edgePadding = 0.dp,
-                    containerColor = MaterialTheme.colorScheme.background,
-                    divider = { HorizontalDivider(color = DividerDefaults.color.copy(alpha = 0.25f)) }
+                if(!favoriteState.isMultiSelect) {
 
-                ) {
-                    titles.forEachIndexed { index, title ->
-                        Tab(
-                            selected = selectedIndex == index,
-                            onClick = { selectedIndex = index },
-                            text = {
-                                Text(
-                                    text = title,
-                                    fontFamily = Sarala,
-                                    color = if (index == selectedIndex) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                        )
+                    PrimaryScrollableTabRow(
+                        selectedTabIndex = pagerState.currentPage,
+                        edgePadding = 0.dp,
+                        containerColor = MaterialTheme.colorScheme.background,
+                        divider = { HorizontalDivider(color = DividerDefaults.color.copy(alpha = 0.25f)) }
+
+                    ) {
+                        titles.forEachIndexed { index, title ->
+                            Tab(
+                                selected = selectedIndex == index,
+                                onClick = { selectedIndex = index },
+                                text = {
+                                    Text(
+                                        text = title,
+                                        fontFamily = Sarala,
+                                        color = if (index == selectedIndex) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            )
+                        }
                     }
+                } else {
+                    MultiSelectTopBar(
+                        isAllSelect = favoriteState.isAllSelect,
+                        onCloseClick = {
+                            favoriteViewModel.deselectAll()
+                            favoriteViewModel.isMultiSelectChange(false)
+                        },
+                        onSelectAllClick = {
+                            if (favoriteState.isAllSelect) {
+                                favoriteViewModel.deselectAll()
+                            } else {
+                                favoriteViewModel.selectAll()
+                            }
+                        },
+                        onButtonClick = {
+                            favoriteViewModel.deleteSelected()
+                        }
+                    )
                 }
 
                 HorizontalPager(

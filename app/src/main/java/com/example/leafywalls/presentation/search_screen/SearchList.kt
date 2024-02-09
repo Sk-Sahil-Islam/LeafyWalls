@@ -43,9 +43,9 @@ import com.example.leafywalls.ui.theme.Sarala
 import java.net.UnknownHostException
 
 @Composable
-fun SearchList1(
+fun SearchList(
     navController: NavController,
-    viewModel1: SearchScreenViewModel1 = hiltViewModel(),
+    viewModel1: SearchScreenViewModel = hiltViewModel(),
     query: String
 ) {
 
@@ -94,7 +94,8 @@ fun SearchList1(
                 }
             }
 
-            if (photos.loadState.append == LoadState.NotLoading(endOfPaginationReached = true)) {
+            if (photos.loadState.append == LoadState.NotLoading(endOfPaginationReached = true) &&
+                photos.itemCount != 0) {
                 item(span = { GridItemSpan(maxCurrentLineSpan) }) {
                     Text(
                         modifier = Modifier

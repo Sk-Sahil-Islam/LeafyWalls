@@ -55,8 +55,8 @@ class PhotoRepositoryImpl @Inject constructor(
 
     override suspend fun insertFavourite(favorite: Favorite) = favouriteDao.insertFavourite(favorite)
 
-    override suspend fun deleteFavourite(favorite: Favorite) = favouriteDao.deleteFavourite(favorite)
+    override suspend fun deleteFavourites(favorite: Favorite) = favouriteDao.deleteFavourite(favorite)
 
-    override suspend fun clearFavourite() = favouriteDao.clearFavourite()
+    override suspend fun deleteMultipleFavourite(favorites: List<Favorite>) = favouriteDao.deleteMultipleFavorite(favorites)
 
 }

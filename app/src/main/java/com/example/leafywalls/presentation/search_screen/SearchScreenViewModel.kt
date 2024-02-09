@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchScreenViewModel1 @Inject constructor(
+class SearchScreenViewModel @Inject constructor(
     private val repository: PhotoRepository,
 ) : ViewModel() {
 
@@ -31,10 +31,10 @@ class SearchScreenViewModel1 @Inject constructor(
         updatePrevState()
     }
 
-    fun onEvent(searchEvent: SearchEvent1) {
+    fun onEvent(searchEvent: SearchEvent) {
         when (searchEvent) {
 
-            is SearchEvent1.OnSearch -> {
+            is SearchEvent.OnSearch -> {
 
                 _searchState.value.apply {
 
@@ -51,34 +51,34 @@ class SearchScreenViewModel1 @Inject constructor(
                 updatePrevState()
             }
 
-            is SearchEvent1.UpdateQuery -> {
+            is SearchEvent.UpdateQuery -> {
                 _searchState.value = _searchState.value.copy(
                     query = searchEvent.query
                 )
             }
 
-            is SearchEvent1.UpdateColor -> {
+            is SearchEvent.UpdateColor -> {
                 val newColorOption = if (_searchState.value.color == searchEvent.color) "" else searchEvent.color
                 _searchState.value = _searchState.value.copy(
                     color = newColorOption
                 )
             }
 
-            is SearchEvent1.UpdateOrientation -> {
+            is SearchEvent.UpdateOrientation -> {
                 val newOrientationOption = if (_searchState.value.orientation == searchEvent.orientation) "" else searchEvent.orientation
                 _searchState.value = _searchState.value.copy (
                     orientation = newOrientationOption
                 )
             }
 
-            is SearchEvent1.UpdateSort -> {
+            is SearchEvent.UpdateSort -> {
                 val newSortOption = if (_searchState.value.sortOption == searchEvent.sort) "" else searchEvent.sort
                 _searchState.value = _searchState.value.copy (
                     sortOption = newSortOption
                 )
             }
 
-            is SearchEvent1.UpdateSafeSearch -> {
+            is SearchEvent.UpdateSafeSearch -> {
                 val newSafeSearch = if (_searchState.value.safeSearch == searchEvent.safeSearch) "" else searchEvent.safeSearch
                 _searchState.value = _searchState.value.copy (
 
@@ -86,7 +86,7 @@ class SearchScreenViewModel1 @Inject constructor(
                 )
             }
 
-            is SearchEvent1.ResetToPreviousState -> {
+            is SearchEvent.ResetToPreviousState -> {
                 _searchState.value = _prevState.value
             }
         }

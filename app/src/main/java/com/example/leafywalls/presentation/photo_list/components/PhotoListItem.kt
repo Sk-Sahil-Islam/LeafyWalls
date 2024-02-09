@@ -1,9 +1,10 @@
 package com.example.leafywalls.presentation.photo_list.components
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,15 +44,26 @@ import com.example.leafywalls.R
 import com.example.leafywalls.domain.model.Photo
 import com.example.leafywalls.ui.theme.Sarala
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PhotoListItem(
+    modifier: Modifier = Modifier,
     photo: Photo,
     onClick: (Photo) -> Unit,
+    onLongClick: (() -> Unit)? = null,
     //error: (String) -> Unit
 ) {
     //val errorMessage = mutableStateOf("")
 
-    Box {
+    Box(
+        modifier = modifier.combinedClickable(
+            onClick = { onClick(photo) },
+            onLongClick = {
+                if (onLongClick != null) {
+                    onLongClick()
+                }
+            })
+    ) {
         if (photo.isSponsored) {
             SponsorHeading(
                 modifier = Modifier.align(Alignment.TopCenter)
@@ -61,8 +72,7 @@ fun PhotoListItem(
 
         Card(
             modifier = Modifier
-                .clip(RoundedCornerShape(6.dp))
-                .clickable { onClick(photo) },
+                .clip(RoundedCornerShape(6.dp)),
             shape = RoundedCornerShape(6.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
         ) {

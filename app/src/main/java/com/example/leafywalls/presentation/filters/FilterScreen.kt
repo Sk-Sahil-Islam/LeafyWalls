@@ -41,14 +41,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.leafywalls.common.parseColorImage
 import com.example.leafywalls.presentation.filters.componants.FilterContainer
-import com.example.leafywalls.presentation.search_screen.SearchScreenViewModel1
+import com.example.leafywalls.presentation.search_screen.SearchScreenViewModel
 import com.example.leafywalls.ui.theme.OnSurfaceDark
 import com.example.leafywalls.ui.theme.OnSurfaceLight
 import com.example.leafywalls.ui.theme.PrimaryDark
 import com.example.leafywalls.ui.theme.Sarala
 
 @Composable
-fun FilterScreen1(
+fun FilterScreen(
     modifier: Modifier = Modifier,
     onUpdateSort: (String) -> Unit,
     onOrientationUpdate: (String) -> Unit,
@@ -62,24 +62,22 @@ fun FilterScreen1(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
+        FilterSort( onClick = { onUpdateSort(it) } )
 
-        FilterSort1(
-            onClick = { onUpdateSort(it) }
-        )
+        FilterOrientation( onClick = { onOrientationUpdate(it) })
 
-        FilterOrientation1( onClick = { onOrientationUpdate(it) })
+        FilterColor(onClick = { onColorUpdate(it) })
 
-        FilterColor1(onClick = { onColorUpdate(it) })
-
-        FilterSafeSearch1(onClick = { onSafeSearchUpdate(it) })
+        FilterSafeSearch(onClick = { onSafeSearchUpdate(it) })
     }
 }
 
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun FilterSort1(
+fun FilterSort(
     modifier: Modifier = Modifier,
-    viewModel1: SearchScreenViewModel1 = hiltViewModel(),
+    viewModel1: SearchScreenViewModel = hiltViewModel(),
     onClick: (String) -> Unit
 ) {
     val state by viewModel1.searchState.collectAsState()
@@ -104,7 +102,6 @@ fun FilterSort1(
                 FilterContainer(
                     select = state.sortOption == option.value,
                     option = option.value,
-                    //onClick = { viewModel1.onEvent(SearchEvent1.UpdateSort(option.value)) }
                     onClick = { onClick(option.value) }
                 )
             }
@@ -112,11 +109,12 @@ fun FilterSort1(
     }
 }
 
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun FilterOrientation1(
+fun FilterOrientation(
     modifier: Modifier = Modifier,
-    viewModel1: SearchScreenViewModel1 = hiltViewModel(),
+    viewModel1: SearchScreenViewModel = hiltViewModel(),
     onClick: (String) -> Unit
 ) {
     val state by viewModel1.searchState.collectAsState()
@@ -140,7 +138,6 @@ fun FilterOrientation1(
                 FilterContainer(
                     select = state.orientation == option.value,
                     option = option.value,
-                    //onClick = { viewModel1.onEvent(SearchEvent1.UpdateOrientation(option.value)) }
                     onClick = { onClick(option.value) }
                 )
             }
@@ -148,10 +145,11 @@ fun FilterOrientation1(
     }
 }
 
+
 @Composable
-fun FilterColor1(
+fun FilterColor(
     modifier: Modifier = Modifier,
-    viewModel1: SearchScreenViewModel1 = hiltViewModel(),
+    viewModel1: SearchScreenViewModel = hiltViewModel(),
     onClick: (String) -> Unit
 ) {
     val state by viewModel1.searchState.collectAsState()
@@ -173,10 +171,9 @@ fun FilterColor1(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(ColorOption.values()){ colorOption->
-                FilterColorCircle1(
+                FilterColorCircle(
                     painter = parseColorImage(colorOption.value),
                     onClick = {
-                        //viewModel1.onEvent(SearchEvent1.UpdateColor(colorOption.value))
                          onClick(colorOption.value)
                     },
                     select = colorOption.value == state.color
@@ -187,11 +184,12 @@ fun FilterColor1(
 
 }
 
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun FilterSafeSearch1(
+fun FilterSafeSearch(
     modifier: Modifier = Modifier,
-    viewModel1: SearchScreenViewModel1 = hiltViewModel(),
+    viewModel1: SearchScreenViewModel = hiltViewModel(),
     onClick: (String) -> Unit
 ) {
     val state by viewModel1.searchState.collectAsState()
@@ -216,7 +214,6 @@ fun FilterSafeSearch1(
                     modifier = Modifier.widthIn(min = 100.dp),
                     select = state.safeSearch == option.value,
                     option = option.value,
-                    //onClick = { viewModel1.onEvent(SearchEvent1.UpdateSafeSearch(option.value)) }
                     onClick = { onClick(option.value) }
                 )
             }
@@ -225,9 +222,8 @@ fun FilterSafeSearch1(
 }
 
 
-
 @Composable
-fun FilterColorCircle1(
+fun FilterColorCircle(
     modifier: Modifier = Modifier,
     painter: Painter,
     onClick: () -> Unit,
@@ -280,5 +276,4 @@ fun FilterColorCircle1(
             )
         }
     }
-
 }

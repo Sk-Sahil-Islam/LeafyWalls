@@ -55,14 +55,14 @@ import androidx.navigation.NavController
 import com.example.leafywalls.R
 import com.example.leafywalls.common.areSearchStatesEqual
 import com.example.leafywalls.common.clearFocusOnKeyboardDismiss
-import com.example.leafywalls.presentation.filters.FilterScreen1
+import com.example.leafywalls.presentation.filters.FilterScreen
 import com.example.leafywalls.presentation.search_screen.components.SearchBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
-    viewModel1: SearchScreenViewModel1 = hiltViewModel(),
+    viewModel1: SearchScreenViewModel = hiltViewModel(),
     navController: NavController
 ) {
     val newQuery = remember { mutableStateOf("") }
@@ -99,11 +99,11 @@ fun SearchScreen(
                     },
                     onValueChange = {
                         text = it
-                        viewModel1.onEvent(SearchEvent1.UpdateQuery(text))
+                        viewModel1.onEvent(SearchEvent.UpdateQuery(text))
                     },
                     onSearch = {
                         if (text.isNotBlank()) {
-                            viewModel1.onEvent(SearchEvent1.OnSearch)
+                            viewModel1.onEvent(SearchEvent.OnSearch)
                             currentPageIndex = 1
                         }
                         focusManager.clearFocus()
@@ -120,7 +120,7 @@ fun SearchScreen(
                     },
                     onValueChange = {
                         text = it
-                        viewModel1.onEvent(SearchEvent1.UpdateQuery(text))
+                        viewModel1.onEvent(SearchEvent.UpdateQuery(text))
                     },
                     onSearch = {
                         if (text.isNotBlank() && (!areSearchStatesEqual(
@@ -128,7 +128,7 @@ fun SearchScreen(
                                 prevState
                             ) || searchState.query != prevState.query)
                         ) {
-                            viewModel1.onEvent(SearchEvent1.OnSearch)
+                            viewModel1.onEvent(SearchEvent.OnSearch)
                             newQuery.value = text
                         }
                         focusManager.clearFocus()
@@ -160,24 +160,24 @@ fun SearchScreen(
 
                 when (currentPageIndex) {
                     0 -> {
-                        FilterScreen1(
+                        FilterScreen(
                             onUpdateSort = { sortOption ->
-                                viewModel1.onEvent(SearchEvent1.UpdateSort(sortOption))
+                                viewModel1.onEvent(SearchEvent.UpdateSort(sortOption))
                             },
                             onOrientationUpdate = { orientationOption ->
-                                viewModel1.onEvent(SearchEvent1.UpdateOrientation(orientationOption))
+                                viewModel1.onEvent(SearchEvent.UpdateOrientation(orientationOption))
                             },
                             onColorUpdate = { colorOption ->
-                                viewModel1.onEvent(SearchEvent1.UpdateColor(colorOption))
+                                viewModel1.onEvent(SearchEvent.UpdateColor(colorOption))
                             },
                             onSafeSearchUpdate = { safeSearchOption ->
-                                viewModel1.onEvent(SearchEvent1.UpdateSafeSearch(safeSearchOption))
+                                viewModel1.onEvent(SearchEvent.UpdateSafeSearch(safeSearchOption))
                             }
                         )
                     }
 
                     1 -> {
-                        SearchList1(
+                        SearchList(
                             navController = navController,
                             query = newQuery.value
                         )
@@ -195,7 +195,7 @@ fun SearchScreen(
                                 state2 = prevState
                             )
                         ) {
-                            viewModel1.onEvent(SearchEvent1.ResetToPreviousState)
+                            viewModel1.onEvent(SearchEvent.ResetToPreviousState)
                         }
                         focusManager.clearFocus()
                         isSheetOpen = false
@@ -220,7 +220,7 @@ fun SearchScreen(
                                         .size(45.dp)
                                         .clip(CircleShape)
                                         .clickable {
-                                            viewModel1.onEvent(SearchEvent1.ResetToPreviousState)
+                                            viewModel1.onEvent(SearchEvent.ResetToPreviousState)
                                             Log.e("SearchScreen1", searchState.toString())
                                         },
                                     imageVector = Icons.Rounded.Refresh,
@@ -234,7 +234,7 @@ fun SearchScreen(
                                     containerColor = MaterialTheme.colorScheme.primary.copy(0.9f),
                                     icon = Icons.Rounded.Check,
                                     onClick = {
-                                        viewModel1.onEvent(SearchEvent1.OnSearch)
+                                        viewModel1.onEvent(SearchEvent.OnSearch)
                                         isSheetOpen = false
                                     }
                                 )
@@ -243,18 +243,18 @@ fun SearchScreen(
                         }
 
 
-                        FilterScreen1(
+                        FilterScreen(
                             onUpdateSort = { sortOption ->
-                                viewModel1.onEvent(SearchEvent1.UpdateSort(sortOption))
+                                viewModel1.onEvent(SearchEvent.UpdateSort(sortOption))
                             },
                             onOrientationUpdate = { orientationOption ->
-                                viewModel1.onEvent(SearchEvent1.UpdateOrientation(orientationOption))
+                                viewModel1.onEvent(SearchEvent.UpdateOrientation(orientationOption))
                             },
                             onColorUpdate = { colorOption ->
-                                viewModel1.onEvent(SearchEvent1.UpdateColor(colorOption))
+                                viewModel1.onEvent(SearchEvent.UpdateColor(colorOption))
                             },
                             onSafeSearchUpdate = { safeSearchOption ->
-                                viewModel1.onEvent(SearchEvent1.UpdateSafeSearch(safeSearchOption))
+                                viewModel1.onEvent(SearchEvent.UpdateSafeSearch(safeSearchOption))
                             }
                         )
                     }
@@ -391,5 +391,4 @@ fun FilterIconButton(
             tint = MaterialTheme.colorScheme.background
         )
     }
-
 }

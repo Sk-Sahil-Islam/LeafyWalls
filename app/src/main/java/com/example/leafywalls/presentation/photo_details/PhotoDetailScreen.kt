@@ -2,6 +2,7 @@ package com.example.leafywalls.presentation.photo_details
 
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOut
@@ -26,6 +27,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,6 +65,7 @@ fun PhotoDetailScreen(
     favoriteViewModel: FavoriteViewModel = hiltViewModel(),
     navController: NavController
 ) {
+    val favoriteState by favoriteViewModel.state.collectAsState()
     val state = viewModel.state.value
 
     var isDetailsHidden by rememberSaveable {
@@ -75,10 +78,13 @@ fun PhotoDetailScreen(
     var isPhotoLoading by remember { mutableStateOf(true) }
     var isPhotoError by remember { mutableStateOf(false) }
 
+
     val lifeCycleOwner = LocalLifecycleOwner.current
 
 
     state.photo?.let { photoDetail ->
+
+        val isFavorite = mutableStateOf(favoriteState.favorites.any { photoDetail.id == it.item.photoId })
 
         val configuration = LocalConfiguration.current
         val screenWidth = configuration.screenWidthDp.dp
@@ -195,9 +201,17 @@ fun PhotoDetailScreen(
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
                     Stats(
+                        isFavorite = isFavorite.value,
                         onSetClick = { isSetDialog = true },
                         onFavoriteClick = {
-                            favoriteViewModel.addFavorite(Favorite(photoId = photoDetail.id, uri = photoDetail.url))
+                            if(!isFavorite.value) {
+                                favoriteViewModel.addFavorite(Favorite(photoId = photoDetail.id, uri = photoDetail.url))
+                                isFavorite.value = true
+                            } else {
+                                favoriteState.favorites.find { photoDetail.id == it.item.photoId }
+                                    ?.let { favoriteViewModel.removeFavorite(it.item) }
+                                isFavorite.value = false
+                            }
                         }
                     )
                 }
