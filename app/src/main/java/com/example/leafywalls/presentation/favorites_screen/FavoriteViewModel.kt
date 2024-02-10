@@ -85,7 +85,7 @@ class FavoriteViewModel @Inject constructor(
 
             repository.deleteMultipleFavourite(favorites1)
 
-            delay(2000)
+            delay(1500)
             isMultiSelectChange()
 
             _state.value = _state.value.copy(

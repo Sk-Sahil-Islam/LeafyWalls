@@ -55,10 +55,6 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(navController = navController)
                         }
 
-                        composable(route = Screen.FavoriteScreen.route) {
-                            FavouriteScreen(navController = navController)
-                        }
-
                         composable(route = Screen.RandomScreen.route) {
                             RandomScreen(navController = navController)
                         }

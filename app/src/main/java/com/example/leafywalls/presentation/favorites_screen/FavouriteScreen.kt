@@ -55,6 +55,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -77,57 +78,7 @@ fun FavouriteScreen(
 
 
         Column(Modifier.fillMaxSize()) {
-//            AnimatedVisibility(
-//                visible = state.isMultiSelect,
-//                exit = fadeOut(animationSpec = tween(250)),
-//                enter = fadeIn(animationSpec = tween(250))
-//            ) {
-//
-////                Box {
-////                    Row(
-////                        Modifier
-////                            .fillMaxWidth()
-////                            .padding(horizontal = 16.dp, vertical = 5.dp),
-////                        verticalAlignment = Alignment.CenterVertically,
-////                    ) {
-////                        IconButton(
-////                            onClick = {
-////                                viewModel.deselectAll()
-////                                viewModel.isMultiSelectChange(false)
-////                            }
-////                        ) {
-////                            Icon(
-////                                imageVector = Icons.Rounded.Close,
-////                                contentDescription = "cancel"
-////                            )
-////                        }
-////
-////                        Text(
-////                            text = stringResource(id = R.string.selectItems),
-////                            fontFamily = Sarala,
-////                            fontWeight = FontWeight.Bold,
-////                            fontSize = 19.sp
-////                        )
-////
-////                        Spacer(modifier = Modifier.weight(1f))
-////
-////                        SelectFavoriteImageIcon(
-////                            isSelected = state.isAllSelect,
-////                            onClick = {
-////                                if (state.isAllSelect) {
-////                                    viewModel.deselectAll()
-////                                } else {
-////                                    viewModel.selectAll()
-////                                }
-////                            }
-////                        )
-////                        Button(onClick = { viewModel.deleteSelected() }) {
-////                            Text(text = "Delete")
-////                            //isMultiSelect = false
-////                        }
-////                    }
-////                }
-//            }
+
 
             Box(
                 modifier = Modifier
@@ -256,7 +207,7 @@ fun SelectFavoriteImageIcon(
 
         Box(
             modifier = modifier
-                .size(28.dp)
+                .size(24.dp)
                 .clip(RoundedCornerShape(6.dp))
                 .border(
                     2.dp,
@@ -275,7 +226,7 @@ fun SelectFavoriteImageIcon(
 
                 Icon(
                     modifier = Modifier
-                        .size(24.dp),
+                        .size(20.dp),
                     imageVector = Icons.Rounded.Check,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.background
@@ -321,20 +272,18 @@ fun DeletingFavoriteLoading(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MultiSelectTopBar(
     modifier: Modifier = Modifier,
     isAllSelect: Boolean,
     onCloseClick: () -> Unit,
-    onButtonClick: () -> Unit,
     onSelectAllClick: () -> Unit
 ) {
 
     Row(
         modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 5.dp),
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(
@@ -359,9 +308,6 @@ fun MultiSelectTopBar(
             isSelected = isAllSelect,
             onClick = onSelectAllClick
         )
-        Button(onClick = onButtonClick) {
-            Text(text = "Delete")
-        }
     }
 
 }

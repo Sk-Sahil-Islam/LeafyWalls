@@ -3,9 +3,11 @@ package com.example.leafywalls.presentation.home_screen
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -14,13 +16,17 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
@@ -36,6 +42,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -45,6 +52,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -59,6 +68,7 @@ import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.favorites_screen.FavoriteViewModel
 import com.example.leafywalls.presentation.favorites_screen.FavouriteScreen
 import com.example.leafywalls.presentation.favorites_screen.MultiSelectTopBar
+import com.example.leafywalls.presentation.favorites_screen.companants.FavoriteBottomAppBar
 import com.example.leafywalls.presentation.home_screen.componants.HomeScreenTopBar
 import com.example.leafywalls.presentation.home_screen.componants.NavigationItems
 import com.example.leafywalls.presentation.photo_list.ExploreList
@@ -79,6 +89,11 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
     var selectedItemIndex by rememberSaveable {
         mutableIntStateOf(0)
+    }
+
+    val localDensity = LocalDensity.current
+    var heightIs by remember {
+        mutableStateOf(0.dp)
     }
 
     val items = listOf(
@@ -271,6 +286,16 @@ fun HomeScreen(
                     }
                 )
 
+            },
+            bottomBar = {
+                if (favoriteState.isMultiSelect) {
+                    FavoriteBottomAppBar(
+                        shareList =favoriteState.favorites.filter { it.isSelected }.map { it.item.photoId }.toTypedArray(),
+                        onDelete = {
+                            favoriteViewModel.deleteSelected()
+                        }
+                    )
+                }
             }
         ) { paddingValues ->
 
@@ -291,11 +316,14 @@ fun HomeScreen(
             }
 
             Column(modifier = Modifier.padding(paddingValues)) {
-                Log.e("FavoriteScreen", favoriteState.isMultiSelect.toString())
 
-                if(!favoriteState.isMultiSelect) {
+                if (!favoriteState.isMultiSelect) {
 
                     PrimaryScrollableTabRow(
+                        modifier = Modifier.onGloballyPositioned { coordinates ->
+                            heightIs = with(localDensity) { coordinates.size.height.toDp() }
+
+                        },
                         selectedTabIndex = pagerState.currentPage,
                         edgePadding = 0.dp,
                         containerColor = MaterialTheme.colorScheme.background,
@@ -318,6 +346,7 @@ fun HomeScreen(
                     }
                 } else {
                     MultiSelectTopBar(
+                        modifier = Modifier.height(heightIs),
                         isAllSelect = favoriteState.isAllSelect,
                         onCloseClick = {
                             favoriteViewModel.deselectAll()
@@ -330,9 +359,9 @@ fun HomeScreen(
                                 favoriteViewModel.selectAll()
                             }
                         },
-                        onButtonClick = {
-                            favoriteViewModel.deleteSelected()
-                        }
+//                        onButtonClick = {
+//                            favoriteViewModel.deleteSelected()
+//                        }
                     )
                 }
 
@@ -369,6 +398,12 @@ fun HomeScreen(
             scope.launch {
                 drawerState.close()
             }
+        }
+    }
+
+    if (favoriteState.isDeleting) {
+        BackHandler {
+
         }
     }
 }

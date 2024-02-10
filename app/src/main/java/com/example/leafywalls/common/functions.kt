@@ -136,3 +136,11 @@ fun areSearchStatesEqual(state1: SearchState, state2: SearchState): Boolean {
             state1.color == state2.color &&
             state1.safeSearch == state2.safeSearch
 }
+
+fun shareListToText(shareList: Array<String>): String{
+    var result = "Here's my favorite image(s) from LeafyWalls:"
+    shareList.forEach {
+        result += "\nhttps://unsplash.com/photos/$it"
+    }
+    return result
+}
