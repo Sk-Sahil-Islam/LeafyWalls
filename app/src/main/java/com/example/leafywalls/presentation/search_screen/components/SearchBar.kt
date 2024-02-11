@@ -1,7 +1,6 @@
 package com.example.leafywalls.presentation.search_screen.components
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -17,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -53,7 +53,8 @@ fun SearchBar(
     isFocused: MutableState<Boolean>,
     onFocusChange: (Boolean) -> Unit,
     onValueChange: (String) -> Unit,
-    onSearch: () -> Unit
+    onSearch: () -> Unit,
+    onCancel: () -> Unit
 ) {
 
     val clipAnim = remember { Animatable(initialValue = 100f) }
@@ -93,7 +94,6 @@ fun SearchBar(
 
             BasicTextField(
                 value = value,
-
                 onValueChange = onValueChange,
                 textStyle = TextStyle(
                     fontFamily = Sarala,
@@ -136,16 +136,29 @@ fun SearchBar(
                     trailingIcon = {
                         IconButton(
                             onClick = {
-                                onSearch()
-
+                                if(isFocused.value) {
+                                    onCancel()
+                                } else {
+                                    onSearch()
+                                }
                             }
                         ) {
-                            Icon(
-                                modifier = Modifier.size(28.dp),
-                                imageVector = Icons.Outlined.Search,
-                                contentDescription = "search",
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
+                            if (isFocused.value) {
+                                Icon(
+                                    modifier = Modifier.size(28.dp),
+                                    imageVector = Icons.Rounded.Close,
+                                    contentDescription = "close",
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            } else {
+
+                                Icon(
+                                    modifier = Modifier.size(28.dp),
+                                    imageVector = Icons.Outlined.Search,
+                                    contentDescription = "search",
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
                         }
                     },
                     colors = TextFieldDefaults.colors(

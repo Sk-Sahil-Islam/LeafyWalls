@@ -90,6 +90,14 @@ fun HomeScreen(
         mutableStateOf(0.dp)
     }
 
+
+    val titles = listOf("Explore", "Categories", "Popular", "Favorites")
+
+    var selectedIndex by remember { viewModel.selectedIndex }
+
+    val pagerState = rememberPagerState { titles.size }
+
+
     val items = listOf(
         NavigationItems(
             route = Screen.HomeScreen.route,
@@ -233,11 +241,6 @@ fun HomeScreen(
                         scope.launch {
                             drawerState.close()
                         }
-//                        val currentState = lifeCycleOwner.lifecycle.currentState
-//                        if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-//                            navController
-//                                .navigate(Screen.RandomScreen.route)
-//                        }
                     },
                     icon = {
                         Icon(
@@ -287,18 +290,11 @@ fun HomeScreen(
                         shareList =favoriteState.favorites.filter { it.isSelected }.map { it.item.photoId }.toTypedArray(),
                         onDelete = {
                             isConfirmDialog = true
-                            //favoriteViewModel.deleteSelected()
                         }
                     )
                 }
             }
         ) { paddingValues ->
-
-            val titles = listOf("Explore", "Categories", "Popular", "Favorites")
-
-            var selectedIndex by remember { viewModel.selectedIndex }
-
-            val pagerState = rememberPagerState { titles.size }
 
             LaunchedEffect(key1 = selectedIndex) {
                 pagerState.animateScrollToPage(selectedIndex)
@@ -393,17 +389,32 @@ fun HomeScreen(
         onCancel = { isConfirmDialog = false }
     )
 
-    if (drawerState.isOpen) {
+    if (drawerState.isOpen ) {
         BackHandler {
+
             scope.launch {
                 drawerState.close()
             }
         }
     }
 
+    if(favoriteState.isMultiSelect) {
+        BackHandler {
+            favoriteViewModel.isMultiSelectChange(false)
+        }
+    }
+
     if (favoriteState.isDeleting) {
         BackHandler {
 
+        }
+    }
+
+    if(pagerState.currentPage != 0) {
+        BackHandler {
+            scope.launch {
+                pagerState.scrollToPage(0)
+            }
         }
     }
 }

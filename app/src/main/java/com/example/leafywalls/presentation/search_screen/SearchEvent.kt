@@ -8,6 +8,7 @@ sealed interface SearchEvent {
     data class UpdateOrientation(val orientation: String): SearchEvent
     data class UpdateSafeSearch(val safeSearch: String): SearchEvent
     data class UpdateColor(val color: String): SearchEvent
+    object ClearQuery: SearchEvent
     object ResetToPreviousState: SearchEvent
 
 }

@@ -81,13 +81,18 @@ class SearchScreenViewModel @Inject constructor(
             is SearchEvent.UpdateSafeSearch -> {
                 val newSafeSearch = if (_searchState.value.safeSearch == searchEvent.safeSearch) "" else searchEvent.safeSearch
                 _searchState.value = _searchState.value.copy (
-
                     safeSearch = newSafeSearch
                 )
             }
 
-            is SearchEvent.ResetToPreviousState -> {
+            SearchEvent.ResetToPreviousState -> {
                 _searchState.value = _prevState.value
+            }
+
+            SearchEvent.ClearQuery -> {
+                _searchState.value = _searchState.value.copy(
+                    query = ""
+                )
             }
         }
     }

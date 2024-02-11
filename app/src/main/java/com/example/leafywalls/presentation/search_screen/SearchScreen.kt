@@ -1,6 +1,5 @@
 package com.example.leafywalls.presentation.search_screen
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -62,13 +61,13 @@ import com.example.leafywalls.presentation.search_screen.components.SearchBar
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
-    viewModel1: SearchScreenViewModel = hiltViewModel(),
+    viewModel: SearchScreenViewModel = hiltViewModel(),
     navController: NavController
 ) {
     val newQuery = remember { mutableStateOf("") }
 
     val lifeCycleOwner = LocalLifecycleOwner.current
-    val searchState by viewModel1.searchState.collectAsState()
+    val searchState by viewModel.searchState.collectAsState()
 
     var currentPageIndex by rememberSaveable { mutableStateOf(0) }
     val focusManager = LocalFocusManager.current
@@ -81,7 +80,7 @@ fun SearchScreen(
     var isSheetOpen by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val prevState by viewModel1.prevState.collectAsState()
+    val prevState by viewModel.prevState.collectAsState()
 
     Scaffold(
         modifier = Modifier
@@ -91,7 +90,7 @@ fun SearchScreen(
             if (currentPageIndex == 0) {
                 TopAppBarFilterScreen(
                     modifier = Modifier.clearFocusOnKeyboardDismiss(),
-                    value = text,
+                    value = searchState.query,
                     isFocused = isSearchBarFocused,
                     scrollBehavior = scrollBehavior,
                     onFocusChange = {
@@ -99,20 +98,21 @@ fun SearchScreen(
                     },
                     onValueChange = {
                         text = it
-                        viewModel1.onEvent(SearchEvent.UpdateQuery(text))
+                        viewModel.onEvent(SearchEvent.UpdateQuery(text))
                     },
                     onSearch = {
                         if (text.isNotBlank()) {
-                            viewModel1.onEvent(SearchEvent.OnSearch)
+                            viewModel.onEvent(SearchEvent.OnSearch)
                             currentPageIndex = 1
                         }
                         focusManager.clearFocus()
-                    }
+                    },
+                    onClear = { viewModel.onEvent(SearchEvent.ClearQuery) }
                 )
 
             } else {
                 TopAppBarSearchList(
-                    value = text,
+                    value = searchState.query,
                     isFocused = isSearchBarFocused,
                     scrollBehavior = scrollBehavior,
                     onFocusChange = {
@@ -120,7 +120,7 @@ fun SearchScreen(
                     },
                     onValueChange = {
                         text = it
-                        viewModel1.onEvent(SearchEvent.UpdateQuery(text))
+                        viewModel.onEvent(SearchEvent.UpdateQuery(text))
                     },
                     onSearch = {
                         if (text.isNotBlank() && (!areSearchStatesEqual(
@@ -128,7 +128,7 @@ fun SearchScreen(
                                 prevState
                             ) || searchState.query != prevState.query)
                         ) {
-                            viewModel1.onEvent(SearchEvent.OnSearch)
+                            viewModel.onEvent(SearchEvent.OnSearch)
                             newQuery.value = text
                         }
                         focusManager.clearFocus()
@@ -141,6 +141,9 @@ fun SearchScreen(
                     },
                     onFilter = {
                         isSheetOpen = true
+                    },
+                    onCancel = {
+                        viewModel.onEvent(SearchEvent.ClearQuery)
                     }
                 )
             }
@@ -162,16 +165,16 @@ fun SearchScreen(
                     0 -> {
                         FilterScreen(
                             onUpdateSort = { sortOption ->
-                                viewModel1.onEvent(SearchEvent.UpdateSort(sortOption))
+                                viewModel.onEvent(SearchEvent.UpdateSort(sortOption))
                             },
                             onOrientationUpdate = { orientationOption ->
-                                viewModel1.onEvent(SearchEvent.UpdateOrientation(orientationOption))
+                                viewModel.onEvent(SearchEvent.UpdateOrientation(orientationOption))
                             },
                             onColorUpdate = { colorOption ->
-                                viewModel1.onEvent(SearchEvent.UpdateColor(colorOption))
+                                viewModel.onEvent(SearchEvent.UpdateColor(colorOption))
                             },
                             onSafeSearchUpdate = { safeSearchOption ->
-                                viewModel1.onEvent(SearchEvent.UpdateSafeSearch(safeSearchOption))
+                                viewModel.onEvent(SearchEvent.UpdateSafeSearch(safeSearchOption))
                             }
                         )
                     }
@@ -195,7 +198,7 @@ fun SearchScreen(
                                 state2 = prevState
                             )
                         ) {
-                            viewModel1.onEvent(SearchEvent.ResetToPreviousState)
+                            viewModel.onEvent(SearchEvent.ResetToPreviousState)
                         }
                         focusManager.clearFocus()
                         isSheetOpen = false
@@ -206,7 +209,8 @@ fun SearchScreen(
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         this@ModalBottomSheet.AnimatedVisibility(
-                            modifier = Modifier.padding(10.dp)
+                            modifier = Modifier
+                                .padding(10.dp)
                                 .align(Alignment.TopEnd),
                             visible = !areSearchStatesEqual(searchState, prevState),
                             exit = fadeOut(animationSpec = tween(250)),
@@ -220,8 +224,7 @@ fun SearchScreen(
                                         .size(45.dp)
                                         .clip(CircleShape)
                                         .clickable {
-                                            viewModel1.onEvent(SearchEvent.ResetToPreviousState)
-                                            Log.e("SearchScreen1", searchState.toString())
+                                            viewModel.onEvent(SearchEvent.ResetToPreviousState)
                                         },
                                     imageVector = Icons.Rounded.Refresh,
                                     contentDescription = "undo",
@@ -234,7 +237,7 @@ fun SearchScreen(
                                     containerColor = MaterialTheme.colorScheme.primary.copy(0.9f),
                                     icon = Icons.Rounded.Check,
                                     onClick = {
-                                        viewModel1.onEvent(SearchEvent.OnSearch)
+                                        viewModel.onEvent(SearchEvent.OnSearch)
                                         isSheetOpen = false
                                     }
                                 )
@@ -245,24 +248,20 @@ fun SearchScreen(
 
                         FilterScreen(
                             onUpdateSort = { sortOption ->
-                                viewModel1.onEvent(SearchEvent.UpdateSort(sortOption))
+                                viewModel.onEvent(SearchEvent.UpdateSort(sortOption))
                             },
                             onOrientationUpdate = { orientationOption ->
-                                viewModel1.onEvent(SearchEvent.UpdateOrientation(orientationOption))
+                                viewModel.onEvent(SearchEvent.UpdateOrientation(orientationOption))
                             },
                             onColorUpdate = { colorOption ->
-                                viewModel1.onEvent(SearchEvent.UpdateColor(colorOption))
+                                viewModel.onEvent(SearchEvent.UpdateColor(colorOption))
                             },
                             onSafeSearchUpdate = { safeSearchOption ->
-                                viewModel1.onEvent(SearchEvent.UpdateSafeSearch(safeSearchOption))
+                                viewModel.onEvent(SearchEvent.UpdateSafeSearch(safeSearchOption))
                             }
                         )
                     }
-                        }
-//                        if (!areSearchStatesEqual(searchState, prevState)) {
-//
-//
-//                }
+                }
             }
         }
     }
@@ -277,7 +276,8 @@ fun TopAppBarFilterScreen(
     scrollBehavior: TopAppBarScrollBehavior,
     onFocusChange: (Boolean) -> Unit,
     onValueChange: (String) -> Unit,
-    onSearch: () -> Unit
+    onSearch: () -> Unit,
+    onClear: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -290,7 +290,8 @@ fun TopAppBarFilterScreen(
                     isFocused = isFocused,
                     onValueChange = onValueChange,
                     onSearch = onSearch,
-                    onFocusChange = onFocusChange
+                    onFocusChange = onFocusChange,
+                    onCancel = onClear
                 )
             }
         },
@@ -310,7 +311,8 @@ fun TopAppBarSearchList(
     onValueChange: (String) -> Unit,
     onSearch: () -> Unit,
     onBack: () -> Unit,
-    onFilter: () -> Unit
+    onFilter: () -> Unit,
+    onCancel: () -> Unit
 ) {
     TopAppBar(
         modifier = Modifier.padding(start = 5.dp, end = 10.dp),
@@ -340,7 +342,8 @@ fun TopAppBarSearchList(
                 isFocused = isFocused,
                 onValueChange = onValueChange,
                 onSearch = onSearch,
-                onFocusChange = onFocusChange
+                onFocusChange = onFocusChange,
+                onCancel = onCancel
             )
         },
         actions = {
