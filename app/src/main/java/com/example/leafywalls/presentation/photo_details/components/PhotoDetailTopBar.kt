@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.leafywalls.R
 
@@ -41,14 +42,16 @@ fun PhotoDetailTopBar(
         ) {
             DetailIcon(
                 icon = Icons.AutoMirrored.Rounded.ArrowBack,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(40.dp),
+                iconSize = 30.dp
             ) {
                 onBackClick()
             }
 
             DetailIcon(
                 painter = painterResource(id = R.drawable.sharp_more_horiz_24),
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(40.dp),
+                iconSize = 30.dp
             ) {
                 onInfoClick()
             }
@@ -61,6 +64,7 @@ fun DetailIcon(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     isClickable: Boolean = true,
+    iconSize: Dp = 36.dp,
     onClick: () -> Unit
 ) {
 
@@ -79,9 +83,8 @@ fun DetailIcon(
     ) {
         Icon(
             modifier = Modifier
-                .padding(5.dp)
-                .clip(CircleShape)
-                .size(48.dp),
+                .size(iconSize)
+                .align(Alignment.Center),
             imageVector = icon,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface
@@ -94,6 +97,7 @@ fun DetailIcon(
     modifier: Modifier = Modifier,
     painter: Painter,
     isClickable: Boolean = true,
+    iconSize: Dp = 36.dp,
     onClick: () -> Unit
 ) {
 
@@ -112,9 +116,8 @@ fun DetailIcon(
     ) {
         Icon(
             modifier = Modifier
-                .padding(5.dp)
-                .clip(CircleShape)
-                .size(48.dp),
+                .size(iconSize)
+                .align(Alignment.Center),
             painter = painter,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface

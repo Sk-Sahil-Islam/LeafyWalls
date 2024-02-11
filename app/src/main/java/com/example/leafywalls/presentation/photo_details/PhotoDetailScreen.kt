@@ -2,14 +2,11 @@ package com.example.leafywalls.presentation.photo_details
 
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.EaseInOutCubic
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
@@ -54,7 +51,7 @@ import com.example.leafywalls.presentation.photo_details.components.LoadingDetai
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailInfo
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailTopBar
 import com.example.leafywalls.presentation.photo_details.components.SetDialog
-import com.example.leafywalls.presentation.photo_details.components.Stats
+import com.example.leafywalls.presentation.photo_details.components.SideBar
 import com.example.leafywalls.presentation.photo_details.components.WallpaperSetting
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -200,8 +197,9 @@ fun PhotoDetailScreen(
                     exit = slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(500, easing = EaseInOutCubic)),
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
-                    Stats(
+                    SideBar(
                         isFavorite = isFavorite.value,
+                        photoId = photoDetail.id,
                         onSetClick = { isSetDialog = true },
                         onFavoriteClick = {
                             if(!isFavorite.value) {

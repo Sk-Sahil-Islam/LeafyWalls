@@ -1,5 +1,6 @@
 package com.example.leafywalls.presentation.photo_details.components
 
+import android.content.Intent
 import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,20 +26,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.example.leafywalls.R
+import com.example.leafywalls.common.shareListToText
 import com.example.leafywalls.ui.theme.FavoriteColor
 import com.example.leafywalls.ui.theme.OnSurfaceDark
 import kotlinx.coroutines.launch
 
 @Composable
-fun Stats(
+fun SideBar(
     modifier: Modifier = Modifier,
     onSetClick: () -> Unit,
     onFavoriteClick: () -> Unit,
+    photoId: String,
     isFavorite: Boolean
 ) {
+    val context = LocalContext.current
+    val text = "Check this image out from LeafyWalls:\nhttps://unsplash.com/photos/$photoId"
+    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+        putExtra(Intent.EXTRA_TEXT, text)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(sendIntent, null)
 
     Box(
         modifier = modifier
@@ -53,9 +66,20 @@ fun Stats(
                 onFavoriteClick()
             }
 
-            SetIcon(
-                onClick = onSetClick
-            )
+            DetailIcon(
+                painter = painterResource(id = R.drawable.download_ic),
+                modifier = Modifier.size(48.dp)
+            ) {
+                onSetClick()
+            }
+
+            DetailIcon(
+                icon = Icons.Rounded.Share,
+                iconSize = 28.dp
+            ) {
+                if (photoId.isNotEmpty())
+                    ContextCompat.startActivity(context, shareIntent, null)
+            }
         }
     }
 }

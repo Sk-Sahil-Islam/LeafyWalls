@@ -358,10 +358,7 @@ fun HomeScreen(
                             } else {
                                 favoriteViewModel.selectAll()
                             }
-                        },
-//                        onButtonClick = {
-//                            favoriteViewModel.deleteSelected()
-//                        }
+                        }
                     )
                 }
 
