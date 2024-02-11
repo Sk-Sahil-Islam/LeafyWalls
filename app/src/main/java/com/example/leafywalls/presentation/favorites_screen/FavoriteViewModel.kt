@@ -1,17 +1,16 @@
 package com.example.leafywalls.presentation.favorites_screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.leafywalls.data.db.Favorite
 import com.example.leafywalls.domain.repository.PhotoRepository
+import com.example.leafywalls.presentation.favorites_screen.componants.FavoriteItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 import javax.inject.Inject
 
 @HiltViewModel

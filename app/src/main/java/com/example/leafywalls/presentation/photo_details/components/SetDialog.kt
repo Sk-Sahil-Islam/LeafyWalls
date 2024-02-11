@@ -127,7 +127,7 @@ fun CustomDialog(
                             .width(300.dp)
                             .clip(RoundedCornerShape(16.dp))
                             .background(
-                                MaterialTheme.colorScheme.surface,
+                                MaterialTheme.colorScheme.background,
                             ),
                         contentAlignment = Alignment.Center
                     ) {
@@ -237,8 +237,6 @@ fun SetDialog(
                 icon = painterResource(id = R.drawable.download_ic),
                 onClick = onDownload
             )
-
-            //}
         }
     }
 

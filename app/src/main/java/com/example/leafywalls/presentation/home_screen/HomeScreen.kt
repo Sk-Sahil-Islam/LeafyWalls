@@ -1,32 +1,25 @@
 package com.example.leafywalls.presentation.home_screen
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.rounded.Share
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
@@ -62,13 +55,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.leafywalls.R
 import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.favorites_screen.FavoriteViewModel
 import com.example.leafywalls.presentation.favorites_screen.FavouriteScreen
 import com.example.leafywalls.presentation.favorites_screen.MultiSelectTopBar
-import com.example.leafywalls.presentation.favorites_screen.companants.FavoriteBottomAppBar
+import com.example.leafywalls.presentation.favorites_screen.componants.ConfirmDeleteDialog
+import com.example.leafywalls.presentation.favorites_screen.componants.FavoriteBottomAppBar
 import com.example.leafywalls.presentation.home_screen.componants.HomeScreenTopBar
 import com.example.leafywalls.presentation.home_screen.componants.NavigationItems
 import com.example.leafywalls.presentation.photo_list.ExploreList
@@ -83,6 +76,7 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
     favoriteViewModel: FavoriteViewModel = hiltViewModel()
 ) {
+    var isConfirmDialog by remember { mutableStateOf(false) }
     val favoriteState by favoriteViewModel.state.collectAsState()
     val lifeCycleOwner = LocalLifecycleOwner.current
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -292,7 +286,8 @@ fun HomeScreen(
                     FavoriteBottomAppBar(
                         shareList =favoriteState.favorites.filter { it.isSelected }.map { it.item.photoId }.toTypedArray(),
                         onDelete = {
-                            favoriteViewModel.deleteSelected()
+                            isConfirmDialog = true
+                            //favoriteViewModel.deleteSelected()
                         }
                     )
                 }
@@ -390,6 +385,14 @@ fun HomeScreen(
             }
         }
     }
+
+    ConfirmDeleteDialog(
+        showDialog = isConfirmDialog,
+        onDismissRequest = { isConfirmDialog = false },
+        onDelete = { favoriteViewModel.deleteSelected() },
+        onCancel = { isConfirmDialog = false }
+    )
+
     if (drawerState.isOpen) {
         BackHandler {
             scope.launch {

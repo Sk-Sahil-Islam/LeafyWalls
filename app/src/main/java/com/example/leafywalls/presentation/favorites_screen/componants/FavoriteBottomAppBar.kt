@@ -1,4 +1,4 @@
-package com.example.leafywalls.presentation.favorites_screen.companants
+package com.example.leafywalls.presentation.favorites_screen.componants
 
 import android.content.Intent
 import androidx.compose.foundation.background

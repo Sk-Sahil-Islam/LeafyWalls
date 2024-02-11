@@ -1,4 +1,4 @@
-package com.example.leafywalls.presentation.favorites_screen
+package com.example.leafywalls.presentation.favorites_screen.componants
 
 import com.example.leafywalls.data.db.Favorite
 
