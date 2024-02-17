@@ -14,8 +14,14 @@ import com.example.leafywalls.domain.repository.PhotoRepository
 import com.example.leafywalls.domain.use_case.GetPhotoUseCase
 import com.example.leafywalls.domain.use_case.SetWallpaperUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okio.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,6 +62,7 @@ class PhotoDetailViewModel @Inject constructor(
 
     fun setWallpaper(
         url: String,
+        downloadUrl: String,
         context: Context,
         which: Int
     ) {
@@ -75,6 +82,7 @@ class PhotoDetailViewModel @Inject constructor(
                     )
                 }
                 is Resource.Success -> {
+                    triggerDownload(downloadUrl)
                     _state.value = _state.value.copy(
                         settingWallpaper = false
                     )
@@ -83,5 +91,30 @@ class PhotoDetailViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+
+    private fun triggerDownload(url: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val client = OkHttpClient()
+
+                val request = Request.Builder()
+                    .url(url)
+                    .build()
+
+                try {
+                    val response = client.newCall(request).execute()
+                    if (response.isSuccessful) {
+                        val responseBody = response.body?.string()
+                        Log.e("PhotoDetailViewModel", "Response: $responseBody")
+                    } else {
+                        Log.e("PhotoDetailViewModel", "${response.code}")
+                    }
+                } catch (e: IOException) {
+                    Log.e("PhotoDetailViewModel", "Error: ${e.message}")
+                }
+            }
+        }
+    }
+
 }
 

@@ -287,7 +287,8 @@ fun HomeScreen(
             bottomBar = {
                 if (favoriteState.isMultiSelect) {
                     FavoriteBottomAppBar(
-                        shareList =favoriteState.favorites.filter { it.isSelected }.map { it.item.photoId }.toTypedArray(),
+                        shareList = favoriteState.favorites.filter { it.isSelected }
+                            .map { it.item.photoId }.toTypedArray(),
                         onDelete = {
                             isConfirmDialog = true
                         }
@@ -385,11 +386,14 @@ fun HomeScreen(
     ConfirmDeleteDialog(
         showDialog = isConfirmDialog,
         onDismissRequest = { isConfirmDialog = false },
-        onDelete = { favoriteViewModel.deleteSelected() },
+        onDelete = {
+            favoriteViewModel.deleteSelected()
+            isConfirmDialog = false
+        },
         onCancel = { isConfirmDialog = false }
     )
 
-    if (drawerState.isOpen ) {
+    if (drawerState.isOpen) {
         BackHandler {
 
             scope.launch {
@@ -398,7 +402,7 @@ fun HomeScreen(
         }
     }
 
-    if(favoriteState.isMultiSelect) {
+    if (favoriteState.isMultiSelect) {
         BackHandler {
             favoriteViewModel.isMultiSelectChange(false)
         }
@@ -410,7 +414,7 @@ fun HomeScreen(
         }
     }
 
-    if(pagerState.currentPage != 0) {
+    if (pagerState.currentPage != 0) {
         BackHandler {
             scope.launch {
                 pagerState.scrollToPage(0)

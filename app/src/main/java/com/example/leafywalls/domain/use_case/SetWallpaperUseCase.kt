@@ -6,6 +6,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.ui.res.stringResource
+import com.example.leafywalls.R
 import com.example.leafywalls.common.Resource
 import com.example.leafywalls.data.remote.dto.toPhotoDetail
 import com.example.leafywalls.domain.model.PhotoDetail
@@ -35,7 +37,7 @@ class SetWallpaperUseCase {
             }
 
             val bitmap = task.await()
-            trySend(Resource.Success("Wallpaper successfully set"))
+            trySend(Resource.Success(context.getString(R.string.wallpaper_set_successfully)))
 
             setWallpaper(
                 bitmap = bitmap,

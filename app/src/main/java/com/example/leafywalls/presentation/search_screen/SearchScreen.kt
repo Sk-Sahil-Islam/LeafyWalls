@@ -207,7 +207,7 @@ fun SearchScreen(
                     dragHandle = {},
                     modifier = Modifier.padding(top = 10.dp)
                 ) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
+                    Box(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
                         this@ModalBottomSheet.AnimatedVisibility(
                             modifier = Modifier
                                 .padding(10.dp)

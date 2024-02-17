@@ -12,6 +12,7 @@ data class PhotoDetail(
     val downloads: Long,
     val id: String,
     val likes: Long,
+//    val downloadLink: String,
     val tags: List<String>,
     val links: Links,
     val location: String,

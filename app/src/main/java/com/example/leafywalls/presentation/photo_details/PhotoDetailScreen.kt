@@ -2,6 +2,7 @@ package com.example.leafywalls.presentation.photo_details
 
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOut
@@ -37,6 +38,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,6 +46,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.example.leafywalls.R
 import com.example.leafywalls.data.db.Favorite
 import com.example.leafywalls.presentation.favorites_screen.FavoriteViewModel
 import com.example.leafywalls.presentation.photo_details.components.CustomDialog
@@ -92,6 +95,7 @@ fun PhotoDetailScreen(
         val heightPx = with(density) { screenHeight.roundToPx() }
 
         val photoUrl = "${photoDetail.url}&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
+        //val downloadUrl = "${photoDetail.links.download_location}&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
 
         Box(
             modifier = Modifier
@@ -224,6 +228,7 @@ fun PhotoDetailScreen(
                             isSetDialog = false
                             viewModel.setWallpaper(
                                 url = photoUrl,
+                                downloadUrl = photoDetail.links.download_location+"&client_id="+ context.getString( R.string.API_KEY),
                                 context = context,
                                 which = WallpaperManager.FLAG_SYSTEM
                             )
@@ -233,6 +238,7 @@ fun PhotoDetailScreen(
                             viewModel.setWallpaper(
                                 url = photoUrl,
                                 context = context,
+                                downloadUrl = photoDetail.links.download_location+"&client_id="+ context.getString( R.string.API_KEY),
                                 which = WallpaperManager.FLAG_LOCK
                             )
                         },
@@ -241,6 +247,7 @@ fun PhotoDetailScreen(
                             viewModel.setWallpaper(
                                 url = photoUrl,
                                 context = context,
+                                downloadUrl = photoDetail.links.download_location+"&client_id="+ context.getString( R.string.API_KEY),
                                 which = 0
                             )
                         },
@@ -296,15 +303,3 @@ fun PhotoDetailScreen(
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-

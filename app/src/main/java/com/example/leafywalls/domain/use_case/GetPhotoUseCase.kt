@@ -1,9 +1,7 @@
 package com.example.leafywalls.domain.use_case
 
 import com.example.leafywalls.common.Resource
-import com.example.leafywalls.data.remote.dto.toPhoto
 import com.example.leafywalls.data.remote.dto.toPhotoDetail
-import com.example.leafywalls.domain.model.Photo
 import com.example.leafywalls.domain.model.PhotoDetail
 import com.example.leafywalls.domain.repository.PhotoRepository
 import kotlinx.coroutines.flow.Flow
