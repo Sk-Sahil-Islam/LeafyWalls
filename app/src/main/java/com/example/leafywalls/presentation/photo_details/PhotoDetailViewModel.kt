@@ -1,6 +1,13 @@
 package com.example.leafywalls.presentation.photo_details
 
+import android.content.ContentValues
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.State
@@ -11,6 +18,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.leafywalls.common.Constants
 import com.example.leafywalls.common.Resource
 import com.example.leafywalls.domain.repository.PhotoRepository
+import com.example.leafywalls.domain.use_case.DownloadWallpaperUseCase
 import com.example.leafywalls.domain.use_case.GetPhotoUseCase
 import com.example.leafywalls.domain.use_case.SetWallpaperUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +30,14 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
+import java.net.HttpURLConnection
+import java.net.MalformedURLException
+import java.net.URL
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,7 +64,6 @@ class PhotoDetailViewModel @Inject constructor(
                     )
                 }
                 is Resource.Loading -> {
-                    Log.e("IS LOADING photo", "true")
                     _state.value = PhotoDetailState(isLoading = true)
                 }
                 is Resource.Success -> {
@@ -58,15 +73,12 @@ class PhotoDetailViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-
-
-    fun setWallpaper(
+    fun downloadWallpaper(
         url: String,
         downloadUrl: String,
         context: Context,
-        which: Int
     ) {
-        SetWallpaperUseCase().invoke(url = url, context, which = which).onEach { result ->
+        DownloadWallpaperUseCase().invoke(url = url, context, downloadUrl = downloadUrl).onEach { result ->
 
             when(result) {
                 is Resource.Error -> {
@@ -82,7 +94,6 @@ class PhotoDetailViewModel @Inject constructor(
                     )
                 }
                 is Resource.Success -> {
-                    triggerDownload(downloadUrl)
                     _state.value = _state.value.copy(
                         settingWallpaper = false
                     )
@@ -92,29 +103,36 @@ class PhotoDetailViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun triggerDownload(url: String) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val client = OkHttpClient()
+    fun setWallpaper(
+        url: String,
+        downloadUrl: String,
+        fileName: String,
+        context: Context,
+        which: Int
+    ) {
+        SetWallpaperUseCase().invoke(url = url, context, fileName, which, downloadUrl = downloadUrl).onEach { result ->
 
-                val request = Request.Builder()
-                    .url(url)
-                    .build()
+            when(result) {
+                is Resource.Error -> {
+                    _state.value = _state.value.copy(
+                        settingWallpaper = false
+                    )
+                    Toast.makeText(context, result.data, Toast.LENGTH_SHORT).show()
+                }
 
-                try {
-                    val response = client.newCall(request).execute()
-                    if (response.isSuccessful) {
-                        val responseBody = response.body?.string()
-                        Log.e("PhotoDetailViewModel", "Response: $responseBody")
-                    } else {
-                        Log.e("PhotoDetailViewModel", "${response.code}")
-                    }
-                } catch (e: IOException) {
-                    Log.e("PhotoDetailViewModel", "Error: ${e.message}")
+                is Resource.Loading -> {
+                    _state.value = _state.value.copy(
+                        settingWallpaper = true
+                    )
+                }
+                is Resource.Success -> {
+                    _state.value = _state.value.copy(
+                        settingWallpaper = false
+                    )
+                    Toast.makeText(context, result.data, Toast.LENGTH_SHORT).show()
                 }
             }
-        }
+        }.launchIn(viewModelScope)
     }
-
 }
 

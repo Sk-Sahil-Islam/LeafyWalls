@@ -1,6 +1,5 @@
 package com.example.leafywalls.presentation.photo_list.components
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -82,8 +81,8 @@ fun PhotoListItem(
             val screenHeight = configuration.screenHeightDp.dp
 
             val density = LocalDensity.current
-            val widthPx = with(density) { screenWidth.roundToPx() } / 2
-            val heightPx = with(density) { screenHeight.roundToPx() } / 2
+            val widthPx = with(density) { screenWidth.roundToPx() } / 3
+            val heightPx = with(density) { screenHeight.roundToPx() } / 3
 
             SubcomposeAsyncImage(
                 modifier = Modifier

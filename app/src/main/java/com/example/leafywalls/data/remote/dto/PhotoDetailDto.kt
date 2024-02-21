@@ -45,7 +45,7 @@ fun PhotoDetailDto.toPhotoDetail(): PhotoDetail {
         location = location?.name ?: "Unknown",
         relatedCollections = related_collections,
         links = links,
-        url = urls.raw,
+        url = urls,
         user = user,
         views = views,
         color = color,

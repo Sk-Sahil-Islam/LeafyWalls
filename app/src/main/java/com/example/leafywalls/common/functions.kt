@@ -1,9 +1,17 @@
 package com.example.leafywalls.common
 
+import android.content.ContentValues
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Rect
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -21,8 +29,19 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.viewModelScope
 import com.example.leafywalls.R
 import com.example.leafywalls.presentation.search_screen.SearchState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.random.Random
@@ -35,7 +54,7 @@ fun String.toDate(): String {
     return dateTime.format(formatter)
 }
 
-fun isDarkOrLight(color: Color):String {
+fun isDarkOrLight(color: Color): String {
     val luminance = color.luminance()
     Log.e("COLOR HEX2", luminance.toString())
     return if (luminance < 0.5) "Dark"
@@ -45,7 +64,7 @@ fun isDarkOrLight(color: Color):String {
 }
 
 fun String.toColor(): Color {
-    return  Color(android.graphics.Color.parseColor(this))
+    return Color(android.graphics.Color.parseColor(this))
 }
 
 
@@ -56,6 +75,7 @@ fun View.isKeyboardOpen(): Boolean {
     val keypadHeight = screenHeight - rect.bottom;
     return keypadHeight > screenHeight * 0.15
 }
+
 fun Modifier.clearFocusOnKeyboardDismiss(): Modifier = composed {
 
     var isFocused by remember { mutableStateOf(false) }
@@ -92,7 +112,7 @@ fun rememberIsKeyboardOpen(): State<Boolean> {
         val listener = ViewTreeObserver.OnGlobalLayoutListener { value = view.isKeyboardOpen() }
         viewTreeObserver.addOnGlobalLayoutListener(listener)
 
-        awaitDispose { viewTreeObserver.removeOnGlobalLayoutListener(listener)  }
+        awaitDispose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
     }
 }
 
@@ -108,7 +128,7 @@ fun formatNumber(number: Long): String {
 
 @Composable
 fun parseColorImage(colorString: String): Painter {
-    return when(colorString) {
+    return when (colorString) {
         "black" -> painterResource(id = R.drawable.black)
         "white" -> painterResource(id = R.drawable.white)
         "yellow" -> painterResource(id = R.drawable.yellow)
@@ -126,7 +146,7 @@ fun parseColorImage(colorString: String): Painter {
 fun generateRandomColor(): Color {
 
     val random = Random.Default
-    return Color(random.nextInt(256)/255f, random.nextInt(256)/255f, random.nextInt(256)/255f)
+    return Color(random.nextInt(256) / 255f, random.nextInt(256) / 255f, random.nextInt(256) / 255f)
 }
 
 fun areSearchStatesEqual(state1: SearchState, state2: SearchState): Boolean {
@@ -137,10 +157,91 @@ fun areSearchStatesEqual(state1: SearchState, state2: SearchState): Boolean {
             state1.safeSearch == state2.safeSearch
 }
 
-fun shareListToText(shareList: Array<String>): String{
+fun shareListToText(shareList: Array<String>): String {
     var result = "Here's my favorite image(s) from LeafyWalls:"
     shareList.forEach {
         result += "\nhttps://unsplash.com/photos/$it"
     }
     return result
+}
+
+fun saveBitmapAsJpeg(bitmap: Bitmap, context: Context, fileName: String): String? {
+    val folderName = "LeafyWalls"
+
+    val name = "hey.jpg"
+    try {
+        val folder = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), folderName)
+
+        if (!folder.exists()) {
+            folder.mkdirs()
+        }
+
+        val file = File(folder, name)
+
+        val fos = FileOutputStream(file)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+        fos.flush()
+        fos.close()
+        return file.absolutePath
+    } catch (e: Exception) {
+        e.printStackTrace()
+        Log.e("PhotoDetailViewModel", e.toString())
+    }
+    return null
+}
+
+fun mSaveMediaToStorage(bitmap: Bitmap?, context: Context) {
+    val filename = "${System.currentTimeMillis()}.jpg"
+    var fos: OutputStream? = null
+
+    val folderName = context.getString(R.string.folder_name)
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        context.contentResolver?.also { resolver ->
+            val contentValues = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+                put(
+                    MediaStore.MediaColumns.RELATIVE_PATH,
+                    Environment.DIRECTORY_PICTURES + File.separator + folderName
+                )
+            }
+            val imageUri: Any? =
+                resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            fos = imageUri?.let { resolver.openOutputStream(it as android.net.Uri) }
+        }
+    } else {
+        val imagesDir =
+            File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), folderName)
+        imagesDir.mkdirs()
+        val image = File(imagesDir, filename)
+        fos = image.outputStream()
+    }
+
+    fos?.use {
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, it)
+    }
+}
+
+suspend fun triggerDownload(url: String) {
+    withContext(Dispatchers.IO) {
+        val client = OkHttpClient()
+
+        val request = Request.Builder()
+            .url(url)
+            .build()
+
+        try {
+            val response = client.newCall(request).execute()
+            if (response.isSuccessful) {
+                val responseBody = response.body?.string()
+                Log.e("PhotoDetailViewModel", "Response: $responseBody")
+            } else {
+                Log.e("PhotoDetailViewModel", "${response.code}")
+            }
+        } catch (e: IOException) {
+            Log.e("PhotoDetailViewModel", "Error: ${e.message}")
+        }
+    }
+
 }

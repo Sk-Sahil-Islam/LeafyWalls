@@ -9,6 +9,9 @@ import android.widget.Toast
 import androidx.compose.ui.res.stringResource
 import com.example.leafywalls.R
 import com.example.leafywalls.common.Resource
+import com.example.leafywalls.common.mSaveMediaToStorage
+import com.example.leafywalls.common.saveBitmapAsJpeg
+import com.example.leafywalls.common.triggerDownload
 import com.example.leafywalls.data.remote.dto.toPhotoDetail
 import com.example.leafywalls.domain.model.PhotoDetail
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +27,8 @@ import java.net.URL
 import javax.inject.Inject
 
 class SetWallpaperUseCase {
-    fun invoke(url: String, context: Context, which: Int): Flow<Resource<String>> = channelFlow {
+
+    fun invoke(url: String, context: Context, fileName: String, which: Int, downloadUrl: String): Flow<Resource<String>> = channelFlow {
         val wallpaperManager = WallpaperManager.getInstance(context)
 
         try {
@@ -35,15 +39,19 @@ class SetWallpaperUseCase {
                     URL(url).openConnection().getInputStream()
                 )
             }
-
             val bitmap = task.await()
-            trySend(Resource.Success(context.getString(R.string.wallpaper_set_successfully)))
+
+            triggerDownload(downloadUrl)
 
             setWallpaper(
                 bitmap = bitmap,
                 which = which,
                 wallpaperManager
             )
+
+            mSaveMediaToStorage(bitmap, context)
+
+            trySend(Resource.Success(context.getString(R.string.wallpaper_set_successfully)))
 
         } catch (e: HttpException) {
             trySend(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))

@@ -3,7 +3,7 @@
     <string name="API_KEY">dMoh6h0efBSGs49Z5leYqMxWLqIKY3xZa5EVvaxOoV8</string>
     <string name="placeholder_search">Search</string>
     <string name="no_result">Sorry, no results found. Try a different query or check your spelling.</string>
-    <string name="setting_wallpaper">Setting wallpaper…</string>
+    <string name="setting_wallpaper">Processioning…</string>
     <string name="please_wait">Please wait</string>
     <string name="set_home">Set to home screen</string>
     <string name="set_lock">Set to lock screen</string>
@@ -16,4 +16,6 @@
     <string name="cancel">Cancel</string>
     <string name="confirm_delete">Are you sure you want to remove this images?</string>
     <string name="wallpaper_set_successfully">Wallpaper set successfully</string>
+    <string name="successful_download_message">Download successful</string>
+    <string name="folder_name">Leafy wallpapers</string>
 </resources>

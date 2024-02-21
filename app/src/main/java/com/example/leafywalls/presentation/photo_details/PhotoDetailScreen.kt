@@ -2,6 +2,9 @@ package com.example.leafywalls.presentation.photo_details
 
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
+import android.graphics.Bitmap
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -56,6 +59,7 @@ import com.example.leafywalls.presentation.photo_details.components.PhotoDetailT
 import com.example.leafywalls.presentation.photo_details.components.SetDialog
 import com.example.leafywalls.presentation.photo_details.components.SideBar
 import com.example.leafywalls.presentation.photo_details.components.WallpaperSetting
+import java.util.concurrent.Executors
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
@@ -78,13 +82,12 @@ fun PhotoDetailScreen(
     var isPhotoLoading by remember { mutableStateOf(true) }
     var isPhotoError by remember { mutableStateOf(false) }
 
-
     val lifeCycleOwner = LocalLifecycleOwner.current
-
 
     state.photo?.let { photoDetail ->
 
-        val isFavorite = mutableStateOf(favoriteState.favorites.any { photoDetail.id == it.item.photoId })
+        val isFavorite =
+            mutableStateOf(favoriteState.favorites.any { photoDetail.id == it.item.photoId })
 
         val configuration = LocalConfiguration.current
         val screenWidth = configuration.screenWidthDp.dp
@@ -94,8 +97,8 @@ fun PhotoDetailScreen(
         val widthPx = with(density) { screenWidth.roundToPx() }
         val heightPx = with(density) { screenHeight.roundToPx() }
 
-        val photoUrl = "${photoDetail.url}&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
-        //val downloadUrl = "${photoDetail.links.download_location}&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
+        val photoUrl = "${photoDetail.url.raw}&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
+        val downloadUrl = "${photoDetail.url.full}&w=$widthPx&h=$heightPx&fit=crop&crop=entropy"
 
         Box(
             modifier = Modifier
@@ -182,8 +185,14 @@ fun PhotoDetailScreen(
 
                 AnimatedVisibility(
                     visible = !isDetailsHidden && !isSetDialog,
-                    enter = slideInVertically(initialOffsetY = { -it }, animationSpec = tween(500, easing = EaseInOut)),
-                    exit = slideOutVertically(targetOffsetY = { -it }, animationSpec = tween(500, easing = EaseInOutCubic))
+                    enter = slideInVertically(
+                        initialOffsetY = { -it },
+                        animationSpec = tween(500, easing = EaseInOut)
+                    ),
+                    exit = slideOutVertically(
+                        targetOffsetY = { -it },
+                        animationSpec = tween(500, easing = EaseInOutCubic)
+                    )
                 ) {
                     PhotoDetailTopBar(
                         onBackClick = {
@@ -197,8 +206,14 @@ fun PhotoDetailScreen(
                 }
                 AnimatedVisibility(
                     visible = !isDetailsHidden && !isSetDialog,
-                    enter = slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(500, easing = EaseInOut)),
-                    exit = slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(500, easing = EaseInOutCubic)),
+                    enter = slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(500, easing = EaseInOut)
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(500, easing = EaseInOutCubic)
+                    ),
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
                     SideBar(
@@ -206,8 +221,13 @@ fun PhotoDetailScreen(
                         photoId = photoDetail.id,
                         onSetClick = { isSetDialog = true },
                         onFavoriteClick = {
-                            if(!isFavorite.value) {
-                                favoriteViewModel.addFavorite(Favorite(photoId = photoDetail.id, uri = photoDetail.url))
+                            if (!isFavorite.value) {
+                                favoriteViewModel.addFavorite(
+                                    Favorite(
+                                        photoId = photoDetail.id,
+                                        uri = photoDetail.url.raw
+                                    )
+                                )
                                 isFavorite.value = true
                             } else {
                                 favoriteState.favorites.find { photoDetail.id == it.item.photoId }
@@ -218,7 +238,6 @@ fun PhotoDetailScreen(
                     )
                 }
 
-
                 CustomDialog(
                     showDialog = isSetDialog,
                     onDismissRequest = { isSetDialog = false }
@@ -228,8 +247,11 @@ fun PhotoDetailScreen(
                             isSetDialog = false
                             viewModel.setWallpaper(
                                 url = photoUrl,
-                                downloadUrl = photoDetail.links.download_location+"&client_id="+ context.getString( R.string.API_KEY),
+                                downloadUrl = photoDetail.links.download_location + "&client_id=" + context.getString(
+                                    R.string.API_KEY
+                                ),
                                 context = context,
+                                fileName = photoDetail.title,
                                 which = WallpaperManager.FLAG_SYSTEM
                             )
                         },
@@ -238,7 +260,10 @@ fun PhotoDetailScreen(
                             viewModel.setWallpaper(
                                 url = photoUrl,
                                 context = context,
-                                downloadUrl = photoDetail.links.download_location+"&client_id="+ context.getString( R.string.API_KEY),
+                                fileName = photoDetail.title,
+                                downloadUrl = photoDetail.links.download_location + "&client_id=" + context.getString(
+                                    R.string.API_KEY
+                                ),
                                 which = WallpaperManager.FLAG_LOCK
                             )
                         },
@@ -247,11 +272,23 @@ fun PhotoDetailScreen(
                             viewModel.setWallpaper(
                                 url = photoUrl,
                                 context = context,
-                                downloadUrl = photoDetail.links.download_location+"&client_id="+ context.getString( R.string.API_KEY),
+                                fileName = photoDetail.title,
+                                downloadUrl = photoDetail.links.download_location + "&client_id=" + context.getString(
+                                    R.string.API_KEY
+                                ),
                                 which = 0
                             )
                         },
-                        onDownload = { },
+                        onDownload = {
+                            isSetDialog = false
+                            viewModel.downloadWallpaper(
+                                url = photoUrl,
+                                downloadUrl = photoDetail.links.download_location + "&client_id=" + context.getString(
+                                    R.string.API_KEY
+                                ),
+                                context = context
+                            )
+                        },
                         onDismiss = { isSetDialog = false }
 
                     )
