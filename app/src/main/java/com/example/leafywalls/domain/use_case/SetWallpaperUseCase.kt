@@ -87,5 +87,4 @@ private fun setWallpaper(
         }
         else -> { wallpaperManager.setBitmap(bitmap) }
     }
-
 }

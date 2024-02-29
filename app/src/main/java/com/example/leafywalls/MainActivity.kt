@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.favorites_screen.FavouriteScreen
 import com.example.leafywalls.presentation.home_screen.HomeScreen
+import com.example.leafywalls.presentation.login_screen.LoginScreen
 import com.example.leafywalls.presentation.photo_details.PhotoDetailScreen
 import com.example.leafywalls.presentation.random_photo.RandomScreen
 import com.example.leafywalls.presentation.search_screen.SearchScreen
@@ -49,10 +50,14 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     
-                    NavHost(navController = navController, startDestination = Screen.HomeScreen.route) {
+                    NavHost(navController = navController, startDestination = Screen.WelcomeScreen.route) {
                         
                         composable(route = Screen.HomeScreen.route) {
                             HomeScreen(navController = navController)
+                        }
+
+                        composable(route = Screen.WelcomeScreen.route) {
+                            LoginScreen()
                         }
 
                         composable(route = Screen.RandomScreen.route) {

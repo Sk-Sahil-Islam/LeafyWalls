@@ -10,4 +10,5 @@ sealed class Screen(val route: String){
     object SettingsScreen: Screen("settings_screen")
     object RandomScreen: Screen("random_screen")
     object HelpScreen: Screen("help_screen")
+    object WelcomeScreen: Screen("welcome_screen")
 }

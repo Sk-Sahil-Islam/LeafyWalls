@@ -38,3 +38,6 @@ val OnPrimaryContainerLight = Color(0xFF223011)
 
 val SearchBarDark = Color(0xFF2A381A)
 val SearchBarLight = Color(0xFFE5FDC7)
+
+val LinkColorLight = Color(0xFF00D8FF)
+val LinkColorDark = Color(0xFF0098E9)

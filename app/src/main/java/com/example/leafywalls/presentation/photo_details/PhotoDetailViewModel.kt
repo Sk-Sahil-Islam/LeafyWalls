@@ -1,14 +1,6 @@
 package com.example.leafywalls.presentation.photo_details
 
-import android.content.ContentValues
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.os.Build
-import android.os.Environment
-import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -22,22 +14,8 @@ import com.example.leafywalls.domain.use_case.DownloadWallpaperUseCase
 import com.example.leafywalls.domain.use_case.GetPhotoUseCase
 import com.example.leafywalls.domain.use_case.SetWallpaperUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okio.IOException
-import java.io.BufferedInputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.URL
 import javax.inject.Inject
 
 @HiltViewModel
