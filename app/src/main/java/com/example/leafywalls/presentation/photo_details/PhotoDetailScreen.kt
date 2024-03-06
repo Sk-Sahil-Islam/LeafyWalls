@@ -282,7 +282,7 @@ fun PhotoDetailScreen(
                         onDownload = {
                             isSetDialog = false
                             viewModel.downloadWallpaper(
-                                url = photoUrl,
+                                url = downloadUrl,
                                 downloadUrl = photoDetail.links.download_location + "&client_id=" + context.getString(
                                     R.string.API_KEY
                                 ),

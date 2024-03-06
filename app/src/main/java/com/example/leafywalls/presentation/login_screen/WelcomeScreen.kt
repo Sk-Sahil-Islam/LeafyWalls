@@ -1,5 +1,7 @@
 package com.example.leafywalls.presentation.login_screen
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,11 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,14 +24,22 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.leafywalls.presentation.login_screen.componants.InfoFieldBox
 import com.example.leafywalls.presentation.login_screen.componants.LogoBox
-import com.example.leafywalls.ui.theme.LeafyWallsTheme
 
 @Composable
-fun LoginScreen() {
+fun WelcomeScreen(
+    navController: NavController
+) {
+
+    var selectedIndex by remember {
+        mutableStateOf(0)
+    }
+
+    val animatableCenterX = remember { Animatable(initialValue = 5f) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -42,7 +54,7 @@ fun LoginScreen() {
                             )
                         ),
                         radius = size.width / 1f,
-                        center = Offset(x = size.width / 5f, y = size.height / 3f)
+                        center = Offset(x = size.width / animatableCenterX.value, y = size.height / 3f)
                     )
                 }
             },
@@ -55,7 +67,7 @@ fun LoginScreen() {
             InfoFieldBox(
                 modifier = Modifier
                     .padding(16.dp)
-                    .offset(y=(-16).dp)
+                    .offset(y = (-16).dp)
                     .border(
                         2.dp,
                         brush = Brush.linearGradient(
@@ -66,16 +78,25 @@ fun LoginScreen() {
                         ),
                         RoundedCornerShape(24.dp)
                     )
-                    .clip(RoundedCornerShape(24.dp))
+                    .clip(RoundedCornerShape(24.dp)),
+                selectedIndex = selectedIndex,
+                onTabClick = {
+                    selectedIndex = it
+                },
+                onLinkClick = {
+                    selectedIndex = 0
+                },
+                navController = navController
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewLoginScreen() {
-    LeafyWallsTheme {
-        LoginScreen()
+    LaunchedEffect(selectedIndex) {
+        val targetX = if (selectedIndex == 1) 1.2f else 5f
+        animatableCenterX.animateTo(
+            targetValue = targetX,
+            animationSpec = tween(
+                durationMillis = 600
+            )
+        )
     }
 }

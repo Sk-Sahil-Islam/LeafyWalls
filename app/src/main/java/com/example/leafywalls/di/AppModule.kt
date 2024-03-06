@@ -3,12 +3,19 @@ package com.example.leafywalls.di
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
+import com.example.leafywalls.R
 import com.example.leafywalls.common.Constants
 import com.example.leafywalls.data.db.FavouriteDao
 import com.example.leafywalls.data.db.LeafyDatabase
 import com.example.leafywalls.data.remote.UnsplashApi
+import com.example.leafywalls.data.repository.AuthRepositoryImpl
 import com.example.leafywalls.data.repository.PhotoRepositoryImpl
+import com.example.leafywalls.domain.repository.AuthRepository
 import com.example.leafywalls.domain.repository.PhotoRepository
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,6 +42,26 @@ object AppModule {
             .build()
     }
 
+    @Provides
+    @Singleton
+    fun providesFirebaseAuth() = FirebaseAuth.getInstance()
+
+    @Provides
+    @Singleton
+    fun providesRepositoryImpl(firebaseAuth: FirebaseAuth, googleSignInClient: GoogleSignInClient): AuthRepository {
+        return AuthRepositoryImpl(firebaseAuth,googleSignInClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGoogleSignInClient(@ApplicationContext applicationContext: Context): GoogleSignInClient {
+        val mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(applicationContext.getString(R.string.web_client_id))
+            .requestProfile()
+            .requestEmail()
+            .build()
+        return GoogleSignIn.getClient(applicationContext, mGoogleSignInOptions)
+    }
 
     @Provides
     @Singleton

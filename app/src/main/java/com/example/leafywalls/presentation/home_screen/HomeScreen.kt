@@ -56,6 +56,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import com.example.leafywalls.R
+import com.example.leafywalls.data.AuthViewModel
+import com.example.leafywalls.domain.model.UserData
 import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.favorites_screen.FavoriteViewModel
 import com.example.leafywalls.presentation.favorites_screen.FavouriteScreen
@@ -64,6 +66,7 @@ import com.example.leafywalls.presentation.favorites_screen.componants.ConfirmDe
 import com.example.leafywalls.presentation.favorites_screen.componants.FavoriteBottomAppBar
 import com.example.leafywalls.presentation.home_screen.componants.HomeScreenTopBar
 import com.example.leafywalls.presentation.home_screen.componants.NavigationItems
+import com.example.leafywalls.presentation.home_screen.componants.ProfileElement
 import com.example.leafywalls.presentation.photo_list.ExploreList
 import com.example.leafywalls.presentation.popular_photo_list.PopularList
 import com.example.leafywalls.ui.theme.Sarala
@@ -74,11 +77,13 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     navController: NavController,
     viewModel: HomeScreenViewModel = hiltViewModel(),
-    favoriteViewModel: FavoriteViewModel = hiltViewModel()
+    favoriteViewModel: FavoriteViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     var isConfirmDialog by remember { mutableStateOf(false) }
     val favoriteState by favoriteViewModel.state.collectAsState()
     val lifeCycleOwner = LocalLifecycleOwner.current
+    val currentState = lifeCycleOwner.lifecycle.currentState
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItemIndex by rememberSaveable {
@@ -132,6 +137,32 @@ fun HomeScreen(
                 drawerShape = RectangleShape,
                 drawerContainerColor = MaterialTheme.colorScheme.background
             ) {
+                val userData = authViewModel.currentUser?.run {
+                    UserData(
+                        userId = this.uid,
+                        userName = this.displayName,
+                        this.photoUrl.toString()
+                    )
+                }
+                ProfileElement(
+                    userData = userData,
+                    onLoginClick = {
+                        if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                            navController.navigate(Screen.WelcomeScreen.route)
+                            scope.launch {
+                                drawerState.close()
+                            }
+                        }
+                    },
+                    onProfilePicClick = {
+                        if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                            navController.navigate(Screen.ProfileScreen.route)
+                            scope.launch {
+                                drawerState.close()
+                            }
+                        }
+                    }
+                )
                 items.forEachIndexed { index, item ->
                     NavigationDrawerItem(
                         label = {
@@ -148,7 +179,7 @@ fun HomeScreen(
                             scope.launch {
                                 drawerState.close()
                             }
-
+                            authViewModel.logOut()
 //                            navController.navigate(item.route) {
 //                                popUpTo(navController.graph.findStartDestination().id)
 //                                launchSingleTop = true
@@ -199,7 +230,6 @@ fun HomeScreen(
                         scope.launch {
                             drawerState.close()
                         }
-                        val currentState = lifeCycleOwner.lifecycle.currentState
                         if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
                             navController
                                 .navigate(Screen.RandomScreen.route)
@@ -275,7 +305,6 @@ fun HomeScreen(
                         }
                     },
                     onSearchClick = {
-                        val currentState = lifeCycleOwner.lifecycle.currentState
                         if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
                             navController
                                 .navigate(Screen.SearchScreen.route)

@@ -3,6 +3,7 @@ package com.example.leafywalls
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -19,11 +20,12 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.leafywalls.data.AuthViewModel
 import com.example.leafywalls.presentation.Screen
-import com.example.leafywalls.presentation.favorites_screen.FavouriteScreen
 import com.example.leafywalls.presentation.home_screen.HomeScreen
-import com.example.leafywalls.presentation.login_screen.LoginScreen
+import com.example.leafywalls.presentation.login_screen.WelcomeScreen
 import com.example.leafywalls.presentation.photo_details.PhotoDetailScreen
+import com.example.leafywalls.presentation.profile_screen.ProfileScreen
 import com.example.leafywalls.presentation.random_photo.RandomScreen
 import com.example.leafywalls.presentation.search_screen.SearchScreen
 import com.example.leafywalls.ui.theme.LeafyWallsTheme
@@ -37,6 +39,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         setContent {
             LeafyWallsTheme {
+                val authViewModel by viewModels<AuthViewModel>()
                 val localFocusManager = LocalFocusManager.current
                 Surface(
                     modifier = Modifier
@@ -49,19 +52,25 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    
-                    NavHost(navController = navController, startDestination = Screen.WelcomeScreen.route) {
+                    authViewModel.checkForActiveSession()
+                    val isUserLoggedIn = authViewModel.isUserLoggedIn.value
+
+                    NavHost(navController = navController, startDestination = Screen.HomeScreen.route) {
                         
                         composable(route = Screen.HomeScreen.route) {
                             HomeScreen(navController = navController)
                         }
 
                         composable(route = Screen.WelcomeScreen.route) {
-                            LoginScreen()
+                            WelcomeScreen(navController = navController)
                         }
 
                         composable(route = Screen.RandomScreen.route) {
                             RandomScreen(navController = navController)
+                        }
+
+                        composable(route = Screen.ProfileScreen.route) {
+                            ProfileScreen(navController = navController)
                         }
 
                         composable(

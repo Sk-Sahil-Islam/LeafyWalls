@@ -61,7 +61,9 @@ fun EmailOutlinedTextField(
             unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             unfocusedTrailingIconColor = MaterialTheme.colorScheme.onBackground,
             focusedLeadingIconColor = MaterialTheme.colorScheme.onBackground,
-            focusedTrailingIconColor = MaterialTheme.colorScheme.onBackground
+            focusedTrailingIconColor = MaterialTheme.colorScheme.onBackground,
+            errorLeadingIconColor = MaterialTheme.colorScheme.onBackground,
+            errorTrailingIconColor = MaterialTheme.colorScheme.onBackground
         )
     )
 }
@@ -111,7 +113,9 @@ fun PasswordOutfieldTextField1(
             unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             unfocusedTrailingIconColor = MaterialTheme.colorScheme.onBackground,
             focusedLeadingIconColor = MaterialTheme.colorScheme.onBackground,
-            focusedTrailingIconColor = MaterialTheme.colorScheme.onBackground
+            focusedTrailingIconColor = MaterialTheme.colorScheme.onBackground,
+            errorLeadingIconColor = MaterialTheme.colorScheme.onBackground,
+            errorTrailingIconColor = MaterialTheme.colorScheme.onBackground
         )
     )
 }
@@ -127,11 +131,11 @@ fun PasswordOutfieldTextField2(
         onValueChange = {
             onValueChange(it)
         },
-        label = { Text(text = "Password") },
+        label = { Text(text = "Confirm password") },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Outlined.Lock,
-                contentDescription = "password"
+                contentDescription = "confirm password"
             )
         },
         maxLines = 1,
@@ -149,7 +153,9 @@ fun PasswordOutfieldTextField2(
             unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             unfocusedTrailingIconColor = MaterialTheme.colorScheme.onBackground,
             focusedLeadingIconColor = MaterialTheme.colorScheme.onBackground,
-            focusedTrailingIconColor = MaterialTheme.colorScheme.onBackground
+            focusedTrailingIconColor = MaterialTheme.colorScheme.onBackground,
+            errorLeadingIconColor = MaterialTheme.colorScheme.onBackground,
+            errorTrailingIconColor = MaterialTheme.colorScheme.onBackground
         )
     )
 }

@@ -1,5 +1,6 @@
 package com.example.leafywalls.presentation.login_screen
 
+import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,63 +10,77 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavController
+import com.example.leafywalls.common.Resource
+import com.example.leafywalls.common.clearFocusOnKeyboardDismiss
+import com.example.leafywalls.data.AuthViewModel
+import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.login_screen.componants.EmailOutlinedTextField
 import com.example.leafywalls.presentation.login_screen.componants.PasswordOutfieldTextField1
 import com.example.leafywalls.presentation.login_screen.componants.PasswordOutfieldTextField2
 import com.example.leafywalls.ui.theme.LinkColorDark
 import com.example.leafywalls.ui.theme.LinkColorLight
 import com.example.leafywalls.ui.theme.Sarala
+import kotlinx.coroutines.launch
 
 @Composable
-fun SignInSection(
+fun SignUpSection(
+    authViewModel: AuthViewModel = hiltViewModel(),
+    signUpViewModel: SignUpViewModel = hiltViewModel(),
+    navController: NavController,
     onLinkClick: () -> Unit
 ) {
 
-    var email by remember {
-        mutableStateOf("")
-    }
-    var password by remember {
-        mutableStateOf("")
-    }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
-    var isError by rememberSaveable { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val state = authViewModel.signUpState.collectAsState()
+    val loginState by remember { signUpViewModel.signUpUiState }
+    val isButtonEnabled = remember { mutableStateOf(true) }
+    val context = LocalContext.current
+    val lifeCycleOwner = LocalLifecycleOwner.current
 
     Box {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().clearFocusOnKeyboardDismiss(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             EmailOutlinedTextField(
-                email = email,
-                isError = isError,
+                email = loginState.email,
+                isError = !loginState.emailError,
                 onValueChange = {
-                    email = it
+                    signUpViewModel.onEvent(SignUpUiEvent.EmailChange(it))
                 }
             )
 
-            //Spacer(modifier = Modifier.size(12.dp))
-
             PasswordOutfieldTextField1(
-                password = password,
+                password = loginState.password,
                 onValueChange = {
-                    password = it
+                    signUpViewModel.onEvent(SignUpUiEvent.PasswordChange(it))
                 },
                 passwordVisible = passwordVisible,
                 onVisibilityClick = {
@@ -77,9 +92,9 @@ fun SignInSection(
 
 
             PasswordOutfieldTextField2(
-                password = password,
+                password = loginState.confirmPassword,
                 onValueChange = {
-                    password = it
+                    signUpViewModel.onEvent(SignUpUiEvent.PasswordConfirmChange(it))
                 }
             )
 
@@ -88,25 +103,24 @@ fun SignInSection(
 
             Button(
                 onClick = {
-                    /*scope.launch {
-                        authViewModel.loginUser(signInState.email, signInState.password)
-                    }*/
+                    scope.launch {
+                        authViewModel.registerUser(loginState.email, loginState.password)
+                    }
                 },
-                //enabled = isButtonEnabled.value && signInViewModel.validateAll() && signInState.password.isNotEmpty(),
+                enabled = isButtonEnabled.value && signUpViewModel.validateAll() && loginState.password.isNotEmpty(),
                 modifier = Modifier
                     .widthIn(min = 150.dp)
             ) {
-//                if (state.value is Resource.Loading || googleSignInState.value is Resource.Loading || facebookState.value is Resource.Loading){
-//                    CircularProgressIndicator(
-//                        color = MaterialTheme.colorScheme.primary,
-//                        modifier = Modifier.size(24.dp)
-//                    )
-//                    isButtonEnabled.value = false
-//                }
-//                else {
-//                    Text(text = "Sign In", fontSize = 15.sp)
-//                }
-                Text(text = "SIGN IN", fontSize = 15.sp)
+                if (state.value is Resource.Loading){
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    isButtonEnabled.value = false
+                }
+                else {
+                    Text(text = "SIGN UP", fontSize = 15.sp)
+                }
             }
 
             Spacer(modifier = Modifier.size(8.dp))
@@ -132,17 +146,44 @@ fun SignInSection(
                         fontFamily = Sarala
                     )
                 ) {
-                    append("Sign In")
+                    append("Login")
                 }
             }
             ClickableText(text = annotatedString, onClick = {
-                val start = annotatedString.text.indexOf("Sign In")
-                val end = start + "SignIn".length
+                val start = annotatedString.text.indexOf("Login")
+                val end = start + "Login".length
                 if (it in start..end) {
                     onLinkClick()
                 }
             })
 
         }
+
+        state.value?.let {
+            when (it) {
+                is Resource.Error -> {
+                    LaunchedEffect(state.value is Resource.Error) {
+                        Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                        isButtonEnabled.value = true
+                    }
+                    signUpViewModel.resetPassword()
+                }
+
+                is Resource.Loading -> {}
+                is Resource.Success -> {
+                    LaunchedEffect(Unit) {
+                        Toast.makeText(context, "Check mail to complete sign up", Toast.LENGTH_LONG)
+                            .show()
+                        val currentState = lifeCycleOwner.lifecycle.currentState
+                        if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                            navController.navigate(Screen.HomeScreen.route) {
+                                popUpTo(0)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }
