@@ -2,10 +2,6 @@ package com.example.leafywalls.presentation.photo_details
 
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
-import android.graphics.Bitmap
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOut
@@ -58,8 +54,7 @@ import com.example.leafywalls.presentation.photo_details.components.PhotoDetailI
 import com.example.leafywalls.presentation.photo_details.components.PhotoDetailTopBar
 import com.example.leafywalls.presentation.photo_details.components.SetDialog
 import com.example.leafywalls.presentation.photo_details.components.SideBar
-import com.example.leafywalls.presentation.photo_details.components.WallpaperSetting
-import java.util.concurrent.Executors
+import com.example.leafywalls.presentation.photo_details.components.PleaseWaitLoading
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
@@ -169,10 +164,11 @@ fun PhotoDetailScreen(
 
 
             if (state.settingWallpaper) {
-                WallpaperSetting(
+                PleaseWaitLoading(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .offset(y = (100).dp)
+                        .offset(y = (100).dp),
+                    text = stringResource(id = R.string.setting_wallpaper)
                 )
             }
         }

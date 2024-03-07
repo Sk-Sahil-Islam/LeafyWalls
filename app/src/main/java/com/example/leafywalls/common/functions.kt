@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewModelScope
 import com.example.leafywalls.R
+import com.example.leafywalls.domain.model.UserData
 import com.example.leafywalls.presentation.search_screen.SearchState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -156,7 +157,11 @@ fun areSearchStatesEqual(state1: SearchState, state2: SearchState): Boolean {
             state1.color == state2.color &&
             state1.safeSearch == state2.safeSearch
 }
-
+fun areUserDataEqual(userData1: UserData, userData2: UserData): Boolean {
+    return userData1.userName == userData2.userName &&
+            userData1.userId == userData2.userId &&
+            userData1.profilePictureUrl == userData2.profilePictureUrl
+}
 fun shareListToText(shareList: Array<String>): String {
     var result = "Here's my favorite image(s) from LeafyWalls:"
     shareList.forEach {

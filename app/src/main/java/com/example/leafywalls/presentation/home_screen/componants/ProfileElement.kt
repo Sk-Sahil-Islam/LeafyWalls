@@ -1,5 +1,6 @@
 package com.example.leafywalls.presentation.home_screen.componants
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -57,7 +58,7 @@ fun ProfileElement(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                ProfileCircle(
+                ProfilePhotoNavigation(
                     userData = userData,
                     onProfilePicClick = {
                         onProfilePicClick()
@@ -98,7 +99,7 @@ fun ProfileElement(
 }
 
 @Composable
-fun ProfileCircle(
+fun ProfilePhotoNavigation(
     modifier: Modifier = Modifier,
     size: Dp = 60.dp,
     userData: UserData? = null,
@@ -111,7 +112,6 @@ fun ProfileCircle(
 
     ) {
         if (userData?.profilePictureUrl != null && userData.profilePictureUrl != "null") {
-
             AsyncImage(
                 modifier = modifier
                     .fillMaxSize()

@@ -1,5 +1,6 @@
 package com.example.leafywalls.presentation.photo_list
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.EaseInOutCubic

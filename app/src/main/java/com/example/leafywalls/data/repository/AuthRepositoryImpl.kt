@@ -6,6 +6,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.userProfileChangeRequest
 import kotlinx.coroutines.tasks.await
 import okhttp3.internal.http.HttpMethod
 import javax.inject.Inject
@@ -44,6 +45,18 @@ class AuthRepositoryImpl @Inject constructor(
             Resource.Success(result.user!!)
         } catch (e: Exception) {
             e.printStackTrace()
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun updateProfile(name: String): Resource<Boolean> {
+        val profileUpdates = userProfileChangeRequest {
+            displayName = name
+        }
+        return try{
+            currentUser?.updateProfile(profileUpdates)?.await()
+            Resource.Success(true)
+        } catch (e: Exception) {
             Resource.Error(e.message.toString())
         }
     }

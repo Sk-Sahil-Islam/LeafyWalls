@@ -35,8 +35,9 @@ import com.example.leafywalls.R
 import com.example.leafywalls.ui.theme.Sarala
 
 @Composable
-fun WallpaperSetting(
-    modifier: Modifier = Modifier
+fun PleaseWaitLoading(
+    modifier: Modifier = Modifier,
+    text: String
 ) {
     Box(
         modifier = modifier
@@ -60,7 +61,7 @@ fun WallpaperSetting(
                     fontSize = 13.5.sp
                 )
                 Text(
-                    text = stringResource(id = R.string.setting_wallpaper),
+                    text = text,
                     fontFamily = Sarala,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.SemiBold,

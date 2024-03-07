@@ -156,6 +156,7 @@ fun HomeScreen(
                     },
                     onProfilePicClick = {
                         if (currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                            navController.currentBackStackEntry?.savedStateHandle?.set<UserData>("userData", userData)
                             navController.navigate(Screen.ProfileScreen.route)
                             scope.launch {
                                 drawerState.close()

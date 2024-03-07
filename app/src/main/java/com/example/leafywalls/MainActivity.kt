@@ -21,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.leafywalls.data.AuthViewModel
+import com.example.leafywalls.domain.model.UserData
 import com.example.leafywalls.presentation.Screen
 import com.example.leafywalls.presentation.home_screen.HomeScreen
 import com.example.leafywalls.presentation.login_screen.WelcomeScreen
@@ -70,7 +71,8 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(route = Screen.ProfileScreen.route) {
-                            ProfileScreen(navController = navController)
+                            val userData: UserData? = navController.previousBackStackEntry?.savedStateHandle?.get<UserData>("userData")
+                            ProfileScreen(navController = navController, userData = userData)
                         }
 
                         composable(

@@ -48,7 +48,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesRepositoryImpl(firebaseAuth: FirebaseAuth, googleSignInClient: GoogleSignInClient): AuthRepository {
+    fun providesRepositoryImpl(firebaseAuth: FirebaseAuth, googleSignInClient: GoogleSignInClient, @ApplicationContext context: Context): AuthRepository {
         return AuthRepositoryImpl(firebaseAuth,googleSignInClient)
     }
 

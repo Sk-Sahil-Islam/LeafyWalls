@@ -1,6 +1,7 @@
 package com.example.leafywalls.presentation.photo_details
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
