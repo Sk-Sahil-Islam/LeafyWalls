@@ -1,5 +1,6 @@
 package com.example.leafywalls.presentation.home_screen
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
@@ -141,9 +142,10 @@ fun HomeScreen(
                     UserData(
                         userId = this.uid,
                         userName = this.displayName,
-                        this.photoUrl.toString()
+                        profilePictureUrl = this.photoUrl.toString()
                     )
                 }
+                Log.e("savedStateHandle", userData?.profilePictureUrl ?: "null")
                 ProfileElement(
                     userData = userData,
                     onLoginClick = {

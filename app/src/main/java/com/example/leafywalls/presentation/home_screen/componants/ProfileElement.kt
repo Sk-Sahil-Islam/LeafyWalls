@@ -111,6 +111,8 @@ fun ProfilePhotoNavigation(
             .clip(CircleShape)
 
     ) {
+        Log.e("savedStateHandle", userData?.profilePictureUrl ?: "null")
+
         if (userData?.profilePictureUrl != null && userData.profilePictureUrl != "null") {
             AsyncImage(
                 modifier = modifier
